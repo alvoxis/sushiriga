@@ -1,11 +1,7 @@
 import type { Location } from '@/types';
 import { PREPARATION_TIME_OPTIONS } from '@/types';
 import { canOrderAsap, isOpenAt, pickupSlots } from './pickupSlots';
-import {
-  estimatePreparationTime,
-  isPreparationTimeOption,
-  MIN_PREPARATION_MINUTES,
-} from './preparationTime';
+import { isPreparationTimeOption, STANDARD_PREPARATION_MINUTES } from './preparationTime';
 
 const location: Location = {
   id: 'test',
@@ -28,26 +24,17 @@ const location: Location = {
 const at = (localTime: string) => new Date(`2026-10-05T${localTime}:00+03:00`);
 
 describe('preparation time', () => {
-  it('is never below 30 minutes', () => {
-    expect(MIN_PREPARATION_MINUTES).toBe(30);
-    expect(estimatePreparationTime([{ productId: 'a', quantity: 1 }])).toBe(30);
-  });
-
-  it('applies large-order rules when configured', () => {
-    const policy = {
-      minimumMinutes: 30,
-      largeOrderRules: [{ minItems: 10, minutes: 45 as const }],
-    };
-    expect(estimatePreparationTime([{ productId: 'a', quantity: 9 }], policy)).toBe(30);
-    expect(estimatePreparationTime([{ productId: 'a', quantity: 10 }], policy)).toBe(45);
+  it('uses 30 minutes as the standard estimate', () => {
+    expect(STANDARD_PREPARATION_MINUTES).toBe(30);
   });
 
   it('offers staff choices from 10 to 80 minutes in 5-minute steps', () => {
-    expect(PREPARATION_TIME_OPTIONS[0]).toBe(10);
-    expect(PREPARATION_TIME_OPTIONS.at(-1)).toBe(80);
-    expect(PREPARATION_TIME_OPTIONS).toHaveLength(15);
+    expect([...PREPARATION_TIME_OPTIONS]).toEqual([
+      10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80,
+    ]);
     expect(isPreparationTimeOption(35)).toBe(true);
     expect(isPreparationTimeOption(33)).toBe(false);
+    expect(isPreparationTimeOption(90)).toBe(false);
   });
 });
 

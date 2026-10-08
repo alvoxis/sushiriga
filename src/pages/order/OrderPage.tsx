@@ -5,6 +5,7 @@ import { Button, ButtonLink, Card, PageHeader, PlaceholderPanel } from '@/compon
 import { locations } from '@/data/locations';
 import { OrderStatusTimeline } from '@/features/orders/components/OrderStatusTimeline';
 import { canReview, ORDER_PROGRESS } from '@/features/orders/orderStatus';
+import { STANDARD_PREPARATION_MINUTES } from '@/features/pickup/preparationTime';
 import { ReviewForm } from '@/features/reviews/components/ReviewForm';
 import { useDocumentTitle } from '@/hooks';
 import { useTranslation } from '@/i18n';
@@ -67,7 +68,12 @@ export default function OrderPage() {
                 variant="ghost"
                 size="sm"
                 onClick={async () => {
-                  setOrder(await ordersAdmin.updateStatus(order.id, nextDemoStatus));
+                  // Demo stand-in for staff: accepting uses the standard time; real staff pick 10…80 min.
+                  setOrder(
+                    nextDemoStatus === 'ACCEPTED'
+                      ? await ordersAdmin.acceptOrder(order.id, STANDARD_PREPARATION_MINUTES)
+                      : await ordersAdmin.updateStatus(order.id, nextDemoStatus),
+                  );
                 }}
               >
                 {t('order.demoAdvance')}
@@ -90,7 +96,11 @@ export default function OrderPage() {
             <dt>{t('order.location')}</dt>
             <dd>{location ? `${location.name}, ${location.address.street}` : order.location}</dd>
             <dt>{t('order.preparationTime')}</dt>
-            <dd>{t('order.minutes', { minutes: order.preparationTime })}</dd>
+            <dd>
+              {order.preparationTime === null
+                ? t('order.preparationPending', { minutes: STANDARD_PREPARATION_MINUTES })
+                : t('order.minutes', { minutes: order.preparationTime })}
+            </dd>
           </dl>
           <h2 style={{ fontSize: 'var(--text-lg)' }}>{t('order.items')}</h2>
           <ul className={styles.items}>

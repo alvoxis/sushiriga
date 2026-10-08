@@ -154,7 +154,7 @@ export const en = {
     chooseTime: 'Time',
     noSlots: 'There are no pickup times left today.',
     prepNote:
-      'Minimum preparation time is {minutes} minutes. Large orders can take longer — the restaurant confirms the exact time after accepting the order.',
+      'The standard preparation time is {minutes} minutes. After your paid order arrives, the restaurant sets the final time — larger orders may take longer.',
     name: 'Name',
     phone: 'Phone',
     phoneHint: 'So the restaurant can reach you about the order.',
@@ -210,6 +210,8 @@ export const en = {
     pickupAt: 'Pickup',
     asap: 'As soon as possible',
     preparationTime: 'Preparation time',
+    preparationPending:
+      'Confirmed by the restaurant when it accepts the order (standard ≈ {minutes} min)',
     minutes: '{minutes} min',
     location: 'Location',
     items: 'Items',

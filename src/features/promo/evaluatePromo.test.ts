@@ -44,6 +44,10 @@ describe('evaluatePromo', () => {
     expect(result).toMatchObject({ valid: false, reason });
   });
 
+  it('public codes work without an account', () => {
+    expect(evaluatePromo(base, 'TEN', { subtotal: 1000, now }).valid).toBe(true);
+  });
+
   it('accepts a personal code for its owner', () => {
     const personal: PromoCode = { ...base, visibility: 'personal', customerId: 'c1' };
     expect(evaluatePromo(personal, 'TEN', { subtotal: 1000, now, customerId: 'c1' }).valid).toBe(

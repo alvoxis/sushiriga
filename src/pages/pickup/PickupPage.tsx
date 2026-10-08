@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Card, PageHeader } from '@/components/ui';
 import { LocationCard } from '@/features/pickup/components/LocationCard';
-import { MIN_PREPARATION_MINUTES } from '@/features/pickup/preparationTime';
+import { STANDARD_PREPARATION_MINUTES } from '@/features/pickup/preparationTime';
 import { useDocumentTitle } from '@/hooks';
 import { useTranslation } from '@/i18n';
 import { useServices } from '@/services';
@@ -34,7 +34,7 @@ export default function PickupPage() {
         <Card className="stack">
           <h2 className={styles.cardTitle}>{t('pickup.prepTitle')}</h2>
           <p className={styles.muted}>
-            {t('checkout.prepNote', { minutes: MIN_PREPARATION_MINUTES })}
+            {t('checkout.prepNote', { minutes: STANDARD_PREPARATION_MINUTES })}
           </p>
         </Card>
       </div>

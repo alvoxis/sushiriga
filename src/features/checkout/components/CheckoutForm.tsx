@@ -6,10 +6,7 @@ import { useCart } from '@/features/cart/CartContext';
 import { CartSummary } from '@/features/cart/components/CartSummary';
 import { useCatalog } from '@/features/menu/CatalogContext';
 import { canOrderAsap, pickupSlots } from '@/features/pickup/pickupSlots';
-import {
-  estimatePreparationTime,
-  MIN_PREPARATION_MINUTES,
-} from '@/features/pickup/preparationTime';
+import { STANDARD_PREPARATION_MINUTES } from '@/features/pickup/preparationTime';
 import { TipSelector } from '@/features/tips/components/TipSelector';
 import { tipAmount } from '@/features/tips/tips';
 import { useTranslation } from '@/i18n';
@@ -30,11 +27,12 @@ export function CheckoutForm({ locations }: { locations: Location[] }) {
   const navigate = useNavigate();
   const services = useServices();
   const { products } = useCatalog();
-  const { cart, items, clear } = useCart();
+  const { cart, clear } = useCart();
 
   const [locationId, setLocationId] = useState(locations[0]?.id ?? '');
   const location = locations.find((l) => l.id === locationId);
-  const preparation = estimatePreparationTime(items);
+  // Standard estimate only — staff choose the final time after the paid order arrives.
+  const preparation = STANDARD_PREPARATION_MINUTES;
 
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
@@ -92,7 +90,6 @@ export function CheckoutForm({ locations }: { locations: Location[] }) {
         tip: tipCents,
         locationId: location.id,
         pickupTime,
-        estimatedPreparationTime: preparation,
         paymentId: payment.paymentId,
       });
       clear();
@@ -164,7 +161,7 @@ export function CheckoutForm({ locations }: { locations: Location[] }) {
             ))}
           {timeError && <p className={styles.error}>{t('checkout.errors.time')}</p>}
           <p className={styles.note}>
-            {t('checkout.prepNote', { minutes: MIN_PREPARATION_MINUTES })}
+            {t('checkout.prepNote', { minutes: STANDARD_PREPARATION_MINUTES })}
           </p>
         </section>
 

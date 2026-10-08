@@ -151,7 +151,7 @@ export const lv: Messages = {
     chooseTime: 'Laiks',
     noSlots: 'Šodien brīvu saņemšanas laiku vairs nav.',
     prepNote:
-      'Minimālais pagatavošanas laiks ir {minutes} minūtes. Lieli pasūtījumi var aizņemt ilgāk — precīzu laiku restorāns apstiprina pēc pasūtījuma pieņemšanas.',
+      'Standarta pagatavošanas laiks ir {minutes} minūtes. Kad apmaksātais pasūtījums ir saņemts, restorāns nosaka galīgo laiku — lieli pasūtījumi var aizņemt ilgāk.',
     name: 'Vārds',
     phone: 'Tālrunis',
     phoneHint: 'Lai restorāns varētu ar tevi sazināties par pasūtījumu.',
@@ -207,6 +207,7 @@ export const lv: Messages = {
     pickupAt: 'Saņemšana',
     asap: 'Pēc iespējas ātrāk',
     preparationTime: 'Pagatavošanas laiks',
+    preparationPending: 'Restorāns apstiprinās, pieņemot pasūtījumu (standarta ≈ {minutes} min)',
     minutes: '{minutes} min',
     location: 'Vieta',
     items: 'Ēdieni',

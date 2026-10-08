@@ -13,7 +13,7 @@ describe('SUSHIRIGA app', () => {
   it('loads the menu with all visible categories', async () => {
     renderApp('/menu');
     const shelf = await screen.findByRole('navigation', { name: 'Menu categories' });
-    expect(within(shelf).getAllByRole('link')).toHaveLength(12);
+    expect(within(shelf).getAllByRole('link')).toHaveLength(13);
     expect(within(shelf).getByRole('link', { name: /Rolls, 13 items/ })).toBeInTheDocument();
   });
 

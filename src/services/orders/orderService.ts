@@ -9,7 +9,6 @@ export interface CreateOrderInput {
   tip: number;
   locationId: string;
   pickupTime: string;
-  estimatedPreparationTime: number;
   /** Reference from the payment provider. */
   paymentId: string;
 }
@@ -27,6 +26,10 @@ export interface OrderService {
 /** Staff / admin API (future admin panel). Kept separate so checkout never depends on it. */
 export interface OrderAdminService {
   listOrders(filter?: { locationId?: string; status?: OrderStatus[] }): Promise<Order[]>;
+  /** PAID → ACCEPTED. Staff MUST choose the final preparation time (10…80 min) here. */
+  acceptOrder(id: string, preparationTime: PreparationTimeOption): Promise<Order>;
+  /** Any other allowed transition (PREPARING, DELAYED, READY, …). Not for ACCEPTED. */
   updateStatus(id: string, status: OrderStatus, note?: string): Promise<Order>;
+  /** Change the time later, e.g. together with a delay. */
   setPreparationTime(id: string, minutes: PreparationTimeOption): Promise<Order>;
 }

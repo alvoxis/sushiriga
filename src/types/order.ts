@@ -46,8 +46,11 @@ export interface Order {
   location: string;
   /** ISO date-time or "asap" as requested by the customer. */
   pickupTime: string;
-  /** Minutes. Estimated at checkout, later set by staff from PREPARATION_TIME_OPTIONS. */
-  preparationTime: number;
+  /**
+   * Final preparation time in minutes, chosen by staff from PREPARATION_TIME_OPTIONS when they
+   * accept the paid order. `null` until then (the customer sees the standard estimate).
+   */
+  preparationTime: PreparationTimeOption | null;
   status: OrderStatus;
   statusHistory: OrderStatusChange[];
   createdAt: string;

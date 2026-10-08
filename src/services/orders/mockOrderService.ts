@@ -1,4 +1,5 @@
 import { canTransition } from '@/features/orders/orderStatus';
+import { isPreparationTimeOption } from '@/features/pickup/preparationTime';
 import type { Order, OrderStatus } from '@/types';
 import { createId } from '@/utils/id';
 import { readStorage, writeStorage } from '@/utils/storage';
@@ -46,7 +47,7 @@ export function createMockOrderService(): OrderService & OrderAdminService {
         ...(input.promoCode ? { promoCode: input.promoCode } : {}),
         location: input.locationId,
         pickupTime: input.pickupTime,
-        preparationTime: input.estimatedPreparationTime,
+        preparationTime: null, // chosen by staff in acceptOrder
         status: 'PAID',
         statusHistory: [{ status: 'PAID', at: now }],
         createdAt: now,
@@ -70,7 +71,24 @@ export function createMockOrderService(): OrderService & OrderAdminService {
           (!filter?.status || filter.status.includes(o.status)),
       );
     },
+    async acceptOrder(id, preparationTime) {
+      if (!isPreparationTimeOption(preparationTime))
+        throw new Error(`Invalid preparation time ${preparationTime}`);
+      return update(id, (order) => {
+        if (order.status !== 'PAID') throw new Error(`Order ${id} is ${order.status}, not PAID`);
+        const at = new Date().toISOString();
+        return {
+          ...order,
+          status: 'ACCEPTED',
+          preparationTime,
+          statusHistory: [...order.statusHistory, { status: 'ACCEPTED', at }],
+          updatedAt: at,
+        };
+      });
+    },
     async updateStatus(id, status: OrderStatus, note) {
+      if (status === 'ACCEPTED')
+        throw new Error('Use acceptOrder(): accepting requires a preparation time');
       return update(id, (order) => {
         if (!canTransition(order.status, status)) {
           throw new Error(`Cannot change order ${id} from ${order.status} to ${status}`);
@@ -85,6 +103,7 @@ export function createMockOrderService(): OrderService & OrderAdminService {
       });
     },
     async setPreparationTime(id, minutes) {
+      if (!isPreparationTimeOption(minutes)) throw new Error(`Invalid preparation time ${minutes}`);
       return update(id, (order) => ({
         ...order,
         preparationTime: minutes,

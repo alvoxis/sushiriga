@@ -31,6 +31,6 @@ export interface PickupSelection {
   locationId: string;
   /** ISO date-time, or "asap". */
   requestedTime: string | 'asap';
-  /** Minutes. */
+  /** Minutes — the standard estimate shown to the customer; staff set the final time. */
   estimatedPreparationTime: number;
 }
