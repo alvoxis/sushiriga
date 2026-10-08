@@ -7,6 +7,7 @@ export const sushiBurgerProducts: Product[] = [
     id: 'vega-burger',
     slug: 'vega-burger',
     name: 'Vega Burger',
+    sourceName: 'VEGA BURGER',
     category: 'sushi-burger',
     ingredients: {
       lv: 'Rīsi, nori, krabju nūjiņas, avokado, wakame, tempura maisījums, panko, unagi mērce',
@@ -20,6 +21,7 @@ export const sushiBurgerProducts: Product[] = [
     id: 'chicken-burger',
     slug: 'chicken-burger',
     name: 'Chicken Burger',
+    sourceName: 'CHICKEN BURGER',
     category: 'sushi-burger',
     ingredients: {
       lv: 'Rīsi, nori, krēmsiers, vista, gurķis, tomāts, tempura maisījums, panko, unagi mērci',
@@ -33,6 +35,7 @@ export const sushiBurgerProducts: Product[] = [
     id: 'salomon-burger',
     slug: 'salomon-burger',
     name: 'Salomon Burger',
+    sourceName: 'SALOMON BURGER',
     category: 'sushi-burger',
     ingredients: {
       lv: 'Rīsi, nori, krēmsiers, gurķis, avokado, mango, lasis, tempura maisījums, panko, unagi mērce',
@@ -46,6 +49,7 @@ export const sushiBurgerProducts: Product[] = [
     id: 'terijaki-burger',
     slug: 'terijaki-burger',
     name: 'Terijaki Burger',
+    sourceName: 'TERIJAKI BURGER',
     category: 'sushi-burger',
     ingredients: {
       lv: 'Rīsi nori krēmsiera salāti garneles gurķis cepts lasis teryaki, Tempra Mix un kraukšķīgs panku ar unagi mērci',
@@ -59,6 +63,7 @@ export const sushiBurgerProducts: Product[] = [
     id: 'ebi-burger',
     slug: 'ebi-burger',
     name: 'Ebi Burger',
+    sourceName: 'EBI BURGER',
     category: 'sushi-burger',
     ingredients: {
       lv: 'Rīsi nori avokado tīģergarneļu krēmsiers Tempura maisījums un kraukšķīgs panku ar unagi mērci',

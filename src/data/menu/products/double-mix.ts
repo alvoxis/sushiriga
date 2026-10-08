@@ -7,6 +7,7 @@ export const doubleMixProducts: Product[] = [
     id: 'kapa-maki-1-plus-1',
     slug: 'kapa-maki-1-plus-1',
     name: 'Kapa Maki 1+1',
+    sourceName: '80 KAPA MAKI 1+1',
     number: '80',
     category: 'double-mix',
     ingredients: {
@@ -21,6 +22,7 @@ export const doubleMixProducts: Product[] = [
     id: 'avakado-maki-1-plus-1',
     slug: 'avakado-maki-1-plus-1',
     name: 'Avakado Maki 1+1',
+    sourceName: '81. AVAKADO MAKI 1+1',
     number: '81',
     category: 'double-mix',
     ingredients: {
@@ -35,6 +37,7 @@ export const doubleMixProducts: Product[] = [
     id: 'sake-maki-1-plus-1',
     slug: 'sake-maki-1-plus-1',
     name: 'Sake Maki 1+1',
+    sourceName: '82. SAKE MAKI 1+1',
     number: '82',
     category: 'double-mix',
     ingredients: {
@@ -49,6 +52,7 @@ export const doubleMixProducts: Product[] = [
     id: 'hot-tomago-spicy-maki-1-plus-1',
     slug: 'hot-tomago-spicy-maki-1-plus-1',
     name: 'Hot Tomago Spicy Maki 1+1',
+    sourceName: '83  HOT TOMAGO SPICY MAKI 1+1',
     number: '83',
     category: 'double-mix',
     ingredients: {
@@ -63,6 +67,7 @@ export const doubleMixProducts: Product[] = [
     id: 'philadelphia-1-plus-1',
     slug: 'philadelphia-1-plus-1',
     name: 'Philadelphia 1+1',
+    sourceName: '84. PHILADELPHIA 1+1',
     number: '84',
     category: 'double-mix',
     description: {
@@ -77,6 +82,7 @@ export const doubleMixProducts: Product[] = [
     id: 'phila-mix-1-plus-1',
     slug: 'phila-mix-1-plus-1',
     name: 'Phila Mix 1+1',
+    sourceName: '85 Phila Mix 1+1',
     number: '85',
     category: 'double-mix',
     components: [
@@ -90,6 +96,7 @@ export const doubleMixProducts: Product[] = [
     id: 'phila-mix-2-1-plus-1',
     slug: 'phila-mix-2-1-plus-1',
     name: 'Phila Mix 2 1+1',
+    sourceName: '86 Phila Mix 2 1+1',
     number: '86',
     category: 'double-mix',
     components: [
@@ -103,6 +110,7 @@ export const doubleMixProducts: Product[] = [
     id: 'sunrise-1-plus-1',
     slug: 'sunrise-1-plus-1',
     name: 'Sunrise 1+1',
+    sourceName: '87. SUNRISE 1+1',
     number: '87',
     category: 'double-mix',
     components: [
@@ -116,6 +124,7 @@ export const doubleMixProducts: Product[] = [
     id: 'bushido-1-plus-1',
     slug: 'bushido-1-plus-1',
     name: 'Bushido 1+1',
+    sourceName: '88. BUSHIDO 1+1',
     number: '88',
     category: 'double-mix',
     components: [
@@ -129,6 +138,7 @@ export const doubleMixProducts: Product[] = [
     id: 'kanagawa-1-plus-1',
     slug: 'kanagawa-1-plus-1',
     name: 'Kanagawa 1+1',
+    sourceName: '89. KANAGAWA 1+1',
     number: '89',
     category: 'double-mix',
     ingredients: {
@@ -143,6 +153,7 @@ export const doubleMixProducts: Product[] = [
     id: 'spicy-ebi-1-plus-1',
     slug: 'spicy-ebi-1-plus-1',
     name: 'Spicy Ebi 1+1',
+    sourceName: '90. SPICY EBI 1+1',
     number: '90',
     category: 'double-mix',
     ingredients: {
@@ -157,6 +168,7 @@ export const doubleMixProducts: Product[] = [
     id: 'philadelphia-light-1-plus-1',
     slug: 'philadelphia-light-1-plus-1',
     name: 'Philadelphia Light 1+1',
+    sourceName: '91. PHILADELPHIA LIGHT 1+1',
     number: '91',
     category: 'double-mix',
     description: {
@@ -175,6 +187,7 @@ export const doubleMixProducts: Product[] = [
     id: 'kogane-1-plus-1',
     slug: 'kogane-1-plus-1',
     name: 'Kogane 1+1',
+    sourceName: '92. KOGANE 1+1.',
     number: '92',
     category: 'double-mix',
     ingredients: {
@@ -189,6 +202,7 @@ export const doubleMixProducts: Product[] = [
     id: 'red-heat-mix',
     slug: 'red-heat-mix',
     name: 'Red Heat Mix',
+    sourceName: '93.RED HEAT MIX',
     number: '93',
     category: 'double-mix',
     components: ['KANAGAWA 8GAB', 'PHILADELFIA CLASSIC 8 GAB'],
@@ -200,6 +214,7 @@ export const doubleMixProducts: Product[] = [
     id: 'tori-sake-mix',
     slug: 'tori-sake-mix',
     name: 'Tori-Sake Mix',
+    sourceName: '94.TORI-SAKE MIX',
     number: '94',
     category: 'double-mix',
     components: ['PHILADELPHIA LIGHT8 GAB', 'KOGANE 8 GAB'],
@@ -210,6 +225,7 @@ export const doubleMixProducts: Product[] = [
     id: 'royal-fusion',
     slug: 'royal-fusion',
     name: 'Royal Fusion',
+    sourceName: '95.ROYAL FUSION',
     number: '95',
     category: 'double-mix',
     components: ['HIJI 8 GAB', 'SAKE MASAGO 8GAB'],
@@ -220,6 +236,7 @@ export const doubleMixProducts: Product[] = [
     id: 'ocean-cream-duo',
     slug: 'ocean-cream-duo',
     name: 'Ocean Cream Duo',
+    sourceName: '96.OCEAN CREAM DUO',
     number: '96',
     category: 'double-mix',
     components: ['SPICY EBI 8 GAB', 'SALMON TARTARE 8 GAB'],

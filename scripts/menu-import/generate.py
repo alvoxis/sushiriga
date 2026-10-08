@@ -90,7 +90,7 @@ for sec in d:
         base = slug(name)
         if cat=='snacks' and 'weight' in p: base=f"{base}-{p['weight']}g"
         elif cat=='snacks' and 'Nuggets' in name: base=f"{base}-{p['pieces']}"
-        obj={'id':base,'slug':base,'name':name, **({'number':p['number']} if 'number' in p else {}), 'category':cat}
+        obj={'id':base,'slug':base,'name':name,'sourceName':raw.strip(), **({'number':p['number']} if 'number' in p else {}), 'category':cat}
         for k in ('description','ingredients','components'):
             if k in p: obj[k]=p[k]
         obj['price']=price

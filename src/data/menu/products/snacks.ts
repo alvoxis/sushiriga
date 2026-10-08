@@ -7,6 +7,7 @@ export const snacksProducts: Product[] = [
     id: 'king-prawns',
     slug: 'king-prawns',
     name: 'King Prawns',
+    sourceName: 'King prawns 6 gab +souse',
     category: 'snacks',
     description: {
       lv: 'Zeltaini brūnas tīģergarneles ceptas rīvmaizē. Tiek pasniegtas ar vasabi aioli.',
@@ -22,6 +23,7 @@ export const snacksProducts: Product[] = [
     id: 'spring-rolls',
     slug: 'spring-rolls',
     name: 'Spring Rolls',
+    sourceName: 'Spring rolls 6 gab+souse',
     category: 'snacks',
     description: {
       lv: 'Kraukšķīgie pavasara rullīši, pildīti ar dārzeņiem, no kuriem vienkārši nevar atrauties. .',
@@ -37,6 +39,7 @@ export const snacksProducts: Product[] = [
     id: 'french-fries-180g',
     slug: 'french-fries-180g',
     name: 'French Fries',
+    sourceName: 'French fries 180 g',
     category: 'snacks',
     description: {
       lv: 'Garšīgi, zeltaini, svaigi vārīti kartupeļi, nedaudz apkaisīti ar sāli. Tiek pasniegti',
@@ -51,6 +54,7 @@ export const snacksProducts: Product[] = [
     id: 'fried-crispy-chicken-nuggets-6',
     slug: 'fried-crispy-chicken-nuggets-6',
     name: 'Fried Crispy Chicken Nuggets',
+    sourceName: 'Fried crispy chicken nuggets',
     category: 'snacks',
     price: 350,
     pieces: 6,
@@ -61,6 +65,7 @@ export const snacksProducts: Product[] = [
     id: 'french-fries-230g',
     slug: 'french-fries-230g',
     name: 'French Fries',
+    sourceName: 'Copy of French fries 230 g',
     category: 'snacks',
     description: {
       lv: 'Garšīgi, zeltaini, svaigi vārīti kartupeļi, nedaudz apkaisīti ar sāli. Tiek pasniegti',
@@ -75,6 +80,7 @@ export const snacksProducts: Product[] = [
     id: 'fried-crispy-chicken-nuggets-9',
     slug: 'fried-crispy-chicken-nuggets-9',
     name: 'Fried Crispy Chicken Nuggets',
+    sourceName: 'Copy of Fried crispy chicken nuggets',
     category: 'snacks',
     price: 450,
     pieces: 9,

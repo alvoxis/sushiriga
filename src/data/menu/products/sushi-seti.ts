@@ -7,6 +7,7 @@ export const sushiSetiProducts: Product[] = [
     id: 'azoshi-set-64g',
     slug: 'azoshi-set-64g',
     name: 'Azoshi Set 64G',
+    sourceName: 'AZOSHI SET 64G',
     category: 'sushi-seti',
     components: [
       'Spice Ebi 8 gab',
@@ -25,6 +26,7 @@ export const sushiSetiProducts: Product[] = [
     id: 'sake-setto',
     slug: 'sake-setto',
     name: 'Sake Setto',
+    sourceName: 'SAKE SETTO 56 gab',
     category: 'sushi-seti',
     components: [
       'Sake Maki 8 gab',
@@ -43,6 +45,7 @@ export const sushiSetiProducts: Product[] = [
     id: 'bonito-set',
     slug: 'bonito-set',
     name: 'Bonito Set',
+    sourceName: 'BONITO SET 32  gab',
     category: 'sushi-seti',
     components: [
       'Unagi Bonito 8 gab',
@@ -58,6 +61,7 @@ export const sushiSetiProducts: Product[] = [
     id: 'tempura-set',
     slug: 'tempura-set',
     name: 'Tempura Set',
+    sourceName: 'TEMPURA SET 32 gab',
     category: 'sushi-seti',
     components: ['Sake Fry 8 gab', 'Unagi Crisp 8 gab', 'Ebi Panko 8 gab', 'Vistas Tempura 8 gab'],
     price: 2700,
@@ -68,6 +72,7 @@ export const sushiSetiProducts: Product[] = [
     id: 'philadelphia-set',
     slug: 'philadelphia-set',
     name: 'Philadelphia Set',
+    sourceName: 'PHILADELPHIA SET 34 gab',
     category: 'sushi-seti',
     components: [
       'Philadelphia Lux 8gab',
@@ -85,6 +90,7 @@ export const sushiSetiProducts: Product[] = [
     id: 'krasts-set',
     slug: 'krasts-set',
     name: 'Krasts Set',
+    sourceName: 'KRASTS SET 32GAB',
     category: 'sushi-seti',
     components: ['Samurajs Kanagava Verona Ebimaki chees souse'],
     price: 3200,
@@ -95,6 +101,7 @@ export const sushiSetiProducts: Product[] = [
     id: 'davana-set',
     slug: 'davana-set',
     name: 'Davana Set',
+    sourceName: 'DAVANA SET 40 GAB',
     category: 'sushi-seti',
     components: ['California', 'Spicy Ebi Syake masago', 'Saki Maki', 'Konago Maki'],
     price: 3000,
@@ -105,6 +112,7 @@ export const sushiSetiProducts: Product[] = [
     id: 'premium-set',
     slug: 'premium-set',
     name: 'Premium Set',
+    sourceName: 'PREMIUM SET   56GAB',
     category: 'sushi-seti',
     components: [
       'Philadelfia lux',
@@ -123,6 +131,7 @@ export const sushiSetiProducts: Product[] = [
     id: 'chicken-combo',
     slug: 'chicken-combo',
     name: 'Chicken Combo',
+    sourceName: 'CHICKEN COMBO 32GAB',
     category: 'sushi-seti',
     components: [
       'Sakura 8pcs. Chicken, cream cheese, white sesame, cheese sauce.',
@@ -139,6 +148,7 @@ export const sushiSetiProducts: Product[] = [
     id: 'crab',
     slug: 'crab',
     name: 'Crab',
+    sourceName: 'CRAB  32GAB',
     category: 'sushi-seti',
     components: [
       'Reef 8pcs. White sesame, cream cheese, cucumber, crab in spicy sauce.',
@@ -155,6 +165,7 @@ export const sushiSetiProducts: Product[] = [
     id: 'hotto-set',
     slug: 'hotto-set',
     name: 'Hotto Set',
+    sourceName: 'HOTTO SET 48GAB',
     category: 'sushi-seti',
     components: [
       'Azi maki - Salad shrimp, black sesame, shrimp in spicy sauce',
@@ -173,6 +184,7 @@ export const sushiSetiProducts: Product[] = [
     id: 'umai-set',
     slug: 'umai-set',
     name: 'Umai Set',
+    sourceName: 'UMAI SET 72GAB.',
     category: 'sushi-seti',
     components: [
       'Philadelphia Classic - Cream cheese, cucumber, salmon',

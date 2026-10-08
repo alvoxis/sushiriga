@@ -7,6 +7,7 @@ export const pokeProducts: Product[] = [
     id: 'poke-salmon',
     slug: 'poke-salmon',
     name: 'Poke Salmon',
+    sourceName: 'Poke Salmon',
     category: 'poke',
     ingredients: {
       lv: 'Lasis/Rīsi/Avokado/Waccame/Gurķi/Edamame/Ingvers',
@@ -20,6 +21,7 @@ export const pokeProducts: Product[] = [
     id: 'poke-eel',
     slug: 'poke-eel',
     name: 'Poke Eel',
+    sourceName: 'Poke Eel',
     category: 'poke',
     ingredients: {
       lv: 'Zutis/Rīsi/Avokado/Vakame/Gurķis/Edamame/Ingvers',
@@ -33,6 +35,7 @@ export const pokeProducts: Product[] = [
     id: 'poke-shrimp',
     slug: 'poke-shrimp',
     name: 'Poke Shrimp',
+    sourceName: 'Poke Shrimp',
     category: 'poke',
     ingredients: {
       lv: 'Garneles/Rīsi/Avokado/Vakame/Gurķi/Edamame/Ingvers',
@@ -46,6 +49,7 @@ export const pokeProducts: Product[] = [
     id: 'poke-chicken',
     slug: 'poke-chicken',
     name: 'Poke Chicken',
+    sourceName: 'Poke Chicken',
     category: 'poke',
     ingredients: {
       lv: 'Vistas/Rīsi/Avokado/Vakame/Gurķi/Edamame/Ingvers',

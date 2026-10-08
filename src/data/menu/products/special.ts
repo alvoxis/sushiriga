@@ -7,6 +7,7 @@ export const specialProducts: Product[] = [
     id: 'oki-doki-16-plus-16',
     slug: 'oki-doki-16-plus-16',
     name: 'Oki Doki 16+16',
+    sourceName: 'OKI DOKI. 16+16',
     category: 'special',
     ingredients: {
       lv: 'rīsi nori krēmsiers cepta laša sezama siera mērce ar unagi mērci 16 gab\nrīsi nori krēmsiers vistas melnais sezams ar unagi mērci 16 gab',

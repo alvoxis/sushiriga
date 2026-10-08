@@ -7,6 +7,7 @@ export const rolliProducts: Product[] = [
     id: 'philadelfia-classic',
     slug: 'philadelfia-classic',
     name: 'Philadelfia Classic',
+    sourceName: '31 PHILADELFIA ClASSIC',
     number: '31',
     category: 'rolli',
     ingredients: {
@@ -21,6 +22,7 @@ export const rolliProducts: Product[] = [
     id: 'philadelphia-lux',
     slug: 'philadelphia-lux',
     name: 'Philadelphia Lux',
+    sourceName: '32.  PHILADELPHIA LUX',
     number: '32',
     category: 'rolli',
     ingredients: {
@@ -35,6 +37,7 @@ export const rolliProducts: Product[] = [
     id: 'philadelfia-gold',
     slug: 'philadelfia-gold',
     name: 'Philadelfia Gold',
+    sourceName: '33.PHILADELFIA GOLD',
     number: '33',
     category: 'rolli',
     ingredients: {
@@ -49,6 +52,7 @@ export const rolliProducts: Product[] = [
     id: 'kunsei-philadelfia',
     slug: 'kunsei-philadelfia',
     name: 'Kunsei Philadelfia',
+    sourceName: '34 KUNSEI PHILADELFIA',
     number: '34',
     category: 'rolli',
     ingredients: {
@@ -63,6 +67,7 @@ export const rolliProducts: Product[] = [
     id: 'canada-unagi',
     slug: 'canada-unagi',
     name: 'Canada Unagi',
+    sourceName: '35. CANADA UNAGI',
     number: '35',
     category: 'rolli',
     ingredients: {
@@ -77,6 +82,7 @@ export const rolliProducts: Product[] = [
     id: 'salmon-tartar',
     slug: 'salmon-tartar',
     name: 'Salmon Tartar',
+    sourceName: '36. SALMON TARTAR',
     number: '36',
     category: 'rolli',
     ingredients: {
@@ -91,6 +97,7 @@ export const rolliProducts: Product[] = [
     id: 'spicy-ebi',
     slug: 'spicy-ebi',
     name: 'Spicy Ebi',
+    sourceName: '37. SPICY EBI',
     number: '37',
     category: 'rolli',
     ingredients: {
@@ -105,6 +112,7 @@ export const rolliProducts: Product[] = [
     id: 'sake-bonito',
     slug: 'sake-bonito',
     name: 'Sake Bonito',
+    sourceName: '38. SAKE BONITO',
     number: '38',
     category: 'rolli',
     ingredients: {
@@ -119,6 +127,7 @@ export const rolliProducts: Product[] = [
     id: 'unagi-bonito',
     slug: 'unagi-bonito',
     name: 'Unagi Bonito',
+    sourceName: '39. Unagi Bonito',
     number: '39',
     category: 'rolli',
     ingredients: {
@@ -133,6 +142,7 @@ export const rolliProducts: Product[] = [
     id: 'maestro',
     slug: 'maestro',
     name: 'Maestro',
+    sourceName: '40.Maestro',
     number: '40',
     category: 'rolli',
     ingredients: {
@@ -147,6 +157,7 @@ export const rolliProducts: Product[] = [
     id: 'philadelphia-light',
     slug: 'philadelphia-light',
     name: 'Philadelphia Light',
+    sourceName: '41. PHILADELPHIA LIGHT',
     number: '41',
     category: 'rolli',
     ingredients: {
@@ -161,6 +172,7 @@ export const rolliProducts: Product[] = [
     id: 'california',
     slug: 'california',
     name: 'California',
+    sourceName: '42. CALIFORNIA',
     number: '42',
     category: 'rolli',
     ingredients: {
@@ -175,6 +187,7 @@ export const rolliProducts: Product[] = [
     id: 'sake-masako',
     slug: 'sake-masako',
     name: 'Sake Masako',
+    sourceName: '43.  SAKE  MASAKO',
     number: '43',
     category: 'rolli',
     ingredients: {

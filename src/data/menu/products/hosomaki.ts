@@ -7,6 +7,7 @@ export const hosomakiProducts: Product[] = [
     id: 'sake-maki',
     slug: 'sake-maki',
     name: 'Sake Maki',
+    sourceName: '20. SAKE MAKI',
     number: '20',
     category: 'hosomaki',
     ingredients: {
@@ -21,6 +22,7 @@ export const hosomakiProducts: Product[] = [
     id: 'sake-cream-maki',
     slug: 'sake-cream-maki',
     name: 'Sake Cream Maki',
+    sourceName: '21. SAKE CREAM MAKI',
     number: '21',
     category: 'hosomaki',
     ingredients: {
@@ -35,6 +37,7 @@ export const hosomakiProducts: Product[] = [
     id: 'hot-tomago-maki',
     slug: 'hot-tomago-maki',
     name: 'Hot Tomago Maki',
+    sourceName: '22 Hot Tomago maki',
     number: '22',
     category: 'hosomaki',
     ingredients: {
@@ -49,6 +52,7 @@ export const hosomakiProducts: Product[] = [
     id: 'ebi-maki',
     slug: 'ebi-maki',
     name: 'Ebi Maki',
+    sourceName: '23. EBI MAKI',
     number: '23',
     category: 'hosomaki',
     ingredients: {
@@ -63,6 +67,7 @@ export const hosomakiProducts: Product[] = [
     id: 'avakado-maki',
     slug: 'avakado-maki',
     name: 'Avakado Maki',
+    sourceName: '24. AVAKADO MAKI',
     number: '24',
     category: 'hosomaki',
     ingredients: {
@@ -77,6 +82,7 @@ export const hosomakiProducts: Product[] = [
     id: 'kappa-maki',
     slug: 'kappa-maki',
     name: 'Kappa Maki',
+    sourceName: '25. KAPPA MAKI',
     number: '25',
     category: 'hosomaki',
     ingredients: {
@@ -91,6 +97,7 @@ export const hosomakiProducts: Product[] = [
     id: 'unagi-maki',
     slug: 'unagi-maki',
     name: 'Unagi Maki',
+    sourceName: '26. UNAGI MAKI',
     number: '26',
     category: 'hosomaki',
     ingredients: {
@@ -105,6 +112,7 @@ export const hosomakiProducts: Product[] = [
     id: 'tomago-maki',
     slug: 'tomago-maki',
     name: 'Tomago Maki',
+    sourceName: '27. TOMAGO MAKI',
     number: '27',
     category: 'hosomaki',
     ingredients: {
@@ -119,6 +127,7 @@ export const hosomakiProducts: Product[] = [
     id: 'chukka-maki',
     slug: 'chukka-maki',
     name: 'Chukka Maki',
+    sourceName: '28. CHUKKA MAKI',
     number: '28',
     category: 'hosomaki',
     ingredients: {
@@ -133,6 +142,7 @@ export const hosomakiProducts: Product[] = [
     id: 'kunsei-maki',
     slug: 'kunsei-maki',
     name: 'Kunsei Maki',
+    sourceName: '29 Kunsei Maki',
     number: '29',
     category: 'hosomaki',
     ingredients: {

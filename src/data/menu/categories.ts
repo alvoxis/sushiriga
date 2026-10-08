@@ -2,7 +2,7 @@ import type { Category } from '@/types';
 
 /**
  * Menu categories, in the order of the source menu.
- * `name.lv` is the name from the project brief; ru/en are UI translations.
+ * `name.lv` is the name from the project brief (+ Poke); ru/en are UI translations.
  */
 export const categories: Category[] = [
   {
@@ -13,13 +13,11 @@ export const categories: Category[] = [
     sushiAllergenNotice: true,
   },
   {
-    // TODO(owner): "poke" is a separate section on sushiriga.lv but is NOT in the project
-    // category list. Kept in data, hidden from navigation until the owner decides.
+    // Confirmed by the owner (2026-10): Poke is shown as its own category (4 items on sushiriga.lv).
     id: 'poke',
     slug: 'poke',
     order: 2,
     name: { lv: 'Poke', ru: 'Поке', en: 'Poke' },
-    hidden: true,
   },
   {
     id: 'nigiri-gunkan',

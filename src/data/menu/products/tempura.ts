@@ -7,6 +7,7 @@ export const tempuraProducts: Product[] = [
     id: 'wakame-tempura',
     slug: 'wakame-tempura',
     name: 'Wakame Tempura',
+    sourceName: '70. WAKAME TEMPURA',
     number: '70',
     category: 'tempura',
     ingredients: {
@@ -21,6 +22,7 @@ export const tempuraProducts: Product[] = [
     id: 'vistas-tempura',
     slug: 'vistas-tempura',
     name: 'Vistas Tempura',
+    sourceName: '71 VISTAS TEMPURA',
     number: '71',
     category: 'tempura',
     ingredients: {
@@ -35,6 +37,7 @@ export const tempuraProducts: Product[] = [
     id: 'sake-fry',
     slug: 'sake-fry',
     name: 'Sake Fry',
+    sourceName: '72 SAKE FRY',
     number: '72',
     category: 'tempura',
     ingredients: {
@@ -49,6 +52,7 @@ export const tempuraProducts: Product[] = [
     id: 'unagi-crisp',
     slug: 'unagi-crisp',
     name: 'Unagi Crisp',
+    sourceName: '73 UNAGI CRISP',
     number: '73',
     category: 'tempura',
     ingredients: {
@@ -63,6 +67,7 @@ export const tempuraProducts: Product[] = [
     id: 'ebi-panko',
     slug: 'ebi-panko',
     name: 'Ebi Panko',
+    sourceName: '74 Ebi Panko',
     number: '74',
     category: 'tempura',
     ingredients: {

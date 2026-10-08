@@ -22,7 +22,7 @@ export interface Category {
   slug: string;
   name: LocalizedText & { lv: string };
   order: number;
-  /** Hidden categories exist in data but are not shown in navigation (pending owner decision). */
+  /** Hidden categories exist in data but are not shown to customers (e.g. seasonal pauses). */
   hidden?: boolean;
   /** Show the general "all sushi may contain …" allergen notice for this category. */
   sushiAllergenNotice?: boolean;
@@ -74,8 +74,10 @@ export interface ProductOption {
 export interface Product {
   id: string;
   slug: string;
-  /** Canonical display name as written on the source menu. */
+  /** Display name: the source name with the menu number split off and Title Case applied. */
   name: string;
+  /** The name exactly as written on the source menu (traceability; never shown or edited). */
+  sourceName?: string;
   /** Menu number printed on the source menu (e.g. "31"). */
   number?: string;
   category: CategoryId;
@@ -90,6 +92,10 @@ export interface Product {
   weight?: number;
   /** Millilitres (drinks). */
   volume?: number;
+  /**
+   * Confirmed allergens of THIS dish. `undefined` = unknown (not published by the restaurant).
+   * Never derive this from ingredient text or from the general "all sushi may contain" notice.
+   */
   allergens?: AllergenCode[];
   spicy?: boolean;
   vegetarian?: boolean;

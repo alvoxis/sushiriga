@@ -7,6 +7,7 @@ export const nigiriGunkanProducts: Product[] = [
     id: 'lasis-nigiri',
     slug: 'lasis-nigiri',
     name: 'Lasis Nigiri',
+    sourceName: 'LASIS  NIGIRI',
     category: 'nigiri-gunkan',
     ingredients: {
       lv: 'Rīsi, lasis',
@@ -20,6 +21,7 @@ export const nigiriGunkanProducts: Product[] = [
     id: 'gourmed-nigiri',
     slug: 'gourmed-nigiri',
     name: 'Gourmed Nigiri',
+    sourceName: 'GOURMED NIGIRI',
     category: 'nigiri-gunkan',
     ingredients: {
       lv: 'Rīsi, kūpināts lasis',
@@ -33,6 +35,7 @@ export const nigiriGunkanProducts: Product[] = [
     id: 'unagi-nigiri',
     slug: 'unagi-nigiri',
     name: 'Unagi Nigiri',
+    sourceName: 'UNAGI NIGIRI',
     category: 'nigiri-gunkan',
     ingredients: {
       lv: 'Rīsi, zutis',
@@ -46,6 +49,7 @@ export const nigiriGunkanProducts: Product[] = [
     id: 'fried-salmon-nigiri',
     slug: 'fried-salmon-nigiri',
     name: 'Fried Salmon Nigiri',
+    sourceName: 'FRIED SALMON NIGIRI',
     category: 'nigiri-gunkan',
     ingredients: {
       lv: 'Rīsi, cepts lasis',

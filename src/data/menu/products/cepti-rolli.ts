@@ -7,6 +7,7 @@ export const ceptiRolliProducts: Product[] = [
     id: 'alaska',
     slug: 'alaska',
     name: 'Alaska',
+    sourceName: '50. ALASKA',
     number: '50',
     category: 'cepti-rolli',
     ingredients: {
@@ -21,6 +22,7 @@ export const ceptiRolliProducts: Product[] = [
     id: 'samurai',
     slug: 'samurai',
     name: 'Samurai',
+    sourceName: '51. SAMURAI',
     number: '51',
     category: 'cepti-rolli',
     ingredients: {
@@ -35,6 +37,7 @@ export const ceptiRolliProducts: Product[] = [
     id: 'kogane',
     slug: 'kogane',
     name: 'Kogane',
+    sourceName: '52. KOGANE',
     number: '52',
     category: 'cepti-rolli',
     ingredients: {
@@ -49,6 +52,7 @@ export const ceptiRolliProducts: Product[] = [
     id: 'sapporo',
     slug: 'sapporo',
     name: 'Sapporo',
+    sourceName: '53. SAPPORO',
     number: '53',
     category: 'cepti-rolli',
     ingredients: {
@@ -63,6 +67,7 @@ export const ceptiRolliProducts: Product[] = [
     id: 'kanagawa',
     slug: 'kanagawa',
     name: 'Kanagawa',
+    sourceName: '54. KANAGAWA',
     number: '54',
     category: 'cepti-rolli',
     ingredients: {
@@ -77,6 +82,7 @@ export const ceptiRolliProducts: Product[] = [
     id: 'hiji',
     slug: 'hiji',
     name: 'Hiji',
+    sourceName: '55. HIJI',
     number: '55',
     category: 'cepti-rolli',
     ingredients: {
@@ -91,6 +97,7 @@ export const ceptiRolliProducts: Product[] = [
     id: 'cepts-crabis',
     slug: 'cepts-crabis',
     name: 'Cepts Crabis',
+    sourceName: '56. CEPTS CRABIS',
     number: '56',
     category: 'cepti-rolli',
     ingredients: {
@@ -105,6 +112,7 @@ export const ceptiRolliProducts: Product[] = [
     id: 'tiger-mix',
     slug: 'tiger-mix',
     name: 'Tiger Mix',
+    sourceName: '57.Tiger Mix',
     number: '57',
     category: 'cepti-rolli',
     ingredients: {
@@ -119,6 +127,7 @@ export const ceptiRolliProducts: Product[] = [
     id: 'philadelphia-fried',
     slug: 'philadelphia-fried',
     name: 'Philadelphia Fried',
+    sourceName: '58 Philadelphia Fried',
     number: '58',
     category: 'cepti-rolli',
     ingredients: {
@@ -133,6 +142,7 @@ export const ceptiRolliProducts: Product[] = [
     id: 'verona',
     slug: 'verona',
     name: 'Verona',
+    sourceName: '59 Verona',
     number: '59',
     category: 'cepti-rolli',
     ingredients: {
