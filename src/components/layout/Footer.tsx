@@ -23,13 +23,13 @@ export function Footer() {
         <div>
           <h2 className={styles.heading}>{t('footer.contact')}</h2>
           <ul className={styles.list} role="list">
-            {active.map((location) => (
-              <li key={location.id}>
-                {location.phone && (
+            {active.map((location) =>
+              location.phone ? (
+                <li key={location.id}>
                   <a href={`tel:${location.phone.replace(/\s/g, '')}`}>{location.phone}</a>
-                )}
-              </li>
-            ))}
+                </li>
+              ) : null,
+            )}
             {active.map((location) =>
               location.email ? (
                 <li key={`${location.id}-email`}>
