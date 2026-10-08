@@ -16,7 +16,7 @@ test('app starts and the menu book turns pages', async ({ page }) => {
 test('menu loads and a category opens', async ({ page }) => {
   await page.goto('/menu');
   const shelf = page.getByRole('navigation', { name: 'Menu categories' });
-  await expect(shelf.getByRole('link')).toHaveCount(12);
+  await expect(shelf.getByRole('link')).toHaveCount(13);
   await shelf.getByRole('link', { name: /Hosomaki/ }).click();
   await expect(page).toHaveURL(/\/menu\/hosomaki$/);
   await expect(page.getByRole('heading', { level: 1, name: 'Hosomaki' })).toBeVisible();
