@@ -1,0 +1,152 @@
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-paper-raised);
+}
+
+.stepper button {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-indigo);
+}
+
+.stepper button:hover:not(:disabled) {
+  background: var(--color-paper-sunken);
+}
+
+.stepper button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.qty {
+  min-width: 2rem;
+  text-align: center;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.lines {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--color-line);
+}
+
+.line {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr auto;
+  grid-template-areas:
+    'img name total'
+    'img controls controls';
+  gap: var(--space-2) var(--space-3);
+  align-items: center;
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.lineImage {
+  grid-area: img;
+  align-self: start;
+}
+
+.lineName {
+  grid-area: name;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+}
+
+.lineName a {
+  text-decoration: none;
+}
+
+.lineUnit {
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--color-ink-muted);
+}
+
+.lineTotal {
+  grid-area: total;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.lineControls {
+  grid-area: controls;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.row dt {
+  color: var(--color-ink-soft);
+}
+
+.totalRow {
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-line);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+}
+
+.totalRow dt {
+  color: var(--color-ink);
+}
+
+.discount dd {
+  color: var(--color-success);
+}
+
+.note {
+  font-size: var(--text-xs);
+  color: var(--color-ink-muted);
+}
+
+.promo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.promoRow {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
+.promoRow > :first-child {
+  flex: 1;
+}
+
+.promoApplied {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-matcha-soft);
+  font-size: var(--text-sm);
+}

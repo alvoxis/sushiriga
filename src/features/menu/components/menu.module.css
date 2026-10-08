@@ -1,0 +1,211 @@
+/* ---------- Product card (list view) ---------- */
+.card {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background: var(--color-paper-raised);
+}
+
+@media (min-width: 40rem) {
+  .card {
+    grid-template-columns: 7.5rem 1fr;
+  }
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.cardTitle {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-size: var(--text-lg);
+}
+
+.cardTitle a {
+  text-decoration: none;
+}
+
+.cardTitle a:hover {
+  text-decoration: underline;
+}
+
+.number {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--color-ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.ingredients {
+  font-size: var(--text-sm);
+  color: var(--color-ink-soft);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: auto;
+}
+
+.price {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-variant-numeric: tabular-nums;
+}
+
+.list {
+  display: grid;
+  gap: var(--space-3);
+}
+
+@media (min-width: 56rem) {
+  .list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ---------- Entries printed on book pages ---------- */
+.entries {
+  display: flex;
+  flex-direction: column;
+}
+
+.entry {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-1) var(--space-3);
+  padding-block: var(--space-2);
+  border-bottom: 1px dotted var(--color-line-strong);
+}
+
+.entry:last-child {
+  border-bottom: 0;
+}
+
+.entryName {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 5.2cqi, 1.25rem);
+  line-height: 1.2;
+}
+
+.entryName a {
+  text-decoration: none;
+}
+
+.entryName a:hover {
+  text-decoration: underline;
+}
+
+.entryText {
+  font-size: clamp(0.78rem, 3.8cqi, 0.9rem);
+  color: var(--color-ink-soft);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.entryAdd {
+  align-self: end;
+}
+
+.entryAdd > button {
+  width: 2.5rem;
+  min-height: 2.5rem;
+}
+
+.entryMeta {
+  grid-column: 1 / -1;
+}
+
+.entryMeta:empty {
+  display: none;
+}
+
+/* ---------- Chapter pages ---------- */
+.chapter {
+  display: flex;
+  flex-direction: column;
+  justify-content: safe center;
+  gap: var(--space-4);
+  height: 100%;
+  text-align: center;
+}
+
+.chapterTitle {
+  font-size: clamp(1.4rem, 11cqi, 2.8rem);
+}
+
+.chapterRule {
+  width: 3rem;
+  height: 2px;
+  margin-inline: auto;
+  background: var(--color-shu);
+}
+
+.chapterFacts {
+  color: var(--color-ink-soft);
+}
+
+.contents {
+  display: flex;
+  flex-direction: column;
+}
+
+.contents li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding-block: var(--space-2);
+}
+
+.contents li::after {
+  content: '';
+  order: 1;
+  flex: 1;
+  border-bottom: 1px dotted var(--color-line-strong);
+}
+
+.contents a,
+.contents button {
+  order: 0;
+  border: 0;
+  background: none;
+  padding: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  text-align: left;
+  text-decoration: none;
+}
+
+.contents .folio {
+  order: 2;
+  font-size: var(--text-sm);
+  color: var(--color-ink-muted);
+}
+
+.allergens {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  border-left: 2px solid var(--color-gold);
+  background: var(--color-paper-sunken);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  font-size: var(--text-xs);
+  color: var(--color-ink-soft);
+}

@@ -1,0 +1,121 @@
+.hero {
+  position: relative;
+  display: grid;
+  gap: var(--space-6);
+  padding-block: var(--space-7) var(--space-6);
+}
+
+@media (min-width: 60rem) {
+  .hero {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
+    align-items: center;
+    padding-block: var(--space-8);
+  }
+}
+
+.title {
+  font-size: clamp(2.4rem, 1.6rem + 3vw, 4rem);
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 32rem;
+  margin-top: var(--space-4);
+  font-size: var(--text-lg);
+  color: var(--color-ink-soft);
+}
+
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.assistant {
+  margin-top: var(--space-6);
+}
+
+/* Thin brush-like rule — the only "ink" ornament on the page. */
+.rule {
+  width: 4rem;
+  height: 3px;
+  margin-bottom: var(--space-4);
+  border-radius: 2px;
+  background: var(--color-shu);
+}
+
+.section {
+  padding-block: var(--space-7);
+  border-top: 1px solid var(--color-line);
+}
+
+.sectionHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.sectionTitle {
+  font-size: var(--text-2xl);
+}
+
+.sectionLead {
+  color: var(--color-ink-soft);
+}
+
+.chapters {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: var(--space-3);
+  padding: 0;
+  list-style: none;
+}
+
+.chapter {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-4);
+  height: 100%;
+  min-height: 7.5rem;
+  padding: var(--space-4);
+  border: 1px solid var(--color-line);
+  border-left: 6px solid var(--color-indigo);
+  border-radius: var(--radius-sm) var(--radius-md) var(--radius-md) var(--radius-sm);
+  background: var(--color-paper-raised);
+  text-decoration: none;
+  transition:
+    transform var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out);
+}
+
+.chapter:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2);
+}
+
+.chapterName {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  line-height: 1.2;
+}
+
+.chapterMeta {
+  font-size: var(--text-xs);
+  color: var(--color-ink-muted);
+}
+
+.visit {
+  display: grid;
+  gap: var(--space-5);
+}
+
+@media (min-width: 56rem) {
+  .visit {
+    grid-template-columns: 1fr 1fr;
+  }
+}

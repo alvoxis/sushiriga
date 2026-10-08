@@ -1,0 +1,44 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.name {
+  font-size: var(--text-2xl);
+}
+
+.facts {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.facts dt {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+.hours {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.hours th,
+.hours td {
+  padding: var(--space-1) 0;
+  text-align: left;
+  font-weight: 400;
+}
+
+.hours td {
+  text-align: right;
+}
+
+.hours tr[aria-current='date'] {
+  font-weight: 700;
+}

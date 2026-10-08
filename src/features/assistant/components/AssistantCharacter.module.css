@@ -1,0 +1,94 @@
+.cat {
+  width: var(--cat-size, 7rem);
+  height: auto;
+  overflow: visible;
+  color: var(--color-ink);
+}
+
+.body,
+.head {
+  fill: var(--color-paper-raised);
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+}
+
+.line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.tail {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  transform-origin: 84px 124px;
+  animation: tail 3.2s ease-in-out infinite;
+}
+
+.eye {
+  fill: currentColor;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: blink 5s infinite;
+}
+
+.collar {
+  fill: none;
+  stroke: var(--color-shu);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+}
+
+.bell {
+  fill: var(--color-gold);
+}
+
+.thinking .eye {
+  transform: translateY(-2px);
+  animation: none;
+}
+
+.talking .mouth {
+  animation: talk 0.5s ease-in-out infinite alternate;
+  transform-box: fill-box;
+  transform-origin: top center;
+}
+
+@keyframes blink {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes tail {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-9deg);
+  }
+}
+
+@keyframes talk {
+  to {
+    transform: scaleY(1.8);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tail,
+  .eye,
+  .talking .mouth {
+    animation: none;
+  }
+}
