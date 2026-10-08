@@ -1,21 +1,9 @@
 import { Link } from 'react-router';
-import { ROUTES } from '@/app/routes';
 import { Card, PageHeader, PlaceholderPanel } from '@/components/ui';
+import { ACCOUNT_SECTIONS } from '@/features/account/accountSections';
 import { useDocumentTitle } from '@/hooks';
-import { useTranslation, type MessageKey } from '@/i18n';
+import { useTranslation } from '@/i18n';
 import styles from '../page.module.css';
-
-const SECTIONS: {
-  key: 'profile' | 'orders' | 'reviews' | 'promocodes' | 'tips' | 'settings';
-  to?: string;
-}[] = [
-  { key: 'profile' },
-  { key: 'orders', to: ROUTES.accountOrders },
-  { key: 'reviews', to: ROUTES.accountReviews },
-  { key: 'promocodes', to: ROUTES.accountPromocodes },
-  { key: 'tips', to: ROUTES.accountTips },
-  { key: 'settings' },
-];
 
 /** Account hub. There is intentionally NO bonus / loyalty-points section in this project. */
 export default function AccountPage() {
@@ -26,14 +14,15 @@ export default function AccountPage() {
       <PageHeader title={t('account.title')} lead={t('account.lead')} />
       <PlaceholderPanel title={t('account.signInSoon')} />
       <ul className={`${styles.grid} ${styles.sectionGap}`} role="list">
-        {SECTIONS.map((section) => {
-          const title = t(`account.sections.${section.key}` as MessageKey);
-          const body = t(`account.descriptions.${section.key}` as MessageKey);
+        {ACCOUNT_SECTIONS.map((section) => {
+          const to = 'to' in section ? section.to : undefined;
+          const title = t(`account.sections.${section.key}`);
+          const body = t(`account.descriptions.${section.key}`);
           return (
             <li key={section.key}>
-              <Card interactive={!!section.to} style={{ height: '100%' }}>
-                {section.to ? (
-                  <Link to={section.to} className={styles.cardLink}>
+              <Card interactive={!!to} style={{ height: '100%' }}>
+                {to ? (
+                  <Link to={to} className={styles.cardLink}>
                     <h2 className={styles.cardTitle}>{title}</h2>
                     <p className={styles.muted}>{body}</p>
                   </Link>
