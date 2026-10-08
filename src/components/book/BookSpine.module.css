@@ -1,0 +1,63 @@
+.spine {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) 0;
+  border-radius: 3px;
+  background:
+    linear-gradient(
+      90deg,
+      rgb(0 0 0 / 0.28),
+      rgb(255 255 255 / 0.08) 30%,
+      rgb(0 0 0 / 0.08) 70%,
+      rgb(0 0 0 / 0.3)
+    ),
+    var(--spine-color, var(--color-indigo));
+  color: var(--color-gold-soft);
+  text-decoration: none;
+}
+
+.binding {
+  padding: 0;
+  border-radius: 4px 0 0 4px;
+}
+
+.shelf {
+  width: 3.4rem;
+  height: var(--spine-height, 15rem);
+  box-shadow: var(--shadow-2);
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+a.shelf:hover,
+a.shelf:focus-visible {
+  transform: translateY(-10px);
+}
+
+.band {
+  width: 70%;
+  height: 2px;
+  background: rgb(217 199 163 / 0.6);
+  box-shadow: 0 4px 0 rgb(217 199 163 / 0.35);
+}
+
+.title {
+  writing-mode: vertical-rl;
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 75%;
+  color: #efe3c8;
+}
+
+.label {
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  opacity: 0.85;
+}

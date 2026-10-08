@@ -1,0 +1,226 @@
+/* ---------- Book shell ---------- */
+.book {
+  --page-ratio: 0.72; /* width / height of one page */
+  --book-max: 26rem;
+  --cover: var(--color-indigo);
+  --cover-deep: var(--color-indigo-deep);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  outline: none;
+}
+
+.book:focus-visible .scene {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 6px;
+  border-radius: var(--radius-md);
+}
+
+.spread {
+  --book-max: 60rem;
+}
+
+.scene {
+  position: relative;
+  width: min(100%, var(--book-max));
+  aspect-ratio: var(--page-ratio);
+  perspective: 2400px;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.spread .scene {
+  aspect-ratio: calc(var(--page-ratio) * 2);
+}
+
+/* Shifts the closed book so the cover sits in the middle of the scene. */
+.mover {
+  position: absolute;
+  inset: 0;
+  transition: transform var(--duration-page) var(--ease-page);
+}
+
+.spread.closedFront .mover {
+  transform: translateX(-25%);
+}
+
+.spread.closedBack .mover {
+  transform: translateX(25%);
+}
+
+/* The page block under the leaves (paper edges + shadow). */
+.block {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-radius: 3px 8px 8px 3px;
+  background: var(--color-paper-raised);
+  box-shadow:
+    var(--shadow-book),
+    2px 0 0 #e9e1d2,
+    4px 1px 0 #ddd3c2,
+    6px 2px 0 #cfc3ae;
+}
+
+.spread .block {
+  left: 0;
+  border-radius: 8px;
+}
+
+.spread.closedFront .block {
+  left: 50%;
+  border-radius: 3px 8px 8px 3px;
+}
+
+.spread.closedBack .block {
+  right: 50%;
+  border-radius: 8px 3px 3px 8px;
+}
+
+/* ---------- Leaves & faces ---------- */
+.leaf {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transition: transform var(--duration-page) var(--ease-page);
+  will-change: transform;
+}
+
+.spread .leaf {
+  left: 50%;
+  width: 50%;
+}
+
+.leaf.flipped {
+  transform: rotateY(-180deg);
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  /* Page typography scales with the page (cqi units), not the viewport. */
+  container-type: inline-size;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 2px 8px 8px 2px;
+  background: var(--color-paper-raised);
+}
+
+.faceBack {
+  transform: rotateY(180deg);
+  border-radius: 8px 2px 2px 8px;
+}
+
+/* Gutter shadow near the spine */
+.face::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to right, rgb(60 40 20 / 0.16), transparent 9%);
+}
+
+.faceBack::after {
+  background: linear-gradient(to left, rgb(60 40 20 / 0.16), transparent 9%);
+}
+
+.faceCover::after {
+  background: linear-gradient(to right, rgb(0 0 0 / 0.25), transparent 6%);
+}
+
+/* Single layout: the binding strip on the left */
+.binding {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  width: 14px;
+  pointer-events: none;
+}
+
+/* Corner hot-spots for mouse users (keyboard & screen readers use BookNavigation). */
+.corner {
+  position: absolute;
+  z-index: 200;
+  top: 0;
+  bottom: 0;
+  width: 18%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.cornerNext {
+  right: 0;
+}
+
+.cornerPrev {
+  left: 0;
+}
+
+.spread.closedFront .cornerPrev,
+.spread.closedBack .cornerNext {
+  display: none;
+}
+
+.cornerNext::after,
+.cornerPrev::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  transition:
+    width var(--duration-base) var(--ease-out),
+    height var(--duration-base) var(--ease-out);
+}
+
+.cornerNext::after {
+  right: 0;
+  background: linear-gradient(
+    315deg,
+    #f7f1e6 0%,
+    #e4d8c2 44%,
+    rgb(110 90 60 / 0.35) 50%,
+    transparent 53%
+  );
+  border-top-left-radius: 4px;
+}
+
+.cornerPrev::after {
+  left: 0;
+  background: linear-gradient(
+    45deg,
+    #f7f1e6 0%,
+    #e4d8c2 44%,
+    rgb(110 90 60 / 0.35) 50%,
+    transparent 53%
+  );
+  border-top-right-radius: 4px;
+}
+
+@media (hover: hover) {
+  .cornerNext:hover::after,
+  .cornerPrev:hover::after {
+    width: 2.6rem;
+    height: 2.6rem;
+  }
+}
+
+.hint {
+  font-size: var(--text-xs);
+  color: var(--color-ink-muted);
+}

@@ -1,0 +1,15 @@
+.skip {
+  position: fixed;
+  z-index: 100;
+  top: calc(var(--safe-top) + var(--space-2));
+  left: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--color-ink);
+  color: var(--color-paper);
+  transform: translateY(-200%);
+}
+
+.skip:focus {
+  transform: none;
+}

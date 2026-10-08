@@ -1,0 +1,14 @@
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.indicator {
+  min-width: 7.5rem;
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--color-ink-soft);
+  font-variant-numeric: tabular-nums;
+}

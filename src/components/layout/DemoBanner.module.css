@@ -1,0 +1,12 @@
+.banner {
+  padding: var(--space-2) 0;
+  background: var(--color-indigo);
+  color: var(--color-on-indigo);
+  font-size: var(--text-xs);
+}
+
+.banner strong {
+  margin-right: var(--space-2);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}

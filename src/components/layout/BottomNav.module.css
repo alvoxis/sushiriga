@@ -1,0 +1,76 @@
+/* Fixed thumb-reach navigation on phones; hidden from 60rem where the header nav takes over. */
+.nav {
+  position: fixed;
+  z-index: var(--z-bottom-nav);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0 var(--safe-right) var(--safe-bottom) var(--safe-left);
+  background: color-mix(in srgb, var(--color-paper-raised) 94%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--color-line);
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  height: var(--bottom-nav-height);
+}
+
+.link {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: 100%;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--color-ink-muted);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.link[aria-current='page'] {
+  color: var(--color-indigo);
+}
+
+.link[aria-current='page']::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 1.5rem;
+  height: 2px;
+  background: var(--color-shu);
+}
+
+.badge {
+  position: absolute;
+  top: 0.45rem;
+  left: calc(50% + 4px);
+  min-width: 1.1rem;
+  height: 1.1rem;
+  padding: 0 4px;
+  border-radius: var(--radius-pill);
+  background: var(--color-shu);
+  color: #fff;
+  font-size: 0.65rem;
+  line-height: 1.1rem;
+  text-align: center;
+}
+
+/* Hide while the on-screen keyboard is likely open (focused input on a short viewport). */
+@media (max-height: 30rem) {
+  .nav {
+    display: none;
+  }
+}
+
+@media (min-width: 60rem) {
+  .nav {
+    display: none;
+  }
+}

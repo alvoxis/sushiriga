@@ -1,0 +1,28 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+.seal {
+  display: grid;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 5px;
+  background: var(--color-shu);
+  color: #fbeee6;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+}
+
+.word {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: var(--tracking-logo);
+  /* letter-spacing adds trailing space; compensate so the word stays optically centred */
+  margin-right: calc(-1 * var(--tracking-logo));
+}

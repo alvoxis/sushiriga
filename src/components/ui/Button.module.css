@@ -1,0 +1,91 @@
+.button {
+  --button-bg: var(--color-indigo);
+  --button-fg: var(--color-on-indigo);
+  --button-border: var(--color-indigo);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 2.75rem; /* 44px touch target */
+  padding: 0 var(--space-5);
+  border: 1px solid var(--button-border);
+  border-radius: var(--radius-pill);
+  background: var(--button-bg);
+  color: var(--button-fg);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.button:hover:not(:disabled) {
+  --button-bg: var(--color-indigo-soft);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.button:disabled,
+.button[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.secondary {
+  --button-bg: transparent;
+  --button-fg: var(--color-indigo);
+  --button-border: var(--color-line-strong);
+}
+
+.secondary:hover:not(:disabled) {
+  --button-bg: var(--color-paper-sunken);
+}
+
+.ghost {
+  --button-bg: transparent;
+  --button-fg: var(--color-ink);
+  --button-border: transparent;
+}
+
+.ghost:hover:not(:disabled) {
+  --button-bg: var(--color-paper-sunken);
+}
+
+.accent {
+  --button-bg: var(--color-shu);
+  --button-border: var(--color-shu);
+  --button-fg: #fff;
+}
+
+.accent:hover:not(:disabled) {
+  --button-bg: #9c3824;
+}
+
+.sm {
+  min-height: 2.25rem;
+  padding: 0 var(--space-4);
+  font-size: var(--text-xs);
+}
+
+.lg {
+  min-height: 3.25rem;
+  padding: 0 var(--space-6);
+  font-size: var(--text-md);
+}
+
+.block {
+  width: 100%;
+}
+
+.icon {
+  width: 2.75rem;
+  padding: 0;
+}
