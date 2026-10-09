@@ -7,8 +7,9 @@ import { seoFiles } from './scripts/seo';
 
 /**
  * `vite build --mode pages` (npm run build:pages): the static demo for GitHub Pages at
- * https://alvoxis.github.io/sushiriga/ — served under /sushiriga/, with a 404.html fallback for
- * deep links. GitHub Pages has no backend, so this build always runs in demo mode.
+ * https://alvoxis.github.io/sushiriga/ — served under /sushiriga/, one HTML file per known route
+ * (status 200 for direct links) and a 404.html fallback for the rest. GitHub Pages has no
+ * backend, so this build always runs in demo mode.
  */
 const PAGES_BASE = process.env.PAGES_BASE ?? '/sushiriga/';
 const PAGES_URL = process.env.PAGES_URL ?? 'https://alvoxis.github.io/sushiriga';
@@ -18,7 +19,7 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     ...(mode === 'pages'
-      ? [seoFiles({ siteUrl: PAGES_URL, basePath: PAGES_BASE }), githubPagesFallback()]
+      ? [seoFiles({ siteUrl: PAGES_URL, basePath: PAGES_BASE }), githubPagesFallback(PAGES_URL)]
       : [seoFiles()]),
   ],
   resolve: {

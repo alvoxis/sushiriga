@@ -34,8 +34,18 @@ createServer((req, res) => {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     return res.end('Not found (outside the project site)');
   }
-  let file = join(root, normalize(path.slice(base.length)).replace(/^(\.\.[/\\])+/, ''));
-  if (existsSync(file) && statSync(file).isDirectory()) file = join(file, 'index.html');
-  if (existsSync(file) && statSync(file).isFile()) return send(res, 200, file);
+  const file = join(root, normalize(path.slice(base.length)).replace(/^(\.\.[/\\])+/, ''));
+  const isFile = (f) => existsSync(f) && statSync(f).isFile();
+  // Like GitHub Pages: the file itself, "<path>.html" for an extensionless URL, a directory's
+  // index.html, otherwise the site's 404.html with status 404.
+  if (isFile(file)) return send(res, 200, file);
+  if (!path.endsWith('/') && isFile(`${file}.html`)) return send(res, 200, `${file}.html`);
+  if (isFile(join(file, 'index.html'))) {
+    if (!path.endsWith('/')) {
+      res.writeHead(301, { Location: `${path}/` });
+      return res.end();
+    }
+    return send(res, 200, join(file, 'index.html'));
+  }
   return send(res, 404, join(root, '404.html'));
 }).listen(port, '127.0.0.1', () => console.log(`[pages] http://127.0.0.1:${port}${base}`));

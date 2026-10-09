@@ -31,8 +31,14 @@ test('home page: assets load from the base path, demo mode is shown', async ({ p
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await expect(page.getByText('Demo režīms')).toBeVisible();
   await expect(page.getByRole('region', { name: /grāmata/ }).first()).toBeVisible();
-  const favicon = await page.request.get(`${BASE}favicon.svg`);
-  expect(favicon.status()).toBe(200);
+  for (const icon of ['favicon.svg', 'apple-touch-icon.png', 'icon-512.png']) {
+    expect((await page.request.get(`${BASE}${icon}`)).status(), icon).toBe(200);
+  }
+  await expect(page).toHaveTitle('SUSHIRIGA');
+  await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute(
+    'href',
+    `${BASE}apple-touch-icon.png`,
+  );
   // Every internal link stays inside the project site.
   const hrefs = await page
     .locator('a[href^="/"]')
@@ -58,21 +64,47 @@ test('navigation inside the app keeps the base path', async ({ page }) => {
   expect(problems).toEqual([]);
 });
 
-test('deep links and reloads work through 404.html', async ({ page }) => {
+test('direct links answer 200 with the page’s own title, description and canonical URL', async ({
+  page,
+}) => {
   const problems = watchErrors(page);
-  for (const [path, heading] of [
-    ['menu/rolli', 'Rolli'],
-    ['product/maestro', 'Maestro'],
-    ['pickup', /Saņemšana|Pašizņemšana/],
+  for (const [path, heading, title] of [
+    ['menu', /Ēdienkarte/, 'Ēdienkarte · SUSHIRIGA'],
+    ['menu/rolli', 'Rolli', 'Rolli · SUSHIRIGA'],
+    ['product/maestro', 'Maestro', 'Maestro · SUSHIRIGA'],
+    ['pickup', 'Saņemšana', 'Saņemšana · SUSHIRIGA'],
   ] as const) {
-    await page.goto(path);
+    const response = await page.goto(path);
+    expect(response?.status(), path).toBe(200);
+    // The HTML GitHub Pages sends already names the page (link previews, search engines).
+    const html = await response!.text();
+    expect(html).toContain(`<title>${title}</title>`);
+    // Canonical = the public Pages address of this page (also when tested locally).
+    expect(html).toContain(
+      `<link rel="canonical" href="https://alvoxis.github.io/sushiriga/${path}" />`,
+    );
     await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible();
+    await expect(page).toHaveTitle(title);
     await page.reload();
     await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible();
   }
-  await page.goto('this/page/does/not/exist');
-  await expect(page.getByRole('heading', { name: 'Lapa nav atrasta' })).toBeVisible();
   expect(problems).toEqual([]);
+});
+
+test('every sitemap URL answers 200; unknown paths still get the app’s 404 page', async ({
+  page,
+  request,
+}) => {
+  const sitemap = await (await request.get('sitemap.xml')).text();
+  const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]!).pathname);
+  expect(urls.length).toBeGreaterThan(100);
+  for (const path of urls) {
+    const response = await request.get(path.replace(BASE, ''), { maxRedirects: 0 });
+    expect(response.status(), path).toBe(200);
+  }
+  const missing = await page.goto('this/page/does/not/exist');
+  expect(missing?.status()).toBe(404);
+  await expect(page.getByRole('heading', { name: 'Lapa nav atrasta' })).toBeVisible();
 });
 
 test('demo order: cart → checkout → order page, which survives a reload', async ({ page }) => {

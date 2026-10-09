@@ -61,9 +61,11 @@ NODE_ENV=production ORDER_TOKEN_SECRET="$(openssl rand -base64 48)" npm run serv
 Статическая демо-версия: **https://alvoxis.github.io/sushiriga/** — обновляется сама после каждого
 push в `main` (`.github/workflows/pages.yml`: lint → unit-тесты → e2e сборки Pages → публикация).
 
-- Сборка: `npm run build:pages` (`vite build --mode pages`): базовый путь `/sushiriga/`,
-  `404.html` = копия `index.html` (глубокие ссылки вроде `/sushiriga/menu/rolli` открываются),
-  `robots.txt` и `sitemap.xml` с адресом Pages.
+- Сборка: `npm run build:pages` (`vite build --mode pages`): базовый путь `/sushiriga/`;
+  для каждого известного адреса (меню, 13 глав, 99 блюд, самовывоз, отзывы, кот, корзина…)
+  свой HTML-файл (`menu/rolli.html`) — GitHub Pages отдаёт прямые ссылки со статусом **200**, со
+  своим `<title>`, описанием, canonical и Open Graph; `404.html` — только для неизвестных и
+  персональных адресов (`/order/…`); `robots.txt`, `sitemap.xml`, иконки (SVG + PNG).
 - Проверка: `npm run test:e2e:pages` — сборка Pages на локальном сервере, который отвечает как
   GitHub Pages (только статика, `404.html` для неизвестных путей). Опубликованный сайт:
   `PAGES_TEST_URL=https://alvoxis.github.io/sushiriga/ npm run test:e2e:pages`.
