@@ -35,17 +35,21 @@ Docker: `docker build -t sushiriga . && docker run -p 8787:8787 -v sushiriga-dat
 
 Все ошибки: `{ "error": { "code": "…", "message": "…" } }`, без стектрейсов.
 
-| Метод и путь                      | Что делает                                                         | Лимит/мин |
-| --------------------------------- | ------------------------------------------------------------------ | --------- |
-| `GET /api/health`                 | `{ ok, time }` — живость и часы сервера                            | —         |
-| `GET /api/catalog`                | меню (из репозитория) + изменения персонала (нет в наличии, цена)  | —         |
-| `GET /api/locations`              | активные точки самовывоза                                          | —         |
-| `POST /api/promo/validate`        | предпросмотр скидки `{ code, subtotal }`; финально — в quote       | 20        |
-| `POST /api/checkout/quote`        | `CheckoutRequest` → `CheckoutQuote` (сервер считает всё сам)       | 30        |
-| `POST /api/orders`                | `{ quoteId }` → `{ order, accessToken }`, статус `PENDING_PAYMENT` | 10        |
-| `GET /api/orders/:id`             | заказ; заголовок `X-Order-Token`                                   | 120       |
-| `GET/POST /api/orders/:id/review` | отзыв к заказу (только после `PICKED_UP`, один на заказ)           | 5 (POST)  |
-| `GET /api/reviews`                | только опубликованные (после модерации), без ссылок на заказ       | —         |
+| Метод и путь                           | Что делает                                                         | Лимит/мин |
+| -------------------------------------- | ------------------------------------------------------------------ | --------- |
+| `GET /api/health`                      | `{ ok, time }` — живость и часы сервера                            | —         |
+| `GET /api/catalog`                     | меню (из репозитория) + изменения персонала (нет в наличии, цена)  | —         |
+| `GET /api/locations`                   | активные точки самовывоза                                          | —         |
+| `POST /api/promo/validate`             | предпросмотр скидки `{ code, subtotal }`; финально — в quote       | 20        |
+| `POST /api/checkout/quote`             | `CheckoutRequest` → `CheckoutQuote` (сервер считает всё сам)       | 30        |
+| `POST /api/orders`                     | `{ quoteId }` → `{ order, accessToken }`, статус `PENDING_PAYMENT` | 10        |
+| `GET /api/orders/:id`                  | заказ; заголовок `X-Order-Token`                                   | 120       |
+| `GET/POST /api/orders/:id/review`      | отзыв к заказу (только после `PICKED_UP`, один на заказ)           | 5 (POST)  |
+| `GET /api/config`                      | `{ payments: { provider, publishableKey } \| null }`               | —         |
+| `POST /api/orders/:id/payment`         | создать/переиспользовать Stripe PaymentIntent на сумму заказа      | 20        |
+| `POST /api/orders/:id/payment/refresh` | сервер сам спрашивает Stripe о платеже → заказ                     | 60        |
+| `POST /api/stripe/webhook`             | события Stripe; подлинность — подпись `Stripe-Signature`           | —         |
+| `GET /api/reviews`                     | только опубликованные (после модерации), без ссылок на заказ       | —         |
 
 ### Что проверяет сервер при оформлении
 
@@ -64,9 +68,42 @@ Docker: `docker build -t sushiriga . && docker run -p 8787:8787 -v sushiriga-dat
 возвращается при создании заказа и хранится в браузере клиента (`localStorage`). Без токена
 сервер отвечает «не найдено» — так же, как для несуществующего id (заказы нельзя перебирать).
 
+## Оплата (Stripe)
+
+Включается тремя переменными сервера: `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`,
+`STRIPE_WEBHOOK_SECRET` (все или ни одной; test и live не смешиваются — сервер не стартует).
+Без ключей сайт работает, заказы остаются «Ожидает оплаты» и честно говорят, что онлайн-оплаты нет.
+
+Поток:
+
+1. Клиент подтверждает заказ → `PENDING_PAYMENT`, страница заказа.
+2. «Оплатить онлайн» → `POST /api/orders/:id/payment`: сервер создаёт PaymentIntent **на сумму
+   сохранённого заказа**, `currency: eur`, `metadata.orderId`, с idempotency key; при повторе —
+   тот же PaymentIntent. Отказ, если заказ уже оплачен/отменён или время самовывоза уже не успеть.
+3. Браузер загружает Stripe.js с `js.stripe.com` (только в этот момент; CSP разрешает Stripe
+   только при настроенных ключах) и показывает Payment Element. Данные карты уходят в Stripe и
+   не попадают на наш сервер.
+4. `confirmPayment` (3-D Secure и банковские редиректы возвращают на `/order/:id`).
+5. `PAID` ставит **только сервер** и только если Stripe говорит `succeeded`, сумма получена ровно
+   `order.total` в EUR и `metadata.orderId` совпадает:
+   - вебхук `payment_intent.*` с проверенной подписью — сервер берёт **актуальное** состояние
+     PaymentIntent у Stripe (события могут приходить с опозданием), каждое событие — один раз;
+   - `payment/refresh` после оплаты — сервер сам спрашивает Stripe (не ждём вебхук).
+6. При `PAID` увеличивается счётчик использования промокода. Платёж, пришедший после отмены
+   заказа, заказ не «оживляет» (остаётся в `payments` со статусом `succeeded` — нужен возврат).
+
+Настройка в Stripe: ключи API; вебхук на `https://<домен>/api/stripe/webhook` (события
+`payment_intent.succeeded`, `.payment_failed`, `.processing`, `.canceled`); для Apple Pay —
+подтверждение домена в Dashboard. Локально вебхуки: `stripe listen --forward-to localhost:8787/api/stripe/webhook`.
+
+Тесты: `server/payments.test.ts` — настоящий код шлюза и настоящая проверка подписи Stripe SDK,
+вместо сети Stripe — память. `e2e-server/stripe.spec.ts` — настоящая оплата тестовой картой в
+test mode; запускается только с test-ключами в окружении, иначе помечается как skipped.
+
 ## Безопасность
 
-- CSP `default-src 'self'` (без inline-скриптов), `frame-ancestors 'none'`, `nosniff`,
+- CSP `default-src 'self'` (без inline-скриптов; Stripe — только при настроенных ключах),
+  `frame-ancestors 'none'`, `nosniff`,
   `Referrer-Policy: no-referrer`, HSTS в production, `Cache-Control: no-store` для API.
 - CORS выключен по умолчанию (фронтенд на том же адресе); разрешённые origin — `CORS_ORIGINS`.
 - Лимит тела запроса 32 КБ, лимиты частоты по IP (в памяти процесса; для нескольких инстансов —

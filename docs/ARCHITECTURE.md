@@ -45,8 +45,8 @@ hooks/ utils/ styles/
 - Все mock/demo-реализации лежат только в `src/services/mock/` (см. `mock/README.md`).
 - ESLint (`no-restricted-imports`) запрещает импортировать `services/mock` откуда-либо, кроме
   `createServices.ts` и тестов.
-- Если задан `VITE_API_URL`, mock-сервисы **не подключаются**: заказы, промокоды и отзывы идут в
-  backend, а то, чего backend пока не умеет (оплата, ассистент), получает `notConnected*` и явно падает.
+- Если задан `VITE_API_URL`, mock-сервисы **не подключаются**: заказы, оплата, промокоды и отзывы
+  идут в backend, а то, чего backend пока не умеет (ассистент), получает `notConnected*` и явно падает.
 - Фронтенд не может импортировать `server/` (ESLint), сервер — mock-сервисы и конфиг фронтенда.
 - `createDemoPaymentService` отказывается создаваться вне демо-режима.
 - `PromoService.mode` (`server` | `mock` | `unavailable`) решает, как UI подаёт промокод: в режиме
@@ -68,11 +68,13 @@ hooks/ utils/ styles/
    останавливается, клиент видит причину (никакой оплаты «другой суммы»).
 3. Клиент видит шаг «Проверка» с суммами из quote и подтверждает.
 4. `orders.placeOrder(quoteId)` — создаёт заказ `PENDING_PAYMENT` (`payment: null`), идемпотентно для
-   одного quote. **Сейчас поток здесь заканчивается**: оплата не подключена.
-5. Будущее: `payments.pay({ quoteId, amount })` — платёж для quote, сумму в Stripe берёт сервер.
-6. `orders.awaitPaidOrder(quoteId, payment)` — в `PAID` заказ переводит только подтверждённая оплата
-   ровно на сумму quote (в production — вебхук). `updateStatus` никогда не ставит `PAID`
-   (и `ACCEPTED` — только через `acceptOrder` с временем 10–80 мин).
+   одного quote.
+5. `payments.start(orderId)` — сервер создаёт Stripe PaymentIntent на сумму сохранённого заказа;
+   браузер подтверждает его в Payment Element (данные карты — только в Stripe).
+6. В `PAID` заказ переводит только сервер: подписанный вебхук Stripe или `payments.refresh`, где
+   сервер сам спрашивает Stripe; сумма должна точно совпасть с `order.total`. `updateStatus`
+   никогда не ставит `PAID` (и `ACCEPTED` — только через `acceptOrder` с временем 10–80 мин).
+   Демо-режим оплату не имитирует вовсе.
 
 Backend (`server/`) использует те же модули (`priceCheckout`, `cartMath`, `evaluatePromo`,
 `pickupSlots`, `orderStatus`) и дополнительно проверяет контакты и время самовывоза своими часами.
@@ -114,7 +116,7 @@ Backend (`server/`) использует те же модули (`priceCheckout`
 ## Заказ
 
 Гостевой поток: Menu → Cart → Данные (точка, время, контакты, «Подарить улыбку») → Проверка →
-Order (`PENDING_PAYMENT`). Шаг Payment появится вместе с реальной оплатой.
+Order (`PENDING_PAYMENT`) → оплата на странице заказа (Stripe) → `PAID`.
 
 - Время приготовления: **финальное время выбирает сотрудник** после получения оплаченного заказа —
   `OrderAdminService.acceptOrder(id, minutes)` (переход `PAID → ACCEPTED` без выбора времени невозможен),
