@@ -3,6 +3,7 @@ import { HTTPException } from 'hono/http-exception';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import { OrderError, type OrderErrorCode } from '@/services/orders/orderService';
 import { PaymentProviderError, WebhookSignatureError } from '../payments/gateway';
+import { AdminError, type AdminErrorCode } from '../services/admin';
 import { PaymentError } from '../services/payments';
 import { ReviewError } from '../services/reviews';
 
@@ -30,6 +31,14 @@ const REVIEW_STATUS: Record<ReviewError['code'], ContentfulStatusCode> = {
   'already-reviewed': 409,
 };
 
+const ADMIN_STATUS: Record<AdminErrorCode, ContentfulStatusCode> = {
+  'not-found': 404,
+  'invalid-transition': 409,
+  'invalid-preparation-time': 400,
+  'invalid-promo': 400,
+  'refund-unavailable': 409,
+};
+
 /** Maps domain errors to HTTP; anything unexpected becomes a generic 500 (and is logged). */
 export function handleError(error: unknown, c: Context) {
   if (error instanceof OrderError) {
@@ -37,6 +46,9 @@ export function handleError(error: unknown, c: Context) {
   }
   if (error instanceof ReviewError) {
     return apiError(c, REVIEW_STATUS[error.code], error.code, error.message);
+  }
+  if (error instanceof AdminError) {
+    return apiError(c, ADMIN_STATUS[error.code], error.code, error.message);
   }
   if (error instanceof PaymentError) {
     const status = error.code === 'payments-unavailable' ? 503 : 409;

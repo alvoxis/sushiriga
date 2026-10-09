@@ -35,6 +35,11 @@ export interface PaymentGateway {
     idempotencyKey: string;
   }): Promise<PaymentIntentInfo>;
   retrieveIntent(id: string): Promise<PaymentIntentInfo>;
+  /** Full refund of a succeeded payment. */
+  refund(input: {
+    intentId: string;
+    idempotencyKey: string;
+  }): Promise<{ id: string; status: string }>;
   /** Verifies the provider's signature on a raw webhook body. Throws when it is not authentic. */
   verifyWebhook(rawBody: string, signature: string | undefined): Promise<WebhookEvent>;
 }
@@ -59,6 +64,16 @@ function toInfo(intent: Stripe.PaymentIntent): PaymentIntentInfo {
   };
 }
 
+/** Test-only redirect of the Stripe API (see StripeConfig.apiBase). */
+function apiBaseOptions(apiBase: string) {
+  const url = new URL(apiBase);
+  return {
+    host: url.hostname,
+    port: Number(url.port || (url.protocol === 'https:' ? 443 : 80)),
+    protocol: url.protocol.replace(':', '') as 'http' | 'https',
+  };
+}
+
 export function createStripeGateway(config: StripeConfig, client?: Stripe): PaymentGateway {
   const stripe =
     client ??
@@ -66,6 +81,7 @@ export function createStripeGateway(config: StripeConfig, client?: Stripe): Paym
       maxNetworkRetries: 2,
       timeout: 15_000,
       appInfo: { name: 'sushiriga' },
+      ...(config.apiBase ? apiBaseOptions(config.apiBase) : {}),
     });
 
   const call = async <T>(work: () => Promise<T>): Promise<T> => {
@@ -99,6 +115,15 @@ export function createStripeGateway(config: StripeConfig, client?: Stripe): Paym
       ),
 
     retrieveIntent: (id) => call(async () => toInfo(await stripe.paymentIntents.retrieve(id))),
+
+    refund: ({ intentId, idempotencyKey }) =>
+      call(async () => {
+        const refund = await stripe.refunds.create(
+          { payment_intent: intentId, reason: 'requested_by_customer' },
+          { idempotencyKey },
+        );
+        return { id: refund.id, status: refund.status ?? 'pending' };
+      }),
 
     async verifyWebhook(rawBody, signature) {
       if (!signature) throw new WebhookSignatureError('Missing Stripe-Signature header');

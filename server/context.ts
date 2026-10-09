@@ -6,10 +6,12 @@ import { openDatabase } from './db/database';
 import { createStore } from './db/store';
 import { createStripeGateway, type PaymentGateway } from './payments/gateway';
 import { createOrderTokens } from './security/tokens';
+import { createAdminService } from './services/admin';
 import { createCatalogService } from './services/catalog';
 import { createOrderService } from './services/orders';
 import { createPaymentService } from './services/payments';
 import { createReviewService } from './services/reviews';
+import { createStaffService } from './services/staff';
 
 /** Wires database, services and HTTP app together. Used by main.ts and by the tests. */
 export function createServerContext(
@@ -29,8 +31,10 @@ export function createServerContext(
   });
   const payments = createPaymentService({ store, catalog, gateway, now });
   const reviews = createReviewService(store, now);
-  const app = createApp({ config, store, catalog, orders, payments, reviews, now });
-  return { db, store, catalog, orders, payments, reviews, app };
+  const staff = createStaffService(store, now);
+  const admin = createAdminService({ store, catalog, gateway, now });
+  const app = createApp({ config, store, catalog, orders, payments, reviews, staff, admin, now });
+  return { db, store, catalog, orders, payments, reviews, staff, admin, app };
 }
 
 export type ServerContext = ReturnType<typeof createServerContext>;

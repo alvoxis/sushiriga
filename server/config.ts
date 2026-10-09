@@ -34,6 +34,11 @@ export interface StripeConfig {
   webhookSecret: string;
   /** pk_… — public, handed to the browser for the Payment Element. */
   publishableKey: string;
+  /**
+   * End-to-end tests only: send Stripe API calls to a local stand-in (e.g. http://127.0.0.1:12111)
+   * instead of api.stripe.com. Refused in production.
+   */
+  apiBase?: string;
 }
 
 function readStripe(env: NodeJS.ProcessEnv, production: boolean): StripeConfig | null {
@@ -63,7 +68,10 @@ function readStripe(env: NodeJS.ProcessEnv, production: boolean): StripeConfig |
   if (production && !secretLive) {
     console.warn('[config] Stripe is in TEST mode: no real money will be charged.');
   }
-  return { secretKey, webhookSecret, publishableKey };
+  const apiBase = env.STRIPE_API_BASE?.trim();
+  if (apiBase && production)
+    throw new ConfigError('STRIPE_API_BASE must never be set in production');
+  return { secretKey, webhookSecret, publishableKey, ...(apiBase ? { apiBase } : {}) };
 }
 
 export class ConfigError extends Error {

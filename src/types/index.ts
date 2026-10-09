@@ -9,3 +9,4 @@ export * from './product';
 export * from './promo';
 export * from './review';
 export * from './tip';
+export * from './admin';

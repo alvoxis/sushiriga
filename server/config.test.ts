@@ -35,6 +35,17 @@ describe('server configuration', () => {
     expect(bad({ STRIPE_PUBLISHABLE_KEY: 'pk_live_abc' })).toThrow(/mix test and live/);
   });
 
+  it('the e2e Stripe stand-in can never be used in production', () => {
+    expect(() =>
+      readServerConfig({
+        NODE_ENV: 'production',
+        ORDER_TOKEN_SECRET: secret,
+        ...stripe,
+        STRIPE_API_BASE: 'http://127.0.0.1:12111',
+      }),
+    ).toThrow(/never be set in production/);
+  });
+
   it('the e2e test clock can never be used in production', () => {
     expect(() =>
       readServerConfig({

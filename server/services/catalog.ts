@@ -25,6 +25,8 @@ export function createCatalogService(base: Catalog, locations: Location[], store
       };
     },
     hasProduct: (id: string) => base.products.some((p) => p.id === id),
+    /** The menu as in the repository, without staff changes. */
+    baseProducts: () => base.products,
     locations: () => locations,
     activeLocations: () => locations.filter((l) => l.active),
   };

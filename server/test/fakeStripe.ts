@@ -25,6 +25,7 @@ export function fakeIntents() {
   const intents = new Map<string, Intent>();
   const byKey = new Map<string, string>();
   const calls: { params: Stripe.PaymentIntentCreateParams; idempotencyKey?: string }[] = [];
+  const refunds: { paymentIntent: string; idempotencyKey?: string }[] = [];
   return {
     intents,
     calls,
@@ -57,6 +58,16 @@ export function fakeIntents() {
         return intent;
       },
     },
+    refunds,
+    refundsApi: {
+      async create(params: Stripe.RefundCreateParams, options?: Stripe.RequestOptions) {
+        refunds.push({
+          paymentIntent: String(params.payment_intent),
+          ...(options?.idempotencyKey ? { idempotencyKey: options.idempotencyKey } : {}),
+        });
+        return { id: `re_${refunds.length}`, status: 'succeeded' };
+      },
+    },
     /** The customer pays in the browser; Stripe marks the intent as succeeded. */
     succeed(id: string, amountReceived?: number) {
       const intent = intents.get(id)!;
@@ -64,4 +75,12 @@ export function fakeIntents() {
       intent.amount_received = amountReceived ?? intent.amount;
     },
   };
+}
+
+/** A Stripe client whose network calls are served by `fake`, with the REAL webhook verifier. */
+export function fakeStripeClient(
+  fake: ReturnType<typeof fakeIntents>,
+  webhooks: Stripe['webhooks'],
+) {
+  return { paymentIntents: fake.api, refunds: fake.refundsApi, webhooks } as unknown as Stripe;
 }

@@ -15,6 +15,7 @@
     "server:dev": "tsx watch --tsconfig tsconfig.server.json server/main.ts",
     "server:build": "vite build --config vite.server.config.ts",
     "server:start": "node --disable-warning=ExperimentalWarning dist-server/main.js",
+    "server:cli": "node --disable-warning=ExperimentalWarning dist-server/cli.js",
     "typecheck": "tsc -b",
     "lint": "eslint .",
     "format": "prettier --write .",

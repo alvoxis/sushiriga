@@ -1,4 +1,6 @@
 import type {
+  StaffRole,
+  StaffUser,
   CheckoutQuote,
   CheckoutRequest,
   Order,
@@ -44,6 +46,32 @@ const paymentFromRow = (row: PaymentRow): PaymentRecord => ({
   status: row.status,
   createdAt: row.created_at,
   updatedAt: row.updated_at,
+});
+
+export interface StoredStaffUser extends StaffUser {
+  passwordHash: string;
+  disabled: boolean;
+  createdAt: string;
+}
+
+interface StaffRow {
+  id: string;
+  email: string;
+  name: string;
+  role: StaffRole;
+  password_hash: string;
+  disabled: number;
+  created_at: string;
+}
+
+const staffFromRow = (row: StaffRow): StoredStaffUser => ({
+  id: row.id,
+  email: row.email,
+  name: row.name,
+  role: row.role,
+  passwordHash: row.password_hash,
+  disabled: row.disabled === 1,
+  createdAt: row.created_at,
 });
 
 export interface ProductOverride {
@@ -178,6 +206,22 @@ export function createStore(db: Database) {
       'UPDATE payments SET status = ?, updated_at = ? WHERE intent_id = ?',
     ),
     findWebhookEvent: db.prepare('SELECT 1 FROM webhook_events WHERE id = ?'),
+    insertStaff: db.prepare(
+      `INSERT INTO staff_users (id, email, name, role, password_hash, disabled, created_at)
+       VALUES (?, ?, ?, ?, ?, 0, ?)`,
+    ),
+    findStaffByEmail: db.prepare('SELECT * FROM staff_users WHERE email = ?'),
+    findStaff: db.prepare('SELECT * FROM staff_users WHERE id = ?'),
+    listStaff: db.prepare('SELECT * FROM staff_users ORDER BY created_at'),
+    setStaffPassword: db.prepare('UPDATE staff_users SET password_hash = ? WHERE id = ?'),
+    setStaffDisabled: db.prepare('UPDATE staff_users SET disabled = ? WHERE id = ?'),
+    insertSession: db.prepare(
+      'INSERT INTO staff_sessions (token_hash, user_id, created_at, expires_at) VALUES (?, ?, ?, ?)',
+    ),
+    findSession: db.prepare('SELECT user_id, expires_at FROM staff_sessions WHERE token_hash = ?'),
+    deleteSession: db.prepare('DELETE FROM staff_sessions WHERE token_hash = ?'),
+    deleteUserSessions: db.prepare('DELETE FROM staff_sessions WHERE user_id = ?'),
+    deleteExpiredSessions: db.prepare('DELETE FROM staff_sessions WHERE expires_at < ?'),
     insertWebhookEvent: db.prepare(
       'INSERT OR IGNORE INTO webhook_events (id, type, received_at) VALUES (?, ?, ?)',
     ),
@@ -347,6 +391,55 @@ export function createStore(db: Database) {
       /** Records an event id; false if it was already processed. */
       record(id: string, type: string, now: Date): boolean {
         return Number(sql.insertWebhookEvent.run(id, type, now.toISOString()).changes) > 0;
+      },
+    },
+
+    staff: {
+      insert(user: Omit<StoredStaffUser, 'disabled'>): void {
+        sql.insertStaff.run(
+          user.id,
+          user.email,
+          user.name,
+          user.role,
+          user.passwordHash,
+          user.createdAt,
+        );
+      },
+      findByEmail(email: string): StoredStaffUser | undefined {
+        const row = sql.findStaffByEmail.get(email) as StaffRow | undefined;
+        return row ? staffFromRow(row) : undefined;
+      },
+      find(id: string): StoredStaffUser | undefined {
+        const row = sql.findStaff.get(id) as StaffRow | undefined;
+        return row ? staffFromRow(row) : undefined;
+      },
+      list: (): StoredStaffUser[] =>
+        (sql.listStaff.all() as unknown as StaffRow[]).map(staffFromRow),
+      setPassword(id: string, passwordHash: string): void {
+        sql.setStaffPassword.run(passwordHash, id);
+      },
+      setDisabled(id: string, disabled: boolean): void {
+        sql.setStaffDisabled.run(disabled ? 1 : 0, id);
+      },
+    },
+
+    sessions: {
+      insert(tokenHash: string, userId: string, now: Date, expiresAt: Date): void {
+        sql.insertSession.run(tokenHash, userId, now.toISOString(), expiresAt.toISOString());
+      },
+      find(tokenHash: string): { userId: string; expiresAt: string } | undefined {
+        const row = sql.findSession.get(tokenHash) as
+          { user_id: string; expires_at: string } | undefined;
+        return row ? { userId: row.user_id, expiresAt: row.expires_at } : undefined;
+      },
+      delete(tokenHash: string): void {
+        sql.deleteSession.run(tokenHash);
+      },
+      deleteForUser(userId: string): void {
+        sql.deleteUserSessions.run(userId);
+      },
+      deleteExpired(now: Date): void {
+        sql.deleteExpiredSessions.run(now.toISOString());
       },
     },
 

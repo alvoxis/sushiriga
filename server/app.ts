@@ -6,10 +6,11 @@ import { Hono, type Context } from 'hono';
 import { bodyLimit } from 'hono/body-limit';
 import { cors } from 'hono/cors';
 import { secureHeaders } from 'hono/secure-headers';
-import type { z } from 'zod';
 import { evaluatePromo, normalizePromoCode } from '@/features/promo/evaluatePromo';
 import type { ServerConfig } from './config';
 import type { Store } from './db/store';
+import { createAdminRoutes } from './http/adminRoutes';
+import { parseBody } from './http/body';
 import { apiError, handleError } from './http/errors';
 import { rateLimit } from './http/rateLimit';
 import {
@@ -18,10 +19,12 @@ import {
   promoValidateSchema,
   reviewSchema,
 } from './http/schemas';
+import type { AdminService } from './services/admin';
 import type { CatalogService } from './services/catalog';
 import type { OrderService } from './services/orders';
 import type { PaymentService } from './services/payments';
 import type { ReviewService } from './services/reviews';
+import type { StaffService } from './services/staff';
 
 export interface AppDeps {
   config: Pick<ServerConfig, 'corsOrigins' | 'publicDir' | 'trustProxy' | 'production'>;
@@ -30,6 +33,8 @@ export interface AppDeps {
   orders: OrderService;
   payments: PaymentService;
   reviews: ReviewService;
+  staff: StaffService;
+  admin: AdminService;
   now: () => Date;
 }
 
@@ -38,21 +43,8 @@ export const ORDER_TOKEN_HEADER = 'X-Order-Token';
 
 const MINUTE = 60_000;
 
-async function parseBody<S extends z.ZodType>(
-  c: Context,
-  schema: S,
-): Promise<z.infer<S> | Response> {
-  const raw: unknown = await c.req.json().catch(() => undefined);
-  const parsed = schema.safeParse(raw);
-  if (!parsed.success) {
-    const fields = [...new Set(parsed.error.issues.map((issue) => issue.path.join('.')))];
-    return apiError(c, 400, 'invalid-request', `Invalid request: ${fields.join(', ') || 'body'}`);
-  }
-  return parsed.data;
-}
-
 export function createApp(deps: AppDeps) {
-  const { config, store, catalog, orders, payments, reviews } = deps;
+  const { config, store, catalog, orders, payments, reviews, staff, admin } = deps;
   const app = new Hono();
 
   const clientIp = (c: Context): string => {
@@ -111,6 +103,7 @@ export function createApp(deps: AppDeps) {
       '*',
       cors({
         origin: config.corsOrigins,
+        // Deliberately NOT the admin header: the admin API is same-origin only.
         allowHeaders: ['Content-Type', ORDER_TOKEN_HEADER],
         allowMethods: ['GET', 'POST'],
         maxAge: 600,
@@ -202,6 +195,16 @@ export function createApp(deps: AppDeps) {
     c.header('Cache-Control', 'public, max-age=60');
     return c.json(reviews.listPublished());
   });
+
+  api.route(
+    '/admin',
+    createAdminRoutes({
+      staff,
+      admin,
+      production: config.production,
+      loginLimit: limit('admin-login', 10),
+    }),
+  );
 
   api.all('*', (c) => apiError(c, 404, 'not-found', 'No such endpoint'));
   app.route('/api', api);

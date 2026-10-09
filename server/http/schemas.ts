@@ -3,7 +3,7 @@ import { MAX_QUANTITY } from '@/features/cart/cartMath';
 import { NAME_MAX } from '@/features/checkout/validateContact';
 import { MAX_COMMENT_LENGTH } from '@/features/reviews/validateReview';
 import { MAX_CUSTOM_TIP } from '@/features/tips/tips';
-import type { Rating } from '@/types';
+import { ORDER_STATUSES, type Rating } from '@/types';
 
 /**
  * Request bodies. Objects are parsed non-strictly: unknown keys (e.g. a "price" or "total" a
@@ -58,3 +58,38 @@ export const reviewSchema = z.object({
   speedRating: rating.optional(),
   comment: z.string().max(MAX_COMMENT_LENGTH).optional(),
 });
+
+// ---------- Admin ----------
+
+export const loginSchema = z.object({
+  email: z.string().max(254),
+  password: z.string().min(1).max(200),
+});
+
+export const acceptSchema = z.object({ preparationTime: z.number().int() });
+
+export const statusSchema = z.object({
+  status: z.enum(ORDER_STATUSES),
+  note: z.string().max(300).optional(),
+});
+
+export const preparationTimeSchema = z.object({ minutes: z.number().int() });
+
+export const productChangeSchema = z.object({
+  available: z.boolean().nullable().optional(),
+  price: z.number().int().min(0).max(100_000).nullable().optional(),
+});
+
+export const promoCodeSchema = z.object({
+  code: z.string().max(40),
+  type: z.enum(['percentage', 'fixed']),
+  value: z.number().int().min(0).max(100_000),
+  minOrderValue: z.number().int().min(0).max(10_000_000).optional(),
+  expiresAt: z.iso.datetime({ offset: true }).optional(),
+  usageLimit: z.number().int().min(1).max(1_000_000).optional(),
+  active: z.boolean(),
+  visibility: z.enum(['public', 'personal']).default('public'),
+  customerId: z.string().max(100).optional(),
+});
+
+export const moderationSchema = z.object({ status: z.enum(['pending', 'published', 'rejected']) });
