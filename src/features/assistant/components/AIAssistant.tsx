@@ -81,33 +81,38 @@ export function AIAssistant() {
         <AssistantCharacter mood={mood} size="9rem" label={t('assistant.characterLabel')} />
       </div>
       <div className={styles.chat}>
-        <ol className={styles.log} role="log" aria-live="polite" aria-relevant="additions">
-          {entries.map((entry) => {
-            const category = entry.categoryId ? findCategory(catalog, entry.categoryId) : undefined;
-            return (
-              <AssistantMessage key={entry.id} role={entry.role}>
-                <p>
-                  {entry.textKey
-                    ? t(
-                        entry.textKey,
-                        category ? { category: categoryName(category, locale) } : undefined,
-                      )
-                    : entry.text}
-                </p>
-                {entry.recommendations.length > 0 && (
-                  <ul className={styles.recommendations} role="list">
-                    {entry.recommendations.map((id) => {
-                      const product = findProduct(catalog, id);
-                      return product ? (
-                        <AssistantRecommendation key={id} product={product} />
-                      ) : null;
-                    })}
-                  </ul>
-                )}
-              </AssistantMessage>
-            );
-          })}
-        </ol>
+        {/* The live region wraps the list, so the messages keep their list semantics. */}
+        <div role="log" aria-live="polite" aria-relevant="additions">
+          <ol className={styles.log} role="list">
+            {entries.map((entry) => {
+              const category = entry.categoryId
+                ? findCategory(catalog, entry.categoryId)
+                : undefined;
+              return (
+                <AssistantMessage key={entry.id} role={entry.role}>
+                  <p>
+                    {entry.textKey
+                      ? t(
+                          entry.textKey,
+                          category ? { category: categoryName(category, locale) } : undefined,
+                        )
+                      : entry.text}
+                  </p>
+                  {entry.recommendations.length > 0 && (
+                    <ul className={styles.recommendations} role="list">
+                      {entry.recommendations.map((id) => {
+                        const product = findProduct(catalog, id);
+                        return product ? (
+                          <AssistantRecommendation key={id} product={product} />
+                        ) : null;
+                      })}
+                    </ul>
+                  )}
+                </AssistantMessage>
+              );
+            })}
+          </ol>
+        </div>
         {busy && (
           <p className={styles.thinking} role="status">
             {t('assistant.thinking')}

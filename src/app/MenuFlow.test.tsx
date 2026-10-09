@@ -77,7 +77,7 @@ describe('real menu: search, dish in the book, cart', () => {
   it('the cart keeps its items across navigation and languages, totals update', async () => {
     const { user } = renderApp('/product/poke-eel');
     await user.click(await screen.findByRole('button', { name: 'Add to cart' }));
-    await user.click(screen.getByRole('button', { name: 'Русский' }));
+    await user.click(screen.getByRole('button', { name: /Русский/ }));
     const nav = screen.getByRole('navigation', { name: 'Быстрая навигация' });
     await user.click(within(nav).getByRole('link', { name: 'Корзина, товаров: 1' }));
     expect(await screen.findByRole('heading', { level: 1, name: 'Корзина' })).toBeInTheDocument();
@@ -86,7 +86,7 @@ describe('real menu: search, dish in the book, cart', () => {
     await user.click(screen.getByRole('button', { name: 'Ещё Poke Eel' }));
     expect(screen.getByTestId('cart-total')).toHaveTextContent(/28,00\s€/);
 
-    await user.click(screen.getByRole('button', { name: 'Latviešu' }));
+    await user.click(screen.getByRole('button', { name: /Latviešu/ }));
     expect(screen.getByRole('heading', { level: 1, name: 'Grozs' })).toBeInTheDocument();
     expect(screen.getByTestId('cart-total')).toHaveTextContent(/28,00\s€/);
     await user.click(screen.getByRole('button', { name: 'Noņemt Poke Eel' }));

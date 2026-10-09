@@ -80,7 +80,7 @@ describe('SUSHIRIGA app', () => {
 
   it('switches language and remembers it', async () => {
     const { user } = renderApp('/');
-    await user.click(await screen.findByRole('button', { name: 'Русский' }));
+    await user.click(await screen.findByRole('button', { name: /Русский/ }));
     expect(
       await screen.findByRole('heading', { level: 1, name: 'Меню, которое можно листать' }),
     ).toBeInTheDocument();

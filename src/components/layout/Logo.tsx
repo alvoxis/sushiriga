@@ -5,13 +5,12 @@ import styles from './Logo.module.css';
 /** Wordmark + vermilion seal. TODO(brand): replace with the final logo artwork when available. */
 export function Logo() {
   return (
-    <Link to={ROUTES.home} className={styles.logo} aria-label="SUSHIRIGA">
+    // The accessible name is the visible wordmark (WCAG 2.5.3); the seal is decoration.
+    <Link to={ROUTES.home} className={styles.logo}>
       <span className={styles.seal} aria-hidden="true">
         SR
       </span>
-      <span className={styles.word} aria-hidden="true">
-        SUSHIRIGA
-      </span>
+      <span className={styles.word}>SUSHIRIGA</span>
     </Link>
   );
 }

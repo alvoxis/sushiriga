@@ -6,6 +6,8 @@
 
 .main {
   flex: 1;
+  /* The footer starts below the fold, so lazily loaded pages never push it around (CLS). */
+  min-height: 100dvh;
   outline: none;
 }
 

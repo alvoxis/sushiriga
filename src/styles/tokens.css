@@ -10,7 +10,7 @@
   --color-paper-sunken: #ebe4d7;
   --color-ink: #1d1b19;
   --color-ink-soft: #4f4a43;
-  --color-ink-muted: #6e675d;
+  --color-ink-muted: #655e54; /* ≥ 5:1 on every paper tone (WCAG AA) */
   --color-line: #ddd3c3;
   --color-line-strong: #c4b7a2;
 

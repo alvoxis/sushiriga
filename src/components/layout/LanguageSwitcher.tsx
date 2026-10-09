@@ -13,7 +13,8 @@ export function LanguageSwitcher() {
           className={styles.option}
           aria-pressed={code === locale}
           lang={code}
-          aria-label={t(`common.languageNames.${code}`)}
+          // The name starts with the visible code (WCAG 2.5.3 "label in name"): "lv — Latviešu".
+          aria-label={`${code} — ${t(`common.languageNames.${code}`)}`}
           onClick={() => setLocale(code)}
         >
           {code}
