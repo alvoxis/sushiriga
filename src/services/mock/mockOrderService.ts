@@ -1,14 +1,11 @@
-import { buildCart, MAX_QUANTITY } from '@/features/cart/cartMath';
+import { priceCheckout } from '@/features/checkout/priceCheckout';
 import { canTransition } from '@/features/orders/orderStatus';
 import { isPreparationTimeOption } from '@/features/pickup/preparationTime';
-import { evaluatePromo, normalizePromoCode } from '@/features/promo/evaluatePromo';
-import { MAX_CUSTOM_TIP } from '@/features/tips/tips';
 import type {
   CheckoutQuote,
   CheckoutRequest,
   Location,
   Order,
-  OrderItem,
   OrderStatus,
   Product,
   PromoCode,
@@ -60,67 +57,13 @@ export function createMockOrderService(deps: MockOrderDeps): OrderService & Orde
   const ordersByQuote = new Map<string, string>();
 
   function price(request: CheckoutRequest): CheckoutQuote {
-    const { items, tip, locationId, pickupTime } = request;
-    if (!items.length) throw new OrderError('invalid-request', 'Cart is empty');
-    for (const item of items) {
-      if (!Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > MAX_QUANTITY) {
-        throw new OrderError('invalid-request', `Invalid quantity for ${item.productId}`);
-      }
-      const product = deps.products.find((p) => p.id === item.productId);
-      if (!product?.available) {
-        throw new OrderError('unavailable-product', `Product ${item.productId} is not available`);
-      }
-    }
-    if (!Number.isInteger(tip) || tip < 0 || tip > MAX_CUSTOM_TIP) {
-      throw new OrderError('invalid-request', 'Invalid tip');
-    }
-    if (!deps.locations.some((l) => l.id === locationId && l.active)) {
-      throw new OrderError('invalid-request', 'Unknown pickup location');
-    }
-    if (pickupTime !== 'asap' && Number.isNaN(Date.parse(pickupTime))) {
-      throw new OrderError('invalid-request', 'Invalid pickup time');
-    }
-
-    const cart = buildCart(items, deps.products);
-    const lines: OrderItem[] = cart.items.map((line) => ({
-      productId: line.productId,
-      quantity: line.quantity,
-      ...(line.selectedOptions ? { selectedOptions: line.selectedOptions } : {}),
-      name: deps.products.find((p) => p.id === line.productId)?.name ?? line.productId,
-      unitPrice: line.unitPrice,
-      lineTotal: line.lineTotal,
-    }));
-
-    let discount = 0;
-    let promoCode: string | undefined;
-    let promoRejected: CheckoutQuote['promoRejected'];
-    if (request.promoCode) {
-      const code = normalizePromoCode(request.promoCode);
-      const customerId =
-        request.customer.type === 'registered' ? request.customer.customerId : undefined;
-      const result = evaluatePromo(
-        promoCodes.find((p) => p.code === code),
-        code,
-        { subtotal: cart.subtotal, now: now(), ...(customerId ? { customerId } : {}) },
-      );
-      if (result.valid) {
-        discount = result.discount;
-        promoCode = result.code;
-      } else {
-        promoRejected = result.reason;
-      }
-    }
-
-    return {
-      quoteId: createId('quote'),
-      items: lines,
-      subtotal: cart.subtotal,
-      discount,
-      tip,
-      total: cart.subtotal - discount + tip,
-      ...(promoCode ? { promoCode } : {}),
-      ...(promoRejected ? { promoRejected } : {}),
-    };
+    const priced = priceCheckout(request, {
+      products: deps.products,
+      locations: deps.locations,
+      findPromo: (code) => promoCodes.find((p) => p.code === code),
+      now: now(),
+    });
+    return { quoteId: createId('quote'), ...priced };
   }
 
   function createOrder(

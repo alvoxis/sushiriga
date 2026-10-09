@@ -9,9 +9,14 @@ import type { PaymentResult } from '../payments/paymentService';
 
 export type OrderErrorCode =
   | 'invalid-request'
+  | 'invalid-contact'
+  | 'pickup-unavailable'
   | 'unavailable-product'
   | 'quote-not-found'
+  | 'order-not-found'
   | 'payment-not-confirmed'
+  | 'too-many-requests'
+  | 'network'
   | 'not-connected';
 
 export class OrderError extends Error {
