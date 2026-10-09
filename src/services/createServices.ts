@@ -7,7 +7,6 @@ import { createStaticLocationService } from './locations/locationService';
 import { createDemoPaymentService } from './mock/demoPaymentService';
 import { createMockAssistantService } from './mock/mockAssistantService';
 import { createMockOrderService } from './mock/mockOrderService';
-import { createMockPromoService } from './mock/mockPromoService';
 import { createMockReviewService } from './mock/mockReviewService';
 import {
   notConnectedAssistant,
@@ -16,6 +15,7 @@ import {
   notConnectedPromo,
   notConnectedReviews,
 } from './notConnected';
+import { unavailablePromoService } from './promo/unavailablePromoService';
 import type { Services } from './services';
 
 /**
@@ -49,7 +49,8 @@ export function createServices(config: AppConfig = readConfig()): Services {
     ...shared,
     orders,
     ordersAdmin: orders,
-    promo: createMockPromoService(),
+    // No server to check codes yet → no simulated discounts (mock codes exist for tests only).
+    promo: unavailablePromoService,
     payments: createDemoPaymentService(config),
     assistant: createMockAssistantService(),
     reviews: createMockReviewService(),

@@ -6,6 +6,7 @@ import { MOCK_PROMO_CODES } from './fixtures';
 
 export function createMockPromoService(codes: PromoCode[] = MOCK_PROMO_CODES): PromoService {
   return {
+    available: true,
     async validate(input, ctx) {
       await mockDelay();
       const code = normalizePromoCode(input);

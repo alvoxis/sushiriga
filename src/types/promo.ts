@@ -26,7 +26,9 @@ export type PromoRejectionReason =
   | 'expired'
   | 'usage-limit-reached'
   | 'min-order-not-met'
-  | 'not-eligible';
+  | 'not-eligible'
+  /** No server is available to check codes yet. */
+  | 'unavailable';
 
 export type PromoValidationResult =
   | { valid: true; code: string; discount: Cents }

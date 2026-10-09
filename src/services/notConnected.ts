@@ -25,7 +25,10 @@ export const notConnectedPayments: PaymentService = {
   pay: async () => fail('Payments'),
 };
 
-export const notConnectedPromo: PromoService = { validate: async () => fail('Promo codes') };
+export const notConnectedPromo: PromoService = {
+  available: false,
+  validate: async () => fail('Promo codes'),
+};
 
 export const notConnectedReviews: ReviewService = {
   submit: async () => fail('Reviews'),

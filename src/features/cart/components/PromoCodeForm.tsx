@@ -38,6 +38,21 @@ export function PromoCodeForm() {
     }
   }
 
+  // Without a server check there is nothing honest to apply: show the field disabled and say why.
+  if (!promoService.available) {
+    return (
+      <div className={styles.promo}>
+        <TextField
+          label={t('cart.promo.label')}
+          value=""
+          disabled
+          readOnly
+          hint={t('cart.promo.unavailableHint')}
+        />
+      </div>
+    );
+  }
+
   if (promo) {
     return (
       <div className={styles.promoApplied} role="status">

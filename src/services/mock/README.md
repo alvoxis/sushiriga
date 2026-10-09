@@ -6,7 +6,9 @@ Everything in this folder is **demo-only**: local, in-browser stand-ins for the 
 - ESLint forbids importing this folder anywhere else (except tests).
 - `demoPaymentService` never charges money; orders it produces carry `payment.provider = 'demo'`
   and the UI labels them as demo orders.
-- `fixtures.ts` holds made-up promo codes (`DEMO*`). They are NOT real promotions.
+- `fixtures.ts` holds made-up promo codes (`DEMO*`). They are NOT real promotions and are used
+  only by tests and the mock order pricing — the demo UI does not accept promo codes at all
+  (`promo/unavailablePromoService.ts`), so no discount is ever simulated.
 - Pricing in `mockOrderService` imitates the server so the trust model can be exercised today;
   the real backend must implement the same rules (see `features/cart/cartMath.ts`,
   `features/promo/evaluatePromo.ts`).
