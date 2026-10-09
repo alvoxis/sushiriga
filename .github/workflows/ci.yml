@@ -46,3 +46,24 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e:server
+
+  docker:
+    # The production image: build it, start it, check that it answers.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t sushiriga .
+      - run: |
+          docker run -d --name sushiriga -p 8787:8787 \
+            -e ORDER_TOKEN_SECRET="$(openssl rand -base64 48)" sushiriga
+          for i in $(seq 1 30); do
+            curl -fsS http://localhost:8787/api/health && break
+            sleep 1
+          done
+          curl -fsS http://localhost:8787/api/health
+          curl -fsS http://localhost:8787/ | grep -q '<div id="root">'
+          curl -fsS http://localhost:8787/robots.txt | grep -q 'Disallow: /admin'
+          docker exec -e SUSHIRIGA_STAFF_PASSWORD='ci check password 123' sushiriga \
+            node dist-server/cli.js staff:add --email ci@example.test --role admin
+      - if: always()
+        run: docker logs sushiriga || true
