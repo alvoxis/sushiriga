@@ -25,6 +25,9 @@
     "playwright.server.config.ts",
     "e2e",
     "e2e-server",
-    "scripts/seo.ts"
+    "scripts/seo.ts",
+    "scripts/pages.ts",
+    "playwright.pages.config.ts",
+    "e2e-pages"
   ]
 }

@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:pages": "tsc -b && vite build --mode pages",
     "preview": "vite preview",
     "server:dev": "tsx watch --tsconfig tsconfig.server.json server/main.ts",
     "server:build": "vite build --config vite.server.config.ts",
@@ -24,6 +25,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:server": "playwright test --config playwright.server.config.ts",
+    "test:e2e:pages": "playwright test --config playwright.pages.config.ts",
     "check": "npm run lint && npm run format:check && npm run typecheck && npm test && vite build && npm run server:build"
   },
   "dependencies": {

@@ -6,7 +6,11 @@ import { categories, products } from '../src/data/menu';
  * it is only written when SITE_URL is set (e.g. SITE_URL=https://www.sushiriga.lv npm run build).
  * The admin panel, the API and personal pages (cart, checkout, orders) are never indexed.
  */
-export function seoFiles(siteUrl = process.env.SITE_URL?.trim()): Plugin {
+export function seoFiles({
+  siteUrl = process.env.SITE_URL?.trim(),
+  basePath = '/',
+}: { siteUrl?: string | undefined; basePath?: string } = {}): Plugin {
+  const prefix = basePath.replace(/\/+$/, '');
   return {
     name: 'sushiriga-seo-files',
     apply: 'build',
@@ -14,12 +18,12 @@ export function seoFiles(siteUrl = process.env.SITE_URL?.trim()): Plugin {
       const base = siteUrl?.replace(/\/+$/, '');
       const robots = [
         'User-agent: *',
-        'Disallow: /admin',
-        'Disallow: /api/',
-        'Disallow: /cart',
-        'Disallow: /checkout',
-        'Disallow: /order/',
-        'Disallow: /account',
+        `Disallow: ${prefix}/admin`,
+        `Disallow: ${prefix}/api/`,
+        `Disallow: ${prefix}/cart`,
+        `Disallow: ${prefix}/checkout`,
+        `Disallow: ${prefix}/order/`,
+        `Disallow: ${prefix}/account`,
         ...(base ? ['', `Sitemap: ${base}/sitemap.xml`] : []),
         '',
       ].join('\n');

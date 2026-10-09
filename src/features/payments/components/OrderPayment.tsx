@@ -1,6 +1,7 @@
 import type { Stripe, StripeElements } from '@stripe/stripe-js';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
+import { absoluteAppUrl } from '@/app/basePath';
 import { paths, ROUTES } from '@/app/routes';
 import { Button, ButtonLink, Card } from '@/components/ui';
 import { useTranslation } from '@/i18n';
@@ -136,7 +137,7 @@ export function OrderPayment({ order, onPaid }: { order: Order; onPaid: (order: 
     setError(null);
     const result = await current.stripe.confirmPayment({
       elements: current.elements,
-      confirmParams: { return_url: `${window.location.origin}${paths.order(order.id)}` },
+      confirmParams: { return_url: absoluteAppUrl(paths.order(order.id)) },
       redirect: 'if_required',
     });
     if (result.error) {

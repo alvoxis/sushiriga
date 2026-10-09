@@ -1,4 +1,5 @@
 import { isRouteErrorResponse, useRouteError } from 'react-router';
+import { BASE_PATH } from '../basePath';
 
 /** Last-resort error screen (rendered outside the layout, so it avoids app context). */
 export function RouteError() {
@@ -12,7 +13,7 @@ export function RouteError() {
       <h1>SUSHIRIGA</h1>
       <p>{message}</p>
       <p>
-        <a href="/">← SUSHIRIGA</a>
+        <a href={BASE_PATH}>← SUSHIRIGA</a>
       </p>
     </main>
   );
