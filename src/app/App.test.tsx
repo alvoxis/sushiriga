@@ -100,12 +100,12 @@ describe('SUSHIRIGA app', () => {
   it('turns book pages with the keyboard', async () => {
     const { user } = renderApp('/menu/tempura');
     const book = await screen.findByRole('region', { name: 'Tempura — menu book' });
-    expect(within(book).getByText('Page 1 of 5')).toBeInTheDocument();
+    expect(within(book).getByText('Page 1 of 6')).toBeInTheDocument();
     book.focus();
     await user.keyboard('{ArrowRight}');
-    expect(within(book).getByText('Page 2 of 5')).toBeInTheDocument();
+    expect(within(book).getByText('Page 2 of 6')).toBeInTheDocument();
     await user.keyboard('{End}');
-    expect(within(book).getByText('Page 5 of 5')).toBeInTheDocument();
+    expect(within(book).getByText('Page 6 of 6')).toBeInTheDocument();
   });
 
   it('switches language and remembers it', async () => {
