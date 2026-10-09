@@ -4,6 +4,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
   type KeyboardEvent,
   type ReactNode,
 } from 'react';
@@ -30,14 +31,17 @@ export interface BookProps {
   cover: ReactNode;
   /** Faces 1…n. Usually <BookPage> elements. */
   pages: ReactNode[];
-  /** 'auto' = spread from 900px viewport width, single page below. */
+  /** 'auto' = spread from 768px viewport width, single page below. */
   layout?: BookLayout | 'auto';
   initialFace?: number;
   onFaceChange?: (face: number) => void;
+  /** Cover cloth colour etc. as CSS custom properties (e.g. from a category theme). */
+  style?: CSSProperties;
   className?: string;
 }
 
-const SPREAD_QUERY = '(min-width: 56.25rem)';
+/** Two-page spreads from tablet width (768px) up. */
+const SPREAD_QUERY = '(min-width: 48rem)';
 const FLIP_MS = 700;
 
 /**
@@ -52,6 +56,7 @@ export function Book({
   layout = 'auto',
   initialFace = 0,
   onFaceChange,
+  style,
   className,
 }: BookProps) {
   const { t } = useTranslation();
@@ -139,32 +144,35 @@ export function Book({
         onKeyDown={onKeyDown}
         data-layout={resolved}
         data-position={position}
+        style={style}
       >
-        <div className={styles.scene} {...swipe}>
-          <BookPages
-            faces={faces}
-            layout={resolved}
-            position={position}
-            visibleFaces={visible}
-            activeLeaf={activeLeaf}
-          />
-          {/* Mouse-only page corners; keyboard and screen-reader users have BookNavigation. */}
-          <button
-            type="button"
-            className={cn(styles.corner, styles.cornerPrev)}
-            onClick={controls.previous}
-            disabled={position === 0}
-            tabIndex={-1}
-            aria-hidden="true"
-          />
-          <button
-            type="button"
-            className={cn(styles.corner, styles.cornerNext)}
-            onClick={controls.next}
-            disabled={position === max}
-            tabIndex={-1}
-            aria-hidden="true"
-          />
+        <div className={styles.stage}>
+          <div className={styles.scene} {...swipe}>
+            <BookPages
+              faces={faces}
+              layout={resolved}
+              position={position}
+              visibleFaces={visible}
+              activeLeaf={activeLeaf}
+            />
+            {/* Mouse-only page corners; keyboard and screen-reader users have BookNavigation. */}
+            <button
+              type="button"
+              className={cn(styles.corner, styles.cornerPrev)}
+              onClick={controls.previous}
+              disabled={position === 0}
+              tabIndex={-1}
+              aria-hidden="true"
+            />
+            <button
+              type="button"
+              className={cn(styles.corner, styles.cornerNext)}
+              onClick={controls.next}
+              disabled={position === max}
+              tabIndex={-1}
+              aria-hidden="true"
+            />
+          </div>
         </div>
         <BookNavigation
           position={position}

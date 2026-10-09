@@ -1,9 +1,20 @@
-/* ---------- Book shell ---------- */
+/*
+ * The book.
+ * Geometry: .scene (perspective) → .mover (whole book: tilt when closed, shift in spreads; it is
+ * also a flat group with its own perspective so leaf z-index keeps working) → .leaf (turns around
+ * the spine) → .face (front/back of a leaf).
+ */
+
+/* ---------- Shell ---------- */
 .book {
-  --page-ratio: 0.72; /* width / height of one page */
-  --book-max: 26rem;
+  --page-ratio: 0.7; /* width / height of one page */
+  --book-max: 25rem;
   --cover: var(--color-indigo);
-  --cover-deep: var(--color-indigo-deep);
+  --cover-deep: color-mix(in srgb, var(--cover) 72%, black);
+  --spine-w: clamp(12px, 4.2%, 20px);
+  --tilt: 0deg;
+  /* Side margin of a page; mouse corners live inside it so they never cover content. */
+  --page-pad-x: 2.25rem;
 
   display: flex;
   flex-direction: column;
@@ -13,63 +24,117 @@
   outline: none;
 }
 
+.spread {
+  --book-max: 58rem;
+  --spine-w: clamp(12px, 2.1%, 20px);
+}
+
 .book:focus-visible .scene {
   outline: 2px solid var(--color-focus);
-  outline-offset: 6px;
+  outline-offset: 10px;
   border-radius: var(--radius-md);
 }
 
-.spread {
-  --book-max: 60rem;
+/* The surface the book lies on: a soft contact shadow. */
+.stage {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding-left: var(--spine-w); /* room for the spine of a single-page book */
+}
+
+.spread .stage {
+  padding-left: 0;
+}
+
+.stage::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  left: 12%;
+  right: 12%;
+  bottom: -18px;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(40 28 16 / 0.32), transparent);
+  filter: blur(4px);
+  pointer-events: none;
 }
 
 .scene {
+  /* Height of everything around the book that must stay on screen (header, book buttons,
+     bottom navigation). The book is limited by width AND height, never below a readable size. */
+  --chrome: 17rem;
+
   position: relative;
-  width: min(100%, var(--book-max));
+  width: min(100%, var(--book-max), max(15rem, calc((100dvh - var(--chrome)) * var(--page-ratio))));
   aspect-ratio: var(--page-ratio);
-  perspective: 2400px;
+  perspective: 2200px;
   touch-action: pan-y;
   user-select: none;
   -webkit-user-select: none;
 }
 
 .spread .scene {
+  width: min(
+    100%,
+    var(--book-max),
+    max(30rem, calc((100dvh - var(--chrome)) * var(--page-ratio) * 2))
+  );
   aspect-ratio: calc(var(--page-ratio) * 2);
 }
 
-/* Shifts the closed book so the cover sits in the middle of the scene. */
+/* ---------- Whole-book movement ---------- */
 .mover {
   position: absolute;
   inset: 0;
-  transition: transform var(--duration-page) var(--ease-page);
+  perspective: 2200px;
+  transform: translateX(0) rotateY(var(--tilt)) rotateX(0deg);
+  transform-origin: 50% 50%;
+  transition: transform calc(var(--duration-page) * 1.2) var(--ease-page);
+}
+
+/* Closed: a 3/4 view that reveals the spine — the book invites you to open it. */
+.closedFront {
+  --tilt: 16deg;
+}
+
+.closedFront .mover {
+  transform: translateX(0) rotateY(var(--tilt)) rotateX(3deg);
 }
 
 .spread.closedFront .mover {
-  transform: translateX(-25%);
+  transform-origin: 75% 50%;
+  transform: translateX(-25%) rotateY(var(--tilt)) rotateX(3deg);
 }
 
 .spread.closedBack .mover {
   transform: translateX(25%);
 }
 
-/* The page block under the leaves (paper edges + shadow). */
+@media (hover: hover) {
+  .closedFront .scene:hover {
+    --tilt: 8deg;
+  }
+}
+
+/* ---------- Page block (thickness under the leaves) ---------- */
 .block {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  inset: 0;
   border-radius: 3px 8px 8px 3px;
   background: var(--color-paper-raised);
   box-shadow:
     var(--shadow-book),
-    2px 0 0 #e9e1d2,
-    4px 1px 0 #ddd3c2,
-    6px 2px 0 #cfc3ae;
+    1px 1px 0 #ece4d5,
+    2px 2px 0 #e2d8c6,
+    3px 3px 0 #d8ccb7,
+    4px 4px 0 #cdbfa7,
+    5px 5px 0 #c2b39a;
 }
 
 .spread .block {
-  left: 0;
   border-radius: 8px;
 }
 
@@ -109,8 +174,7 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  /* Page typography scales with the page (cqi units), not the viewport. */
-  container-type: inline-size;
+  container-type: inline-size; /* page typography scales with the page (cqi units) */
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   border-radius: 2px 8px 8px 2px;
@@ -128,99 +192,199 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(to right, rgb(60 40 20 / 0.16), transparent 9%);
+  background: linear-gradient(
+    to right,
+    rgb(60 40 20 / 0.18),
+    rgb(60 40 20 / 0.04) 6%,
+    transparent 12%
+  );
 }
 
 .faceBack::after {
-  background: linear-gradient(to left, rgb(60 40 20 / 0.16), transparent 9%);
+  background: linear-gradient(
+    to left,
+    rgb(60 40 20 / 0.18),
+    rgb(60 40 20 / 0.04) 6%,
+    transparent 12%
+  );
 }
 
 .faceCover::after {
-  background: linear-gradient(to right, rgb(0 0 0 / 0.25), transparent 6%);
+  background: linear-gradient(to right, rgb(0 0 0 / 0.28), transparent 7%);
 }
 
-/* Single layout: the binding strip on the left */
+/* Shading that sweeps over a page while it turns — gives the paper depth. */
+.face::before {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    to left,
+    rgb(40 28 16 / 0.32),
+    rgb(40 28 16 / 0.08) 45%,
+    rgb(255 255 255 / 0.12) 70%,
+    transparent
+  );
+}
+
+.faceBack::before {
+  background: linear-gradient(
+    to right,
+    rgb(40 28 16 / 0.32),
+    rgb(40 28 16 / 0.08) 45%,
+    rgb(255 255 255 / 0.12) 70%,
+    transparent
+  );
+}
+
+.turning .face::before {
+  animation: page-shade var(--duration-page) var(--ease-page);
+}
+
+@keyframes page-shade {
+  50% {
+    opacity: 1;
+  }
+}
+
+/* The spine: attached to the cover leaf so it turns with it (hidden once the cover is open). */
+.hinge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 100%;
+  width: var(--spine-w);
+  border-radius: 6px 0 0 6px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background:
+    linear-gradient(
+      to bottom,
+      transparent 7%,
+      rgb(217 199 163 / 0.55) 7%,
+      rgb(217 199 163 / 0.55) 7.6%,
+      transparent 7.6%,
+      transparent 92.4%,
+      rgb(217 199 163 / 0.55) 92.4%,
+      rgb(217 199 163 / 0.55) 93%,
+      transparent 93%
+    ),
+    linear-gradient(
+      to right,
+      rgb(0 0 0 / 0.35),
+      rgb(255 255 255 / 0.12) 35%,
+      rgb(0 0 0 / 0.05) 65%,
+      rgb(0 0 0 / 0.4)
+    ),
+    var(--cover-deep);
+  box-shadow: -2px 0 6px rgb(0 0 0 / 0.18);
+}
+
+/* Single layout, open: a stitched binding strip on the left. */
 .binding {
   position: absolute;
   z-index: 1;
   top: 0;
   bottom: 0;
-  left: -10px;
-  width: 14px;
+  right: 100%;
+  width: var(--spine-w);
   pointer-events: none;
+  border-radius: 6px 0 0 6px;
+  background:
+    linear-gradient(to right, rgb(0 0 0 / 0.35), rgb(255 255 255 / 0.1) 40%, rgb(0 0 0 / 0.3)),
+    var(--cover-deep);
 }
 
-/* Corner hot-spots for mouse users (keyboard & screen readers use BookNavigation). */
+/* ---------- Mouse page corners ---------- */
+/* Only for precise pointers (mouse). They live inside the page's side margin, so they never
+   cover buttons or text. Touch users swipe; everyone has BookNavigation. */
 .corner {
-  position: absolute;
-  z-index: 200;
-  top: 0;
-  bottom: 0;
-  width: 18%;
-  border: 0;
-  padding: 0;
-  background: transparent;
-  cursor: pointer;
-}
-
-.cornerNext {
-  right: 0;
-}
-
-.cornerPrev {
-  left: 0;
-}
-
-.spread.closedFront .cornerPrev,
-.spread.closedBack .cornerNext {
   display: none;
 }
 
-.cornerNext::after,
-.cornerPrev::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  width: 0;
-  height: 0;
-  transition:
-    width var(--duration-base) var(--ease-out),
-    height var(--duration-base) var(--ease-out);
-}
+@media (hover: hover) and (pointer: fine) {
+  .corner {
+    position: absolute;
+    z-index: 200;
+    bottom: 0;
+    display: block;
+    width: var(--page-pad-x, 2rem);
+    height: 34%;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+  }
 
-.cornerNext::after {
-  right: 0;
-  background: linear-gradient(
-    315deg,
-    #f7f1e6 0%,
-    #e4d8c2 44%,
-    rgb(110 90 60 / 0.35) 50%,
-    transparent 53%
-  );
-  border-top-left-radius: 4px;
-}
+  .cornerNext {
+    right: 0;
+  }
 
-.cornerPrev::after {
-  left: 0;
-  background: linear-gradient(
-    45deg,
-    #f7f1e6 0%,
-    #e4d8c2 44%,
-    rgb(110 90 60 / 0.35) 50%,
-    transparent 53%
-  );
-  border-top-right-radius: 4px;
-}
+  .cornerPrev {
+    left: 0;
+  }
 
-@media (hover: hover) {
+  .corner:disabled,
+  .spread.closedFront .cornerPrev,
+  .spread.closedBack .cornerNext,
+  .closedFront .cornerPrev {
+    display: none;
+  }
+
+  .cornerNext::after,
+  .cornerPrev::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    transition:
+      width var(--duration-base) var(--ease-out),
+      height var(--duration-base) var(--ease-out);
+  }
+
+  .cornerNext::after {
+    right: 0;
+    background: linear-gradient(
+      315deg,
+      #f7f1e6 0%,
+      #e4d8c2 44%,
+      rgb(110 90 60 / 0.35) 50%,
+      transparent 53%
+    );
+    border-top-left-radius: 4px;
+  }
+
+  .cornerPrev::after {
+    left: 0;
+    background: linear-gradient(
+      45deg,
+      #f7f1e6 0%,
+      #e4d8c2 44%,
+      rgb(110 90 60 / 0.35) 50%,
+      transparent 53%
+    );
+    border-top-right-radius: 4px;
+  }
+
   .cornerNext:hover::after,
   .cornerPrev:hover::after {
-    width: 2.6rem;
-    height: 2.6rem;
+    width: 2.4rem;
+    height: 2.4rem;
   }
 }
 
 .hint {
   font-size: var(--text-xs);
   color: var(--color-ink-muted);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .turning .face::before {
+    animation: none;
+  }
 }

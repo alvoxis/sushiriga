@@ -1,7 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { cn } from '@/utils/cn';
 import { leavesFor, type BookLayout } from './bookModel';
-import { BookSpine } from './BookSpine';
 import styles from './Book.module.css';
 
 interface BookPagesProps {
@@ -20,7 +19,9 @@ export function BookPages({ faces, layout, position, visibleFaces, activeLeaf }:
   return (
     <div className={styles.mover}>
       <div className={styles.block} aria-hidden="true" />
-      {layout === 'single' && <BookSpine variant="binding" className={styles.binding} />}
+      {layout === 'single' && position > 0 && (
+        <span className={styles.binding} aria-hidden="true" />
+      )}
       {leaves.map((leaf, index) => {
         const flipped = index < position;
         // Unturned leaves: first on top. Turned leaves: last turned on top.
@@ -28,10 +29,16 @@ export function BookPages({ faces, layout, position, visibleFaces, activeLeaf }:
         return (
           <div
             key={leaf.front}
-            className={cn(styles.leaf, flipped && styles.flipped)}
+            className={cn(
+              styles.leaf,
+              flipped && styles.flipped,
+              index === activeLeaf && styles.turning,
+            )}
             style={{ zIndex } as CSSProperties}
             data-leaf={index}
           >
+            {/* The cover leaf carries the spine, so it turns away with the cover. */}
+            {leaf.front === 0 && <span className={styles.hinge} aria-hidden="true" />}
             <Face index={leaf.front} visible={visibleFaces.includes(leaf.front)}>
               {faces[leaf.front]}
             </Face>

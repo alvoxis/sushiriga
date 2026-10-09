@@ -1,63 +1,135 @@
+/*
+ * Cloth cover. Colour: --cover (set per category). Patterns are tiny inline SVGs printed in
+ * low-contrast gold foil — texture, not decoration noise.
+ */
 .cover {
+  --foil: #e2cfa4;
+  --foil-dim: rgb(226 207 164 / 0.5);
+
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 12% 10% 10%;
-  background:
-    radial-gradient(120% 80% at 30% 20%, rgb(255 255 255 / 0.07), transparent 60%),
-    repeating-linear-gradient(0deg, rgb(255 255 255 / 0.018) 0 1px, transparent 1px 3px),
-    var(--cover, var(--color-indigo));
-  color: var(--color-gold-soft);
+  padding: 13% 11% 10%;
+  overflow: hidden;
+  background-color: var(--cover, var(--color-indigo));
+  color: var(--foil);
   text-align: center;
 }
 
-/* Gold foil frame */
-.cover::before {
+/* Light: a soft key light from the top-left and a vignette toward the edges. */
+.cover::after {
   content: '';
   position: absolute;
-  inset: 5%;
-  border: 1px solid rgb(217 199 163 / 0.45);
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(130% 90% at 18% 8%, rgb(255 255 255 / 0.14), transparent 55%),
+    radial-gradient(120% 120% at 50% 50%, transparent 55%, rgb(0 0 0 / 0.32)),
+    repeating-linear-gradient(0deg, rgb(255 255 255 / 0.018) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgb(0 0 0 / 0.025) 0 1px, transparent 1px 3px);
+}
+
+.cover > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Patterns (gold foil, very low contrast) */
+.seigaiha {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='24' viewBox='0 0 48 24'%3E%3Cg fill='none' stroke='%23e2cfa4' stroke-opacity='.13'%3E%3Cpath d='M0 24a24 24 0 0 1 48 0M8 24a16 16 0 0 1 32 0M16 24a8 8 0 0 1 16 0M-24 12a24 24 0 0 1 48 0M-16 12a16 16 0 0 1 32 0M-8 12a8 8 0 0 1 16 0M24 12a24 24 0 0 1 48 0M32 12a16 16 0 0 1 32 0M40 12a8 8 0 0 1 16 0'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 34px 17px;
+}
+
+.shippo {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg fill='none' stroke='%23e2cfa4' stroke-opacity='.12'%3E%3Ccircle cx='0' cy='0' r='16'/%3E%3Ccircle cx='32' cy='0' r='16'/%3E%3Ccircle cx='0' cy='32' r='16'/%3E%3Ccircle cx='32' cy='32' r='16'/%3E%3Ccircle cx='16' cy='16' r='16'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 26px 26px;
+}
+
+.kikko {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='48' viewBox='0 0 28 48'%3E%3Cg fill='none' stroke='%23e2cfa4' stroke-opacity='.13'%3E%3Cpath d='M14 0l14 8v16l-14 8L0 24V8zM14 32v16M0 40l-0 8M28 40v8'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 21px 36px;
+}
+
+.linen {
+  background-image:
+    repeating-linear-gradient(45deg, rgb(226 207 164 / 0.035) 0 1px, transparent 1px 6px),
+    repeating-linear-gradient(-45deg, rgb(226 207 164 / 0.035) 0 1px, transparent 1px 6px);
+}
+
+/* Foil frame with corner ornaments */
+.frame {
+  position: absolute !important;
+  inset: 5.5%;
+  border: 1px solid var(--foil-dim);
   border-radius: 2px;
   pointer-events: none;
+  box-shadow:
+    inset 0 0 0 4px transparent,
+    inset 0 0 0 5px rgb(226 207 164 / 0.18);
+}
+
+.frame::before,
+.frame::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--foil-dim);
+  background: var(--cover, var(--color-indigo));
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.frame::before {
+  top: -4px;
+}
+
+.frame::after {
+  bottom: -4px;
 }
 
 .eyebrow {
-  font-size: var(--text-xs);
+  font-size: clamp(0.6rem, 3.2cqi, 0.78rem);
   letter-spacing: var(--tracking-logo);
+  margin-right: calc(-1 * var(--tracking-logo));
   text-transform: uppercase;
-  opacity: 0.85;
+  opacity: 0.88;
 }
 
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.rule {
+  width: 2.2rem;
+  height: 1px;
+  background: var(--foil-dim);
+}
+
+/* Embossed foil: a light edge above, a dark edge below. */
 .title {
   font-family: var(--font-display);
-  font-size: clamp(1.6rem, 6vw, 2.6rem);
+  font-size: clamp(1.5rem, 11cqi, 3rem);
   font-weight: 500;
-  line-height: 1.1;
-  color: #efe3c8;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  color: #f0e2c3;
+  text-shadow:
+    0 -1px 0 rgb(255 255 255 / 0.18),
+    0 1px 1px rgb(0 0 0 / 0.5);
+  overflow-wrap: anywhere;
 }
 
 .subtitle {
-  margin-top: var(--space-3);
-  font-size: var(--text-sm);
-  letter-spacing: 0.08em;
-  color: rgb(239 227 200 / 0.8);
-}
-
-.seal {
-  display: grid;
-  place-items: center;
-  width: 2.6rem;
-  height: 2.6rem;
-  border-radius: 6px;
-  background: var(--color-shu);
-  color: #fbeee6;
-  font-family: var(--font-display);
-  font-size: var(--text-sm);
-  letter-spacing: 0.04em;
-  box-shadow: inset 0 0 0 2px rgb(255 255 255 / 0.18);
+  font-size: clamp(0.7rem, 3.6cqi, 0.9rem);
+  letter-spacing: 0.1em;
+  color: rgb(240 226 195 / 0.78);
 }
 
 .footer {
@@ -68,4 +140,48 @@
   font-size: var(--text-xs);
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
+}
+
+.seal {
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 6px;
+  background: var(--color-shu);
+  color: #fbeee6;
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  letter-spacing: 0.04em;
+  box-shadow:
+    inset 0 0 0 2px rgb(255 255 255 / 0.16),
+    0 2px 4px rgb(0 0 0 / 0.3);
+  transform: rotate(-3deg);
+}
+
+/* The "open" action printed on the cover */
+.open {
+  min-height: 2.75rem;
+  padding: 0 var(--space-5);
+  border: 1px solid var(--foil-dim);
+  border-radius: var(--radius-pill);
+  background: rgb(0 0 0 / 0.16);
+  color: var(--foil);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.open:hover {
+  background: rgb(226 207 164 / 0.14);
+  border-color: var(--foil);
+}
+
+.open:focus-visible {
+  outline: 2px solid var(--foil);
+  outline-offset: 3px;
 }
