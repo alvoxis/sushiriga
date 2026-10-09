@@ -2,10 +2,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { ROUTES } from '@/app/routes';
 import { Button, ButtonLink, Card, PageHeader, PlaceholderPanel } from '@/components/ui';
-import { locations } from '@/data/locations';
 import { OrderStatusTimeline } from '@/features/orders/components/OrderStatusTimeline';
 import { canReview, ORDER_PROGRESS } from '@/features/orders/orderStatus';
 import { STANDARD_PREPARATION_MINUTES } from '@/features/pickup/preparationTime';
+import { useLocation } from '@/features/pickup/useLocations';
 import { ReviewForm } from '@/features/reviews/components/ReviewForm';
 import { useDocumentTitle } from '@/hooks';
 import { useTranslation } from '@/i18n';
@@ -18,6 +18,7 @@ export default function OrderPage() {
   const { t, locale, formatPrice } = useTranslation();
   const { orders, ordersAdmin, config } = useServices();
   const [order, setOrder] = useState<Order | null | undefined>(undefined);
+  const location = useLocation(order ? order.location : undefined);
   useDocumentTitle(t('order.title', { id }));
 
   const load = useCallback(
@@ -43,7 +44,6 @@ export default function OrderPage() {
     );
   }
 
-  const location = locations.find((l) => l.id === order.location);
   const pickup =
     order.pickupTime === 'asap'
       ? t('order.asap')
@@ -59,6 +59,11 @@ export default function OrderPage() {
       <PageHeader eyebrow={t('order.thanks')} title={t('order.title', { id: order.id })} />
       <div className={styles.twoColumns}>
         <div className="stack">
+          {order.payment.provider === 'demo' && (
+            <p className={styles.demoNotice} role="note">
+              {t('order.demoNotice')}
+            </p>
+          )}
           <Card>
             <OrderStatusTimeline status={order.status} />
           </Card>
@@ -104,8 +109,8 @@ export default function OrderPage() {
           </dl>
           <h2 style={{ fontSize: 'var(--text-lg)' }}>{t('order.items')}</h2>
           <ul className={styles.items}>
-            {order.items.map((item) => (
-              <li key={item.productId}>
+            {order.items.map((item, index) => (
+              <li key={`${item.productId}-${index}`}>
                 <span>
                   {item.quantity} × {item.name}
                 </span>

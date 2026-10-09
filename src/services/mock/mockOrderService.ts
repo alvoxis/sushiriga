@@ -1,12 +1,32 @@
+import { buildCart, MAX_QUANTITY } from '@/features/cart/cartMath';
 import { canTransition } from '@/features/orders/orderStatus';
 import { isPreparationTimeOption } from '@/features/pickup/preparationTime';
-import type { Order, OrderStatus } from '@/types';
+import { evaluatePromo, normalizePromoCode } from '@/features/promo/evaluatePromo';
+import { MAX_CUSTOM_TIP } from '@/features/tips/tips';
+import type {
+  CheckoutQuote,
+  CheckoutRequest,
+  Location,
+  Order,
+  OrderItem,
+  OrderStatus,
+  Product,
+  PromoCode,
+} from '@/types';
 import { createId } from '@/utils/id';
 import { readStorage, writeStorage } from '@/utils/storage';
-import { mockDelay } from '../delay';
-import type { OrderAdminService, OrderService } from './orderService';
+import { OrderError, type OrderAdminService, type OrderService } from '../orders/orderService';
+import { mockDelay } from './delay';
+import { MOCK_PROMO_CODES } from './fixtures';
 
-const KEY = 'mock.orders.v1';
+const KEY = 'mock.orders.v2';
+
+interface MockOrderDeps {
+  products: Product[];
+  locations: Location[];
+  promoCodes?: PromoCode[];
+  now?: () => Date;
+}
 
 function load(): Order[] {
   return readStorage<Order[]>(KEY, []);
@@ -27,43 +47,142 @@ function update(id: string, change: (order: Order) => Order): Order {
   return next;
 }
 
-/** Orders stored in localStorage of this browser only. DEMO — nothing reaches the restaurant. */
-export function createMockOrderService(): OrderService & OrderAdminService {
+/**
+ * DEMO order backend running in the browser. It imitates the server's trust model: it prices
+ * the cart itself (catalog prices, promo rules, tip limits) and only creates an order for a
+ * confirmed payment of exactly the quoted amount. Orders live in this browser only and NEVER
+ * reach the restaurant.
+ */
+export function createMockOrderService(deps: MockOrderDeps): OrderService & OrderAdminService {
+  const promoCodes = deps.promoCodes ?? MOCK_PROMO_CODES;
+  const now = deps.now ?? (() => new Date());
+  const quotes = new Map<string, { quote: CheckoutQuote; request: CheckoutRequest }>();
+  const ordersByQuote = new Map<string, string>();
+
+  function price(request: CheckoutRequest): CheckoutQuote {
+    const { items, tip, locationId, pickupTime } = request;
+    if (!items.length) throw new OrderError('invalid-request', 'Cart is empty');
+    for (const item of items) {
+      if (!Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > MAX_QUANTITY) {
+        throw new OrderError('invalid-request', `Invalid quantity for ${item.productId}`);
+      }
+      const product = deps.products.find((p) => p.id === item.productId);
+      if (!product?.available) {
+        throw new OrderError('unavailable-product', `Product ${item.productId} is not available`);
+      }
+    }
+    if (!Number.isInteger(tip) || tip < 0 || tip > MAX_CUSTOM_TIP) {
+      throw new OrderError('invalid-request', 'Invalid tip');
+    }
+    if (!deps.locations.some((l) => l.id === locationId && l.active)) {
+      throw new OrderError('invalid-request', 'Unknown pickup location');
+    }
+    if (pickupTime !== 'asap' && Number.isNaN(Date.parse(pickupTime))) {
+      throw new OrderError('invalid-request', 'Invalid pickup time');
+    }
+
+    const cart = buildCart(items, deps.products);
+    const lines: OrderItem[] = cart.items.map((line) => ({
+      productId: line.productId,
+      quantity: line.quantity,
+      ...(line.selectedOptions ? { selectedOptions: line.selectedOptions } : {}),
+      name: deps.products.find((p) => p.id === line.productId)?.name ?? line.productId,
+      unitPrice: line.unitPrice,
+      lineTotal: line.lineTotal,
+    }));
+
+    let discount = 0;
+    let promoCode: string | undefined;
+    let promoRejected: CheckoutQuote['promoRejected'];
+    if (request.promoCode) {
+      const code = normalizePromoCode(request.promoCode);
+      const customerId =
+        request.customer.type === 'registered' ? request.customer.customerId : undefined;
+      const result = evaluatePromo(
+        promoCodes.find((p) => p.code === code),
+        code,
+        { subtotal: cart.subtotal, now: now(), ...(customerId ? { customerId } : {}) },
+      );
+      if (result.valid) {
+        discount = result.discount;
+        promoCode = result.code;
+      } else {
+        promoRejected = result.reason;
+      }
+    }
+
+    return {
+      quoteId: createId('quote'),
+      items: lines,
+      subtotal: cart.subtotal,
+      discount,
+      tip,
+      total: cart.subtotal - discount + tip,
+      ...(promoCode ? { promoCode } : {}),
+      ...(promoRejected ? { promoRejected } : {}),
+    };
+  }
+
   return {
-    async createOrder(input) {
+    async quote(request) {
       await mockDelay();
-      const now = new Date().toISOString();
-      const subtotal = input.items.reduce((sum, i) => sum + i.lineTotal, 0);
-      const discount = Math.min(Math.max(input.expectedDiscount, 0), subtotal);
+      const quote = price(request);
+      quotes.set(quote.quoteId, { quote, request });
+      return quote;
+    },
+
+    async awaitPaidOrder(quoteId, payment) {
+      await mockDelay();
+      const existing = ordersByQuote.get(quoteId);
+      if (existing) {
+        const order = load().find((o) => o.id === existing);
+        if (order) return order;
+      }
+      const entry = quotes.get(quoteId);
+      if (!entry) throw new OrderError('quote-not-found', `Quote ${quoteId} not found`);
+      const { quote, request } = entry;
+      if (
+        payment.status !== 'succeeded' ||
+        payment.quoteId !== quoteId ||
+        payment.amount !== quote.total
+      ) {
+        throw new OrderError('payment-not-confirmed', 'Payment does not match the quote');
+      }
+      const at = now().toISOString();
       const order: Order = {
         id: createId('SR').toUpperCase(),
-        customer: input.customer,
-        items: input.items,
-        subtotal,
-        // The mock trusts the client; the real backend recalculates the discount.
-        discount,
-        tip: input.tip,
-        total: subtotal - discount + input.tip,
-        ...(input.promoCode ? { promoCode: input.promoCode } : {}),
-        location: input.locationId,
-        pickupTime: input.pickupTime,
+        customer: request.customer,
+        items: quote.items,
+        subtotal: quote.subtotal,
+        discount: quote.discount,
+        tip: quote.tip,
+        total: quote.total,
+        ...(quote.promoCode ? { promoCode: quote.promoCode } : {}),
+        location: request.locationId,
+        pickupTime: request.pickupTime,
         preparationTime: null, // chosen by staff in acceptOrder
         status: 'PAID',
-        statusHistory: [{ status: 'PAID', at: now }],
-        createdAt: now,
-        updatedAt: now,
+        statusHistory: [{ status: 'PAID', at }],
+        payment: { provider: payment.provider, reference: payment.paymentId },
+        createdAt: at,
+        updatedAt: at,
       };
       save([order, ...load()]);
+      quotes.delete(quoteId);
+      ordersByQuote.set(quoteId, order.id);
       return order;
     },
+
     async getOrder(id) {
       return load().find((o) => o.id === id);
     },
+
     async listCustomerOrders(customerId) {
       return load().filter(
         (o) => o.customer.type === 'registered' && o.customer.customerId === customerId,
       );
     },
+
     async listOrders(filter) {
       return load().filter(
         (o) =>
@@ -71,12 +190,14 @@ export function createMockOrderService(): OrderService & OrderAdminService {
           (!filter?.status || filter.status.includes(o.status)),
       );
     },
+
     async acceptOrder(id, preparationTime) {
-      if (!isPreparationTimeOption(preparationTime))
+      if (!isPreparationTimeOption(preparationTime)) {
         throw new Error(`Invalid preparation time ${preparationTime}`);
+      }
       return update(id, (order) => {
         if (order.status !== 'PAID') throw new Error(`Order ${id} is ${order.status}, not PAID`);
-        const at = new Date().toISOString();
+        const at = now().toISOString();
         return {
           ...order,
           status: 'ACCEPTED',
@@ -86,14 +207,16 @@ export function createMockOrderService(): OrderService & OrderAdminService {
         };
       });
     },
+
     async updateStatus(id, status: OrderStatus, note) {
-      if (status === 'ACCEPTED')
+      if (status === 'ACCEPTED') {
         throw new Error('Use acceptOrder(): accepting requires a preparation time');
+      }
       return update(id, (order) => {
         if (!canTransition(order.status, status)) {
           throw new Error(`Cannot change order ${id} from ${order.status} to ${status}`);
         }
-        const at = new Date().toISOString();
+        const at = now().toISOString();
         return {
           ...order,
           status,
@@ -102,12 +225,13 @@ export function createMockOrderService(): OrderService & OrderAdminService {
         };
       });
     },
+
     async setPreparationTime(id, minutes) {
       if (!isPreparationTimeOption(minutes)) throw new Error(`Invalid preparation time ${minutes}`);
       return update(id, (order) => ({
         ...order,
         preparationTime: minutes,
-        updatedAt: new Date().toISOString(),
+        updatedAt: now().toISOString(),
       }));
     },
   };

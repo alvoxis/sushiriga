@@ -73,3 +73,11 @@
   justify-content: space-between;
   gap: var(--space-3);
 }
+
+.demoNotice {
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--color-shu);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  background: var(--color-shu-soft);
+  font-size: var(--text-sm);
+}

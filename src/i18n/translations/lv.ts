@@ -170,6 +170,9 @@ export const lv: Messages = {
     summary: 'Tavs pasūtījums',
     tip: 'Dzeramnauda',
     failed: 'Kaut kas nogāja greizi. Lūdzu, mēģini vēlreiz.',
+    priceChanged:
+      'Cenas ir mainījušās — jaunā summa ir {total}. Lūdzu, pārbaudi grozu un mēģini vēlreiz.',
+    unavailableProduct: 'Viens no ēdieniem vairs nav pieejams. Lūdzu, pārbaudi grozu.',
   },
   tips: {
     title: 'Dāvini smaidu',
@@ -217,6 +220,7 @@ export const lv: Messages = {
       'Kontā vari redzēt pasūtījumu vēsturi, atkārtot pasūtījumus un atstāt atsauksmes. Tas nav obligāti.',
     createAccountCta: 'Izveidot kontu',
     demoAdvance: 'Demo: nākamais statuss',
+    demoNotice: 'Demo pasūtījums: nauda netika iekasēta, un restorāns šo pasūtījumu nesaņēma.',
   },
   account: {
     title: 'Konts',

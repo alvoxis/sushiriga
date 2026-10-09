@@ -30,7 +30,7 @@ export const en = {
     mainNavigation: 'Main navigation',
     bottomNavigation: 'Quick navigation',
     language: 'Language',
-    cartWithCount: 'Cart, {count} items',
+    cartWithCount: 'Cart, items: {count}',
   },
   home: {
     eyebrow: 'Sushi · Riga · Pickup',
@@ -173,6 +173,9 @@ export const en = {
     summary: 'Order summary',
     tip: 'Tip',
     failed: 'Something went wrong. Please try again.',
+    priceChanged:
+      'Prices have changed — the new total is {total}. Please check your cart and try again.',
+    unavailableProduct: 'One of the dishes is no longer available. Please check your cart.',
   },
   tips: {
     title: 'Give a smile',
@@ -221,6 +224,7 @@ export const en = {
       'With an account you can see your order history, repeat orders and leave reviews. It is optional.',
     createAccountCta: 'Create an account',
     demoAdvance: 'Demo: next status',
+    demoNotice: 'Demo order: no money was charged and the restaurant did not receive this order.',
   },
   account: {
     title: 'Account',

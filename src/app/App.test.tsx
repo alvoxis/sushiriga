@@ -38,7 +38,7 @@ describe('SUSHIRIGA app', () => {
     // go to the cart via the bottom navigation
     await user.click(
       within(screen.getByRole('navigation', { name: 'Quick navigation' })).getByRole('link', {
-        name: 'Cart, 1 items',
+        name: 'Cart, items: 1',
       }),
     );
     expect(await screen.findByRole('heading', { level: 1, name: 'Cart' })).toBeInTheDocument();
@@ -51,6 +51,38 @@ describe('SUSHIRIGA app', () => {
 
     await user.click(screen.getByRole('button', { name: 'One less Maestro' }));
     expect(screen.getByTestId('cart-total')).toHaveTextContent('€10.50');
+  });
+
+  it('counts only available catalog products in the cart badge', async () => {
+    localStorage.setItem(
+      'sushiriga.cart.v1',
+      JSON.stringify([
+        { productId: 'no-longer-on-the-menu', quantity: 3 },
+        { productId: 'maestro', quantity: 1 },
+      ]),
+    );
+    renderApp('/cart');
+    const nav = await screen.findByRole('navigation', { name: 'Quick navigation' });
+    expect(within(nav).getByRole('link', { name: 'Cart, items: 1' })).toBeInTheDocument();
+    expect(screen.getAllByTestId('cart-line')).toHaveLength(1);
+  });
+
+  it('marks a demo order as not paid for real', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true, now: new Date('2026-10-05T12:00:00+03:00') });
+    localStorage.setItem(
+      'sushiriga.cart.v1',
+      JSON.stringify([{ productId: 'maestro', quantity: 1 }]),
+    );
+    const { user } = renderApp('/checkout');
+    await user.type(await screen.findByLabelText('Name'), 'Anna');
+    await user.type(screen.getByLabelText('Phone'), '+371 20000000');
+    await user.click(screen.getByRole('button', { name: 'Place demo order' }));
+    expect(await screen.findByTestId('order-status')).toHaveTextContent('Paid');
+    expect(screen.getByText(/Demo order: no money was charged/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Confirmed by the restaurant when it accepts the order/),
+    ).toBeInTheDocument();
+    vi.useRealTimers();
   });
 
   it('applies a (mock) promo code to the total', async () => {

@@ -1,24 +1,42 @@
-import type { Customer, Order, OrderItem, OrderStatus, PreparationTimeOption } from '@/types';
+import type {
+  CheckoutQuote,
+  CheckoutRequest,
+  Order,
+  OrderStatus,
+  PreparationTimeOption,
+} from '@/types';
+import type { PaymentResult } from '../payments/paymentService';
 
-export interface CreateOrderInput {
-  customer: Customer;
-  items: OrderItem[];
-  promoCode?: string;
-  /** Discount the customer saw. The backend recalculates it and may reject a mismatch. */
-  expectedDiscount: number;
-  tip: number;
-  locationId: string;
-  pickupTime: string;
-  /** Reference from the payment provider. */
-  paymentId: string;
+export type OrderErrorCode =
+  | 'invalid-request'
+  | 'unavailable-product'
+  | 'quote-not-found'
+  | 'payment-not-confirmed'
+  | 'not-connected';
+
+export class OrderError extends Error {
+  constructor(
+    readonly code: OrderErrorCode,
+    message: string,
+  ) {
+    super(message);
+    this.name = 'OrderError';
+  }
 }
 
 /**
- * Customer-facing order API. In production the backend recalculates every amount
- * (prices, promo discount, total) — values sent from the browser are never trusted.
+ * Customer-facing order API.
+ *
+ * Trust model (mirrors the future backend):
+ * 1. `quote()` — the browser sends ids/quantities/promo/tip only; the SERVER prices everything.
+ * 2. The payment is created for the quote (server-side amount), never for a browser amount.
+ * 3. The order exists only after the payment is confirmed. In production the payment webhook
+ *    creates it; `awaitPaidOrder()` then just fetches it — the `payment` argument is a hint and
+ *    is never trusted by a real backend.
  */
 export interface OrderService {
-  createOrder(input: CreateOrderInput): Promise<Order>;
+  quote(request: CheckoutRequest): Promise<CheckoutQuote>;
+  awaitPaidOrder(quoteId: string, payment: PaymentResult): Promise<Order>;
   getOrder(id: string): Promise<Order | undefined>;
   listCustomerOrders(customerId: string): Promise<Order[]>;
 }

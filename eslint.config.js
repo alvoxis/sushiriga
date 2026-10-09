@@ -33,6 +33,29 @@ export default tseslint.config(
     },
   },
   {
+    // Demo/mock services must stay isolated from production code paths.
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: [
+      'src/services/createServices.ts',
+      'src/services/mock/**',
+      'src/**/*.test.{ts,tsx}',
+      'src/test/**',
+    ],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/services/mock/*', '**/services/mock/*', './mock/*', '../mock/*'],
+              message: 'Mock/demo services may only be wired in src/services/createServices.ts.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ['*.config.ts', 'e2e/**/*.ts'],
     languageOptions: { globals: { ...globals.node } },
   },

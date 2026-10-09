@@ -1,0 +1,36 @@
+import { createServices } from './createServices';
+import { readConfig } from './config';
+import { createDemoPaymentService } from './mock/demoPaymentService';
+
+describe('service composition', () => {
+  it('demo mode = no VITE_API_URL; mocks are wired and payments are marked demo', () => {
+    const services = createServices(readConfig({}));
+    expect(services.config.demoMode).toBe(true);
+    expect(services.payments.provider).toBe('demo');
+    expect(services.ordersAdmin).toBeDefined();
+  });
+
+  it('with a backend URL there is NO silent fallback to demo orders or payments', async () => {
+    const services = createServices(readConfig({ VITE_API_URL: 'https://api.example.test' }));
+    expect(services.config.demoMode).toBe(false);
+    expect(services.ordersAdmin).toBeUndefined();
+    await expect(
+      services.payments.pay({ quoteId: 'q', amount: 100, description: 'x' }),
+    ).rejects.toThrow(/not connected/);
+    await expect(services.orders.getOrder('x')).rejects.toThrow(/not connected/);
+  });
+
+  it('the demo payment provider refuses to exist outside demo mode', () => {
+    expect(() =>
+      createDemoPaymentService(readConfig({ VITE_API_URL: 'https://api.example.test' })),
+    ).toThrow();
+  });
+
+  it('never reads secret-looking variables', () => {
+    const config = readConfig({
+      VITE_STRIPE_PUBLIC_KEY: 'pk_test_123',
+      STRIPE_SECRET_KEY: 'sk_test_x',
+    });
+    expect(JSON.stringify(config)).not.toContain('sk_test');
+  });
+});

@@ -4,15 +4,14 @@ import { paths } from '@/app/routes';
 import { Button, Card, ChoiceGroup, TextField } from '@/components/ui';
 import { useCart } from '@/features/cart/CartContext';
 import { CartSummary } from '@/features/cart/components/CartSummary';
-import { useCatalog } from '@/features/menu/CatalogContext';
 import { canOrderAsap, pickupSlots } from '@/features/pickup/pickupSlots';
 import { STANDARD_PREPARATION_MINUTES } from '@/features/pickup/preparationTime';
 import { TipSelector } from '@/features/tips/components/TipSelector';
 import { tipAmount } from '@/features/tips/tips';
 import { useTranslation } from '@/i18n';
 import { useServices } from '@/services';
+import { OrderError } from '@/services/orders/orderService';
 import type { GuestContact, Location, TipSelection } from '@/types';
-import { buildOrderItems } from '../buildOrderItems';
 import { validateContact, type ContactErrors } from '../validateContact';
 import styles from './checkout.module.css';
 
@@ -23,11 +22,10 @@ type TimeMode = 'asap' | 'scheduled';
  * No account is required at any step.
  */
 export function CheckoutForm({ locations }: { locations: Location[] }) {
-  const { t, locale } = useTranslation();
+  const { t, locale, formatPrice } = useTranslation();
   const navigate = useNavigate();
   const services = useServices();
-  const { products } = useCatalog();
-  const { cart, clear } = useCart();
+  const { cart, items, clear, setPromo } = useCart();
 
   const [locationId, setLocationId] = useState(locations[0]?.id ?? '');
   const location = locations.find((l) => l.id === locationId);
@@ -52,7 +50,8 @@ export function CheckoutForm({ locations }: { locations: Location[] }) {
   const [timeError, setTimeError] = useState(false);
   const [tip, setTip] = useState<TipSelection>({ kind: 'none' });
   const [submitting, setSubmitting] = useState(false);
-  const [failed, setFailed] = useState(false);
+  const [tipError, setTipError] = useState(false);
+  const [failure, setFailure] = useState<string | null>(null);
 
   const timeFormat = new Intl.DateTimeFormat(locale, {
     hour: '2-digit',
@@ -65,37 +64,66 @@ export function CheckoutForm({ locations }: { locations: Location[] }) {
     event.preventDefault();
     const contactErrors = validateContact(contact);
     const pickupTime = timeMode === 'asap' && asapAvailable ? 'asap' : slot;
+    const tipInvalid = tip.kind === 'custom' && tipCents === 0;
     setErrors(contactErrors);
     setTimeError(!pickupTime);
-    if (Object.keys(contactErrors).length || !pickupTime || !location || !cart.items.length) return;
+    setTipError(tipInvalid);
+    if (
+      Object.keys(contactErrors).length ||
+      !pickupTime ||
+      tipInvalid ||
+      !location ||
+      !cart.items.length
+    ) {
+      return;
+    }
 
     setSubmitting(true);
-    setFailed(false);
+    setFailure(null);
     try {
-      const payment = await services.payments.pay({
-        amount: cart.total + tipCents,
-        description: 'SUSHIRIGA pickup order',
-      });
-      if (payment.status !== 'succeeded') throw new Error('payment failed');
-      const order = await services.orders.createOrder({
+      // 1. The server prices the cart. Only ids, quantities, promo code and tip are sent.
+      const quote = await services.orders.quote({
         customer: {
           type: 'guest',
           name: contact.name.trim(),
           phone: contact.phone.trim(),
           ...(contact.email?.trim() ? { email: contact.email.trim() } : {}),
         },
-        items: buildOrderItems(cart.items, products),
+        items: items.filter((item) => cart.items.some((line) => line.productId === item.productId)),
         ...(cart.promoCode ? { promoCode: cart.promoCode } : {}),
-        expectedDiscount: cart.discount,
         tip: tipCents,
         locationId: location.id,
         pickupTime,
-        paymentId: payment.paymentId,
       });
+      if (quote.promoRejected) {
+        setPromo(null);
+        setFailure(t(`cart.promo.errors.${quote.promoRejected}`, { amount: '' }));
+        setSubmitting(false);
+        return;
+      }
+      // The customer must never pay an amount different from the one they saw.
+      if (quote.total !== cart.total + tipCents) {
+        setFailure(t('checkout.priceChanged', { total: formatPrice(quote.total) }));
+        setSubmitting(false);
+        return;
+      }
+      // 2. Payment for the server quote (demo mode: simulated, nothing is charged).
+      const payment = await services.payments.pay({
+        quoteId: quote.quoteId,
+        amount: quote.total,
+        description: 'SUSHIRIGA pickup order',
+      });
+      if (payment.status !== 'succeeded') throw new Error('payment failed');
+      // 3. The order exists only once the payment is confirmed.
+      const order = await services.orders.awaitPaidOrder(quote.quoteId, payment);
       clear();
       navigate(paths.order(order.id));
-    } catch {
-      setFailed(true);
+    } catch (error) {
+      setFailure(
+        error instanceof OrderError && error.code === 'unavailable-product'
+          ? t('checkout.unavailableProduct')
+          : t('checkout.failed'),
+      );
       setSubmitting(false);
     }
   }
@@ -203,6 +231,7 @@ export function CheckoutForm({ locations }: { locations: Location[] }) {
 
         <section className={styles.step} aria-label={t('checkout.steps.tip')}>
           <TipSelector value={tip} onChange={setTip} />
+          {tipError && <p className={styles.error}>{t('tips.invalid')}</p>}
         </section>
 
         <section className={styles.step} aria-labelledby="step-payment">
@@ -214,9 +243,9 @@ export function CheckoutForm({ locations }: { locations: Location[] }) {
             <p>{t('checkout.paymentNotConnected')}</p>
             {services.config.demoMode && <p>{t('checkout.paymentDemo')}</p>}
           </div>
-          {failed && (
+          {failure && (
             <p className={styles.error} role="alert">
-              {t('checkout.failed')}
+              {failure}
             </p>
           )}
           <div>

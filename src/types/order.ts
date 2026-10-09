@@ -1,6 +1,7 @@
 import type { CartItem } from './cart';
 import type { Customer } from './customer';
 import type { Cents } from './money';
+import type { PromoRejectionReason } from './promo';
 
 export const ORDER_STATUSES = [
   'PAID',
@@ -25,6 +26,40 @@ export interface OrderItem extends CartItem {
   name: string;
   unitPrice: Cents;
   lineTotal: Cents;
+}
+
+/** How the order was paid. `demo` = simulated in demo mode: NO money was charged. */
+export interface OrderPayment {
+  provider: 'demo' | 'stripe';
+  reference: string;
+}
+
+/**
+ * What the browser sends to start a checkout. Deliberately contains NO prices, discounts or
+ * totals: the server prices the cart from its own catalog and promo rules.
+ */
+export interface CheckoutRequest {
+  customer: Customer;
+  items: CartItem[];
+  promoCode?: string;
+  tip: Cents;
+  locationId: string;
+  /** "asap" or ISO date-time. */
+  pickupTime: string;
+}
+
+/** The server-calculated price of a CheckoutRequest. The ONLY amounts a payment may use. */
+export interface CheckoutQuote {
+  quoteId: string;
+  items: OrderItem[];
+  subtotal: Cents;
+  discount: Cents;
+  tip: Cents;
+  total: Cents;
+  /** Applied promo code (normalized), if the server accepted it. */
+  promoCode?: string;
+  /** Set when a promo code was sent but rejected by the server. */
+  promoRejected?: PromoRejectionReason;
 }
 
 export interface OrderStatusChange {
@@ -53,6 +88,7 @@ export interface Order {
   preparationTime: PreparationTimeOption | null;
   status: OrderStatus;
   statusHistory: OrderStatusChange[];
+  payment: OrderPayment;
   createdAt: string;
   updatedAt: string;
 }
