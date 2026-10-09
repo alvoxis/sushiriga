@@ -149,6 +149,7 @@ export const en = {
         'min-order-not-met': 'This promo code works from {amount}.',
         'not-eligible': 'This promo code is not available for you.',
         unavailable: 'Promo codes cannot be checked yet.',
+        network: 'Could not check the code right now. Please try again.',
         empty: 'Enter a promo code.',
       },
     },
@@ -171,6 +172,9 @@ export const en = {
     confirming: 'Creating order…',
     confirmNote:
       'Payment is not connected: the order is created with the status “Awaiting payment”. Nothing is charged and the restaurant does not receive it.',
+    confirmLive: 'Confirm order',
+    confirmNoteLive:
+      'Online payment is not available yet: the order is saved with the status “Awaiting payment”. Nothing is charged, and the restaurant prepares only paid orders.',
     timePreliminary: 'Preliminary',
     timeNote:
       'The kitchen’s current load is not known yet. The restaurant confirms the exact time after it receives the order.',
@@ -202,6 +206,10 @@ export const en = {
     summary: 'Order summary',
     tip: 'Tip',
     failed: 'Something went wrong. Please try again.',
+    network:
+      'No connection to the restaurant’s server. Check your internet connection and try again.',
+    quoteExpired: 'The order check has expired — please review your order again.',
+    tooManyRequests: 'Too many attempts. Please wait a minute and try again.',
     priceChanged:
       'Prices have changed — the new total is {total}. Please check your cart and try again.',
     unavailableProduct: 'One of the dishes is no longer available. Please check your cart.',
@@ -219,6 +227,7 @@ export const en = {
     title: 'Order {id}',
     thanks: 'Thank you! Your order is in.',
     createdUnpaid: 'Demo order created — not paid',
+    createdAwaitingPayment: 'Order created — awaiting payment',
     preliminary: 'preliminary',
     status: {
       PENDING_PAYMENT: 'Awaiting payment',
@@ -253,6 +262,9 @@ export const en = {
     location: 'Location',
     items: 'Items',
     notFound: 'We could not find this order.',
+    notFoundHint: 'An order page opens in the browser the order was placed from.',
+    loadFailed: 'Could not load the order. Check your connection and try again.',
+    retry: 'Try again',
     createAccountTitle: 'Save this order to an account?',
     createAccountBody:
       'With an account you can see your order history, repeat orders and leave reviews. It is optional.',
@@ -296,6 +308,8 @@ export const en = {
     ratingRequired: 'Please choose a rating from 1 to 5.',
     starLabel: '{count} of 5',
     thanks: 'Thank you for your review!',
+    failed: 'Could not send the review. Please try again.',
+    pending: 'Thank you! Your review will appear after moderation.',
   },
   pickup: {
     title: 'Pickup',

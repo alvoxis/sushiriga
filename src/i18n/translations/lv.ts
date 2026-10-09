@@ -146,6 +146,7 @@ export const lv: Messages = {
         'min-order-not-met': 'Promokods derīgs no {amount}.',
         'not-eligible': 'Šis promokods tev nav pieejams.',
         unavailable: 'Promokodus vēl nevar pārbaudīt.',
+        network: 'Neizdevās pārbaudīt kodu. Lūdzu, mēģini vēlreiz.',
         empty: 'Ievadi promokodu.',
       },
     },
@@ -168,6 +169,9 @@ export const lv: Messages = {
     confirming: 'Veido pasūtījumu…',
     confirmNote:
       'Maksājumi nav pieslēgti: pasūtījums tiks izveidots ar statusu “Gaida apmaksu”. Nauda netiek iekasēta, un restorāns pasūtījumu nesaņem.',
+    confirmLive: 'Apstiprināt pasūtījumu',
+    confirmNoteLive:
+      'Tiešsaistes apmaksa vēl nav pieejama: pasūtījums tiek saglabāts ar statusu “Gaida apmaksu”. Nauda netiek iekasēta, un restorāns gatavo tikai apmaksātus pasūtījumus.',
     timePreliminary: 'Provizoriski',
     timeNote:
       'Virtuves pašreizējā noslodze vēl nav zināma. Precīzu laiku restorāns apstiprinās pēc pasūtījuma saņemšanas.',
@@ -199,6 +203,10 @@ export const lv: Messages = {
     summary: 'Tavs pasūtījums',
     tip: 'Dzeramnauda',
     failed: 'Kaut kas nogāja greizi. Lūdzu, mēģini vēlreiz.',
+    network:
+      'Nav savienojuma ar restorāna serveri. Pārbaudi interneta savienojumu un mēģini vēlreiz.',
+    quoteExpired: 'Pasūtījuma pārbaude ir novecojusi — lūdzu, pārbaudi pasūtījumu vēlreiz.',
+    tooManyRequests: 'Pārāk daudz mēģinājumu. Lūdzu, uzgaidi minūti un mēģini vēlreiz.',
     priceChanged:
       'Cenas ir mainījušās — jaunā summa ir {total}. Lūdzu, pārbaudi grozu un mēģini vēlreiz.',
     unavailableProduct: 'Viens no ēdieniem vairs nav pieejams. Lūdzu, pārbaudi grozu.',
@@ -216,6 +224,7 @@ export const lv: Messages = {
     title: 'Pasūtījums {id}',
     thanks: 'Paldies! Pasūtījums ir saņemts.',
     createdUnpaid: 'Demo pasūtījums izveidots — nav apmaksāts',
+    createdAwaitingPayment: 'Pasūtījums izveidots — gaida apmaksu',
     preliminary: 'provizoriski',
     status: {
       PENDING_PAYMENT: 'Gaida apmaksu',
@@ -249,6 +258,9 @@ export const lv: Messages = {
     location: 'Vieta',
     items: 'Ēdieni',
     notFound: 'Pasūtījumu neizdevās atrast.',
+    notFoundHint: 'Pasūtījuma lapa atveras tajā pārlūkā, no kura pasūtījums tika veikts.',
+    loadFailed: 'Neizdevās ielādēt pasūtījumu. Pārbaudi savienojumu un mēģini vēlreiz.',
+    retry: 'Mēģināt vēlreiz',
     createAccountTitle: 'Saglabāt pasūtījumu kontā?',
     createAccountBody:
       'Kontā vari redzēt pasūtījumu vēsturi, atkārtot pasūtījumus un atstāt atsauksmes. Tas nav obligāti.',
@@ -292,6 +304,8 @@ export const lv: Messages = {
     ratingRequired: 'Lūdzu, izvēlies vērtējumu no 1 līdz 5.',
     starLabel: '{count} no 5',
     thanks: 'Paldies par atsauksmi!',
+    failed: 'Neizdevās nosūtīt atsauksmi. Lūdzu, mēģini vēlreiz.',
+    pending: 'Paldies! Atsauksme parādīsies pēc moderācijas.',
   },
   pickup: {
     title: 'Saņemšana',

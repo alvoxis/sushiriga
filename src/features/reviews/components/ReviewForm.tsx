@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { Button, TextArea } from '@/components/ui';
 import { useTranslation } from '@/i18n';
 import { useServices } from '@/services';
@@ -18,7 +18,7 @@ export function ReviewForm({
   onSubmitted?: () => void;
 }) {
   const { t } = useTranslation();
-  const { reviews } = useServices();
+  const { reviews, config } = useServices();
   const [rating, setRating] = useState<Rating | null>(null);
   const [foodRating, setFoodRating] = useState<Rating | null>(null);
   const [serviceRating, setServiceRating] = useState<Rating | null>(null);
@@ -26,6 +26,20 @@ export function ReviewForm({
   const [comment, setComment] = useState('');
   const [showErrors, setShowErrors] = useState(false);
   const [done, setDone] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  // One review per order: if this order already has one, say thanks instead of a second form.
+  useEffect(() => {
+    let active = true;
+    reviews.getForOrder(orderId).then(
+      (existing) => active && existing && setDone(true),
+      () => undefined, // the form still works; the server rejects a duplicate
+    );
+    return () => {
+      active = false;
+    };
+  }, [reviews, orderId]);
 
   const draft = {
     orderId,
@@ -42,12 +56,23 @@ export function ReviewForm({
     event.preventDefault();
     setShowErrors(true);
     if (errors.length || !rating) return;
-    await reviews.submit({ ...draft, rating });
-    setDone(true);
-    onSubmitted?.();
+    setBusy(true);
+    setFailed(false);
+    try {
+      await reviews.submit({ ...draft, rating });
+      setDone(true);
+      onSubmitted?.();
+    } catch {
+      setFailed(true);
+    } finally {
+      setBusy(false);
+    }
   }
 
-  if (done) return <p role="status">{t('reviews.thanks')}</p>;
+  if (done) {
+    // A real backend publishes reviews only after moderation.
+    return <p role="status">{config.demoMode ? t('reviews.thanks') : t('reviews.pending')}</p>;
+  }
 
   return (
     <form className={styles.form} onSubmit={onSubmit} noValidate>
@@ -70,8 +95,15 @@ export function ReviewForm({
         maxLength={MAX_COMMENT_LENGTH}
         onChange={(event) => setComment(event.target.value)}
       />
+      {failed && (
+        <p className={styles.error} role="alert">
+          {t('reviews.failed')}
+        </p>
+      )}
       <div>
-        <Button type="submit">{t('reviews.submit')}</Button>
+        <Button type="submit" disabled={busy}>
+          {t('reviews.submit')}
+        </Button>
       </div>
     </form>
   );

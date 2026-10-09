@@ -33,6 +33,8 @@ export function PromoCodeForm() {
           }),
         );
       }
+    } catch {
+      setError(t('cart.promo.errors.network'));
     } finally {
       setPending(false);
     }

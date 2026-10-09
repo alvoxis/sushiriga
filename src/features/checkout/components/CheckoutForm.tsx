@@ -131,13 +131,32 @@ export function CheckoutForm({ locations }: { locations: Location[] }) {
       setStep('review');
       window.scrollTo?.({ top: 0 });
     } catch (error) {
-      setFailure(
-        error instanceof OrderError && error.code === 'unavailable-product'
-          ? t('checkout.unavailableProduct')
-          : t('checkout.failed'),
-      );
+      if (error instanceof OrderError && error.code === 'pickup-unavailable') {
+        // The server's clock disagrees with the form (e.g. the slot has just passed).
+        setTimeProblem('unavailable');
+        setSlot('');
+        setNow(new Date());
+      } else {
+        setFailure(failureMessage(error));
+      }
     } finally {
       setBusy(false);
+    }
+  }
+
+  function failureMessage(error: unknown): string {
+    if (!(error instanceof OrderError)) return t('checkout.failed');
+    switch (error.code) {
+      case 'unavailable-product':
+        return t('checkout.unavailableProduct');
+      case 'network':
+        return t('checkout.network');
+      case 'too-many-requests':
+        return t('checkout.tooManyRequests');
+      case 'quote-not-found':
+        return t('checkout.quoteExpired');
+      default:
+        return t('checkout.failed');
     }
   }
 
@@ -161,9 +180,25 @@ export function CheckoutForm({ locations }: { locations: Location[] }) {
       const order = await services.orders.placeOrder(quote.quoteId);
       clear();
       navigate(paths.order(order.id));
-    } catch {
-      setFailure(t('checkout.failed'));
+    } catch (error) {
       setBusy(false);
+      if (
+        error instanceof OrderError &&
+        (error.code === 'pickup-unavailable' || error.code === 'quote-not-found')
+      ) {
+        // Back to the details: a new time must be chosen / the order priced again.
+        if (error.code === 'pickup-unavailable') {
+          setTimeProblem('unavailable');
+          setSlot('');
+          setNow(new Date());
+        } else {
+          setFailure(t('checkout.quoteExpired'));
+        }
+        setQuote(null);
+        setStep('details');
+        return;
+      }
+      setFailure(failureMessage(error));
     }
   }
 
@@ -318,11 +353,7 @@ export function CheckoutForm({ locations }: { locations: Location[] }) {
             </p>
           )}
           <div>
-            <Button
-              type="submit"
-              size="lg"
-              disabled={busy || !canPickUpToday || !services.config.demoMode}
-            >
+            <Button type="submit" size="lg" disabled={busy || !canPickUpToday}>
               {busy ? t('cart.promo.checking') : t('checkout.reviewCta')}
             </Button>
           </div>

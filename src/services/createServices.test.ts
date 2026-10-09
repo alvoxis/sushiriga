@@ -10,14 +10,16 @@ describe('service composition', () => {
     expect(services.ordersAdmin).toBeDefined();
   });
 
-  it('with a backend URL there is NO silent fallback to demo orders or payments', async () => {
+  it('with a backend URL the real API is used and there is NO silent fallback to demo payments', async () => {
     const services = createServices(readConfig({ VITE_API_URL: 'https://api.example.test' }));
     expect(services.config.demoMode).toBe(false);
     expect(services.ordersAdmin).toBeUndefined();
+    expect(services.promo.mode).toBe('server');
     await expect(
       services.payments.pay({ quoteId: 'q', amount: 100, description: 'x' }),
     ).rejects.toThrow(/not connected/);
-    await expect(services.orders.getOrder('x')).rejects.toThrow(/not connected/);
+    // Orders this browser did not place are never fetched (no access token).
+    expect(await services.orders.getOrder('SR-AAAA-BBBB')).toBeUndefined();
   });
 
   it('the demo payment provider refuses to exist outside demo mode', () => {

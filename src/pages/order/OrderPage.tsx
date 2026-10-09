@@ -3,7 +3,7 @@ import { useParams } from 'react-router';
 import { ROUTES } from '@/app/routes';
 import { Button, ButtonLink, Card, PageHeader, PlaceholderPanel } from '@/components/ui';
 import { OrderStatusTimeline } from '@/features/orders/components/OrderStatusTimeline';
-import { canReview, ORDER_PROGRESS } from '@/features/orders/orderStatus';
+import { canReview, isFinalStatus, ORDER_PROGRESS } from '@/features/orders/orderStatus';
 import { STANDARD_PREPARATION_MINUTES } from '@/features/pickup/preparationTime';
 import { useLocation } from '@/features/pickup/useLocations';
 import { ReviewForm } from '@/features/reviews/components/ReviewForm';
@@ -18,17 +18,44 @@ export default function OrderPage() {
   const { t, locale, formatPrice } = useTranslation();
   const { orders, ordersAdmin, config } = useServices();
   const [order, setOrder] = useState<Order | null | undefined>(undefined);
+  const [loadFailed, setLoadFailed] = useState(false);
   const location = useLocation(order ? order.location : undefined);
   useDocumentTitle(t('order.title', { id }));
 
   const load = useCallback(
-    () => orders.getOrder(id).then((found) => setOrder(found ?? null)),
+    () =>
+      orders.getOrder(id).then(
+        (found) => {
+          setOrder(found ?? null);
+          setLoadFailed(false);
+        },
+        () => setLoadFailed(true),
+      ),
     [orders, id],
   );
   useEffect(() => {
     void load();
   }, [load]);
 
+  // With a real backend, staff move the order along: refresh the status while it is open.
+  const live = !config.demoMode && !!order && !isFinalStatus(order.status);
+  useEffect(() => {
+    if (!live) return;
+    const timer = setInterval(() => void load(), 20_000);
+    return () => clearInterval(timer);
+  }, [live, load]);
+
+  if (order === undefined && loadFailed) {
+    return (
+      <div className="container stack">
+        <PageHeader title={t('order.title', { id })} />
+        <p role="alert">{t('order.loadFailed')}</p>
+        <div>
+          <Button onClick={() => void load()}>{t('order.retry')}</Button>
+        </div>
+      </div>
+    );
+  }
   if (order === undefined)
     return (
       <p className="container" role="status">
@@ -37,9 +64,12 @@ export default function OrderPage() {
     );
   if (order === null) {
     return (
-      <div className="container">
+      <div className="container stack">
         <PageHeader title={t('order.notFound')} />
-        <ButtonLink to={ROUTES.menu}>{t('menu.backToMenu')}</ButtonLink>
+        {!config.demoMode && <p>{t('order.notFoundHint')}</p>}
+        <div>
+          <ButtonLink to={ROUTES.menu}>{t('menu.backToMenu')}</ButtonLink>
+        </div>
       </div>
     );
   }
@@ -64,7 +94,13 @@ export default function OrderPage() {
   return (
     <div className="container">
       <PageHeader
-        eyebrow={unpaid ? t('order.createdUnpaid') : t('order.thanks')}
+        eyebrow={
+          unpaid
+            ? config.demoMode
+              ? t('order.createdUnpaid')
+              : t('order.createdAwaitingPayment')
+            : t('order.thanks')
+        }
         title={t('order.title', { id: order.id })}
       />
       <div className={styles.twoColumns}>

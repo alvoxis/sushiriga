@@ -6,7 +6,9 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"],
-    "paths": { "@/*": ["./src/*"] },
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -17,5 +19,11 @@
     "noEmit": true,
     "skipLibCheck": true
   },
-  "include": ["vite.config.ts", "playwright.config.ts", "e2e"]
+  "include": [
+    "vite.config.ts",
+    "playwright.config.ts",
+    "playwright.server.config.ts",
+    "e2e",
+    "e2e-server"
+  ]
 }

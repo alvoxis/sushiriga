@@ -34,7 +34,7 @@ export function OrderReview({
 }: OrderReviewProps) {
   const { t, locale, formatPrice } = useTranslation();
   const catalog = useCatalog();
-  const { promo } = useServices();
+  const { promo, config } = useServices();
   const { street, city, postalCode } = location.address;
 
   return (
@@ -118,9 +118,13 @@ export function OrderReview({
       </div>
 
       <div className={styles.payment} role="note">
-        <p>
-          <strong>{t('common.demoMode')}.</strong> {t('checkout.confirmNote')}
-        </p>
+        {config.demoMode ? (
+          <p>
+            <strong>{t('common.demoMode')}.</strong> {t('checkout.confirmNote')}
+          </p>
+        ) : (
+          <p>{t('checkout.confirmNoteLive')}</p>
+        )}
       </div>
       {failure && (
         <p className={styles.error} role="alert">
@@ -132,7 +136,11 @@ export function OrderReview({
           {t('checkout.edit')}
         </Button>
         <Button size="lg" onClick={onConfirm} disabled={busy}>
-          {busy ? t('checkout.confirming') : t('checkout.confirm')}
+          {busy
+            ? t('checkout.confirming')
+            : config.demoMode
+              ? t('checkout.confirm')
+              : t('checkout.confirmLive')}
         </Button>
       </div>
     </section>
