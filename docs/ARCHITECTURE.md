@@ -16,21 +16,24 @@ hooks/ utils/ styles/
 Правило зависимостей: `pages → features → components/services → types/utils`.
 `components/` не импортирует `features/` (кроме layout, которому нужна корзина для бейджа).
 
-## Сервисы и будущий backend
+## Сервисы и backend
 
 Все внешние операции идут через интерфейсы в `src/services/*`:
 
-| Сервис            | Сейчас                                                | Потом                                       |
-| ----------------- | ----------------------------------------------------- | ------------------------------------------- |
-| CatalogService    | `src/data` в бандле                                   | `GET /catalog` (админка управляет меню)     |
-| LocationService   | `src/data/locations.ts`                               | API, несколько точек                        |
-| OrderService      | `mock/`: расчёт как на сервере, заказы в localStorage | API: quote + заказ по вебхуку оплаты        |
-| OrderAdminService | демо-кнопка «следующий статус»                        | админ-панель: статусы, время приготовления  |
-| PromoService      | `mock/`: тестовые коды `DEMO*`, `mode: 'mock'`        | API (`mode: 'server'`); скидка на сервере   |
-| PaymentService    | `mock/demoPaymentService`, в checkout не используется | Stripe: PaymentIntent на сервере для quote  |
-| AuthService       | только гость                                          | любой провайдер, регистрация необязательна  |
-| AssistantService  | rule-based по каталогу                                | LLM на backend, ответ = id товаров каталога |
-| ReviewService     | localStorage, не публикуется                          | API + модерация                             |
+| Сервис            | Демо-режим (`services/mock/`)                | С backend (`services/http/` → `server/`)             |
+| ----------------- | -------------------------------------------- | ---------------------------------------------------- |
+| CatalogService    | `src/data` в бандле                          | `GET /api/catalog` (+ изменения персонала)           |
+| LocationService   | `src/data/locations.ts`                      | `GET /api/locations`                                 |
+| OrderService      | расчёт как на сервере, заказы в localStorage | `POST /api/checkout/quote`, `POST /api/orders`       |
+| OrderAdminService | демо-кнопка «следующий статус»               | админ-панель (этап 3)                                |
+| PromoService      | тестовые коды `DEMO*`, `mode: 'mock'`        | `POST /api/promo/validate`, `mode: 'server'`         |
+| PaymentService    | демо, в checkout не используется             | не подключено (этап 2: Stripe)                       |
+| AuthService       | только гость                                 | только гость                                         |
+| AssistantService  | rule-based по каталогу                       | не подключено                                        |
+| ReviewService     | localStorage, не публикуется                 | `/api/orders/:id/review`, `/api/reviews` (модерация) |
+
+Расчёт заказа — общий модуль `features/checkout/priceCheckout.ts`: им пользуются и сервер, и
+демо-backend в браузере, поэтому правила одинаковые. Подробно о сервере — `docs/BACKEND.md`.
 
 Композиция — `services/createServices.ts`. Компоненты получают сервисы через `useServices()`,
 поэтому замена реализации не трогает UI. В тестах сервисы можно подменить через `<AppProviders services={…}>`.
@@ -42,8 +45,9 @@ hooks/ utils/ styles/
 - Все mock/demo-реализации лежат только в `src/services/mock/` (см. `mock/README.md`).
 - ESLint (`no-restricted-imports`) запрещает импортировать `services/mock` откуда-либо, кроме
   `createServices.ts` и тестов.
-- Если задан `VITE_API_URL`, mock-сервисы **не подключаются**: заказы, оплата, промокоды, отзывы и
-  ассистент получают реализации `notConnected*`, которые явно падают (до появления HTTP-слоя).
+- Если задан `VITE_API_URL`, mock-сервисы **не подключаются**: заказы, промокоды и отзывы идут в
+  backend, а то, чего backend пока не умеет (оплата, ассистент), получает `notConnected*` и явно падает.
+- Фронтенд не может импортировать `server/` (ESLint), сервер — mock-сервисы и конфиг фронтенда.
 - `createDemoPaymentService` отказывается создаваться вне демо-режима.
 - `PromoService.mode` (`server` | `mock` | `unavailable`) решает, как UI подаёт промокод: в режиме
   `mock` скидка подписана «(тест)» и «не проверено сервером», в `unavailable` поле выключено.
@@ -70,7 +74,8 @@ hooks/ utils/ styles/
    ровно на сумму quote (в production — вебхук). `updateStatus` никогда не ставит `PAID`
    (и `ACCEPTED` — только через `acceptOrder` с временем 10–80 мин).
 
-Те же правила (`cartMath`, `evaluatePromo`, лимит чаевых, статусы) должен реализовать backend.
+Backend (`server/`) использует те же модули (`priceCheckout`, `cartMath`, `evaluatePromo`,
+`pickupSlots`, `orderStatus`) и дополнительно проверяет контакты и время самовывоза своими часами.
 
 ## Книга (`components/book`)
 

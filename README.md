@@ -3,10 +3,13 @@
 Интерактивное цифровое **меню-книга** суши-ресторана в Риге + гостевой заказ на самовывоз +
 кот-помощник, который в будущем станет AI-ассистентом.
 
-> Этап 1 — фундамент: архитектура, дизайн-система, книга, каталог, корзина, guest checkout
-> на mock-сервисах. Реальные оплата, AI, SMS, POS, Bolt Food и вторая точка **не подключены**.
-> Все заказы сейчас — **демо**: оплата не подключена, заказ создаётся со статусом
-> `PENDING_PAYMENT` («Ожидает оплаты»), деньги не списываются, ресторан ничего не получает.
+> Два режима:
+>
+> - **демо** (`VITE_API_URL` пуст) — всё в браузере на mock-сервисах, ничего никуда не уходит;
+> - **с backend** (`server/`, SQLite) — меню, цены, заказы, промокоды и отзывы на сервере.
+>
+> Реальные AI, SMS, POS, Bolt Food и вторая точка **не подключены**. Подробности по этапам —
+> раздел «Roadmap».
 
 ## Стек
 
@@ -19,12 +22,13 @@
 | Анимации  | чистый CSS (3D-перелистывание без библиотек)                  |
 | Качество  | ESLint 9 (typescript-eslint, react-hooks, jsx-a11y), Prettier |
 | Тесты     | Vitest + Testing Library (jsdom), Playwright                  |
+| Backend   | Node 22, Hono, `node:sqlite`, zod — см. `docs/BACKEND.md`     |
 
-Runtime-зависимостей всего три: `react`, `react-dom`, `react-router`. Шрифты — системные (0 загрузок).
+Во фронтенд-бандл попадают только `react`, `react-dom`, `react-router`. Шрифты — системные (0 загрузок).
 
 ## Быстрый старт
 
-Нужен Node.js ≥ 20.19 (рекомендуется 22, см. `.nvmrc`).
+Нужен Node.js ≥ 22.13 (см. `.nvmrc`; backend использует встроенный `node:sqlite`).
 
 ```bash
 git clone https://github.com/alvoxis/sushiriga.git
@@ -38,25 +42,37 @@ npm run dev                  # http://localhost:5173 (доступно и с т�
 ```bash
 npm run check                # lint + format + typecheck + unit/integration tests + build
 npx playwright install chromium   # один раз
-npm run test:e2e             # e2e: desktop + mobile Chromium
+npm run test:e2e             # e2e: desktop + mobile Chromium (демо-режим)
+npm run test:e2e:server      # e2e против настоящего backend (production-сборка + SQLite)
 ```
 
-Production-сборка: `npm run build` → статические файлы в `dist/`, локальный просмотр — `npm run preview`.
-Сайт — SPA: на хостинге все пути нужно отдавать через `index.html` (fallback-роутинг).
+Production: backend раздаёт и API, и сайт с одного адреса —
+
+```bash
+VITE_API_URL=/ npx vite build && npm run server:build
+NODE_ENV=production ORDER_TOKEN_SECRET="$(openssl rand -base64 48)" npm run server:start
+```
+
+или `docker build -t sushiriga .` (см. `Dockerfile`, `docs/BACKEND.md`). Демо-версию без backend
+можно выложить как статику: `npm run build` → `dist/` (все пути — через `index.html`).
 
 ## Команды
 
-| Команда             | Что делает                                                               |
-| ------------------- | ------------------------------------------------------------------------ |
-| `npm run dev`       | dev-сервер                                                               |
-| `npm run build`     | typecheck + production-сборка в `dist/`                                  |
-| `npm run preview`   | раздать собранный `dist/`                                                |
-| `npm run lint`      | ESLint                                                                   |
-| `npm run format`    | Prettier (запись), `format:check` — проверка                             |
-| `npm run typecheck` | `tsc -b`                                                                 |
-| `npm test`          | unit + интеграционные тесты (Vitest)                                     |
-| `npm run test:e2e`  | Playwright: desktop + mobile Chromium (сам собирает и поднимает preview) |
-| `npm run check`     | lint + format + typecheck + tests + build                                |
+| Команда                   | Что делает                                                               |
+| ------------------------- | ------------------------------------------------------------------------ |
+| `npm run dev`             | dev-сервер                                                               |
+| `npm run build`           | typecheck + production-сборка в `dist/`                                  |
+| `npm run preview`         | раздать собранный `dist/`                                                |
+| `npm run lint`            | ESLint                                                                   |
+| `npm run format`          | Prettier (запись), `format:check` — проверка                             |
+| `npm run typecheck`       | `tsc -b`                                                                 |
+| `npm test`                | unit + интеграционные тесты (Vitest)                                     |
+| `npm run test:e2e`        | Playwright: desktop + mobile Chromium (сам собирает и поднимает preview) |
+| `npm run test:e2e:server` | Playwright против production-сборки backend с чистой SQLite              |
+| `npm run server:dev`      | backend в режиме разработки (:8787)                                      |
+| `npm run server:build`    | сборка backend в `dist-server/`                                          |
+| `npm run server:start`    | запуск собранного backend                                                |
+| `npm run check`           | lint + format + typecheck + tests + build (фронтенд и backend)           |
 
 Playwright: браузеры ставятся один раз `npx playwright install chromium`. Если Chromium уже есть
 в системе — `PLAYWRIGHT_CHROMIUM_EXECUTABLE=/path/to/chrome npm run test:e2e`.
@@ -69,10 +85,13 @@ iPhone/WebKit-проект включается `PW_WEBKIT=1` (после `npx p
 
 | Переменная               | Назначение                                                       |
 | ------------------------ | ---------------------------------------------------------------- |
-| `VITE_API_URL`           | URL будущего backend. Пусто → демо-режим на mock-сервисах        |
+| `VITE_API_URL`           | адрес backend: `/` (тот же сайт) или origin. Пусто → демо-режим  |
 | `VITE_STRIPE_PUBLIC_KEY` | только publishable `pk_…`; `sk_…` живёт исключительно на сервере |
 | `VITE_AUTH_PROVIDER`     | будущий провайдер аутентификации (пусто = только гость)          |
 | `VITE_AI_PROVIDER`       | `mock` сейчас; реальный AI вызывается только с backend           |
+
+Переменные backend (только на сервере, без `VITE_`): `server/.env.example` — `ORDER_TOKEN_SECRET`
+(обязателен в production), `DATABASE_PATH`, `PORT`, `PUBLIC_DIR`, `CORS_ORIGINS`, `TRUST_PROXY`.
 
 ## Структура
 
@@ -100,8 +119,10 @@ src/
   data/           меню (13 файлов категорий), аллергены, точки
   i18n/           translations/{lv,ru,en}.ts, провайдер, типизированные ключи
   types/ hooks/ utils/ styles/ test/
-e2e/              Playwright
-docs/             ARCHITECTURE.md, MENU_DATA.md
+server/           backend: app.ts (API), services/, db/ (SQLite, миграции), security/
+e2e/              Playwright (демо-режим)
+e2e-server/       Playwright против настоящего backend
+docs/             ARCHITECTURE.md, BACKEND.md, MENU_DATA.md
 scripts/menu-import/  импорт меню с sushiriga.lv + source-snapshot.json (снимок для теста целостности)
 ```
 
@@ -125,18 +146,21 @@ scripts/menu-import/  импорт меню с sushiriga.lv + source-snapshot.js
   дословно, исходные названия в `sourceName`, без выдуманных полей (аллергены/острота = unknown).
 - Корзина: добавление, количество, удаление, очистка с подтверждением, сохранение в localStorage,
   цены всегда из каталога.
-- Промокоды в демо-режиме работают **только на тестовых кодах** (`DEMO10` −10%, `DEMO5` −€5 от €30,
-  `DEMOEXPIRED` — истёкший). Везде явная пометка «тестовый код / скидка (тест), не проверено
-  сервером». С `VITE_API_URL` без backend поле промокода выключено (`mode: 'unavailable'`).
+- Промокоды: с backend — коды из базы, проверка на сервере (и повторно при расчёте заказа).
+  В демо-режиме — **только тестовые коды** (`DEMO10` −10%, `DEMO5` −€5 от €30, `DEMOEXPIRED`)
+  с явной пометкой «скидка (тест), не проверено сервером».
+- Backend (`server/`): меню + изменения персонала, точки, расчёт заказа, заказы в SQLite,
+  доступ к гостевому заказу по токену, отзывы с модерацией, лимиты запросов, CSP — `docs/BACKEND.md`.
 - Guest checkout в два шага, без регистрации:
   1. **Данные**: точка (из конфигурации), «как можно скорее» или слот на сегодня (шаг 15 мин,
      часы работы, минимум 30 мин, не позже закрытия, без прошедших времён; время помечено
      «Предварительно»), имя / телефон / e-mail (необязателен) с понятными ошибками, чаевые.
   2. **Проверка**: блюда, количество, цены, скидка с кодом, итог, точка, время, контакты →
-     «Подтвердить демо-заказ». Время перепроверяется в момент подтверждения.
-     Цены и скидку считает «сервер» (mock) по `productId`/количеству — браузерным суммам не доверяем.
-- Заказ создаётся как `PENDING_PAYMENT`: страница заказа пишет «Демо-заказ создан — не оплачен»,
-  оплата не имитируется, «Оплачен» в таймлайне — только будущий шаг.
+     «Подтвердить заказ». Время перепроверяется в момент подтверждения (и сервером).
+     Цены и скидку считает сервер по `productId`/количеству — браузерным суммам не доверяем.
+- Заказ создаётся как `PENDING_PAYMENT`: «Оплачен» в таймлайне — только будущий шаг; в демо-режиме
+  страница пишет «Демо-заказ создан — не оплачен». С backend страница заказа обновляет статус
+  каждые 20 с и открывается только в браузере, где заказ оформлен (токен доступа).
 - Страница заказа: статус и таймлайн, отзыв после `PICKED_UP`. Время приготовления выбирает
   сотрудник при принятии заказа (10–80 мин); до этого клиент видит стандарт 30 мин. Демо-кнопка
   «следующий статус» (роль сотрудника) для неоплаченного заказа не показывается.
@@ -148,13 +172,13 @@ scripts/menu-import/  импорт меню с sushiriga.lv + source-snapshot.js
 
 ## Что является заглушкой
 
-Оплата (не подключена, заказы `PENDING_PAYMENT`), backend и база (localStorage), аккаунт и вход, публикация отзывов, админ-панель,
-AI (rule-based mock), фото товаров (плейсхолдеры), популярность категорий (нет статистики),
-логотип (временный wordmark).
+Оплата (не подключена, заказы `PENDING_PAYMENT`), аккаунт и вход, админ-панель (модерация отзывов,
+приём заказов), AI (rule-based mock), фото товаров (плейсхолдеры), популярность категорий
+(нет статистики), логотип (временный wordmark). В демо-режиме заказы и отзывы живут в localStorage.
 
 ## Roadmap
 
-1. **Backend + БД**: каталог, точки, заказы, промокоды, отзывы, чаевые; серверный пересчёт сумм.
+1. ✅ **Backend + БД**: каталог, точки, заказы, промокоды, отзывы, чаевые; серверный пересчёт сумм.
 2. **Оплата**: Stripe PaymentIntent (сервер) + Payment Element; вебхук → статус `PAID`.
 3. **Админ-панель** (`/admin`): приём заказа, время приготовления 10–80 мин, статусы, задержки,
    промокоды, меню, отзывы, чаевые, две точки.
@@ -171,4 +195,4 @@ AI (rule-based mock), фото товаров (плейсхолдеры), поп
 «острое/вегетарианское» по блюдам, телефон и e-mail точки, «Azoshi Set 64G», максимальная сумма
 чаевых, предзаказ на следующий день (сейчас слоты только на сегодня).
 
-Архитектура подробно — `docs/ARCHITECTURE.md`.
+Архитектура подробно — `docs/ARCHITECTURE.md`, backend — `docs/BACKEND.md`.
