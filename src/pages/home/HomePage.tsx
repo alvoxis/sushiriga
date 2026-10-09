@@ -1,6 +1,7 @@
 import { Link } from 'react-router';
 import { paths, ROUTES } from '@/app/routes';
 import { ButtonLink, PlaceholderPanel } from '@/components/ui';
+import { useCart } from '@/features/cart/CartContext';
 import { AssistantTeaser } from '@/features/assistant/components/AssistantTeaser';
 import {
   categoryName,
@@ -22,30 +23,42 @@ export default function HomePage() {
   useDocumentTitle(undefined);
   const chapters = visibleCategories(catalog);
   const activeLocations = useActiveLocations();
+  const { itemCount } = useCart();
 
   return (
     <>
-      <section className={`container ${styles.hero}`} aria-labelledby="home-title">
-        <div>
-          <div className={styles.rule} aria-hidden="true" />
-          <p className="eyebrow">{t('home.eyebrow')}</p>
-          <h1 id="home-title" className={styles.title}>
-            {t('home.title')}
-          </h1>
-          <p className={styles.lead}>{t('home.lead')}</p>
-          <div className={styles.ctas}>
-            <ButtonLink to={ROUTES.menu} size="lg">
-              {t('home.openMenu')}
-            </ButtonLink>
-            <ButtonLink to={ROUTES.menu} size="lg" variant="secondary">
-              {t('home.orderNow')}
-            </ButtonLink>
+      <section className={styles.heroWrap} aria-labelledby="home-title">
+        <div className={styles.backdrop} aria-hidden="true" />
+        <div className={`container ${styles.hero}`}>
+          <div className={styles.intro}>
+            <div className={styles.rule} aria-hidden="true" />
+            <p className="eyebrow">{t('home.eyebrow')}</p>
+            <h1 id="home-title" className={styles.title}>
+              {t('home.title')}
+            </h1>
+            <p className={styles.lead}>{t('home.lead')}</p>
+            <div className={styles.ctas}>
+              <ButtonLink to={ROUTES.menu} size="lg">
+                {t('home.openMenu')}
+              </ButtonLink>
+              {/* "Order": straight to the cart when it already has dishes, otherwise the menu. */}
+              <ButtonLink
+                to={itemCount > 0 ? ROUTES.cart : ROUTES.menu}
+                size="lg"
+                variant="secondary"
+              >
+                {t('home.orderNow')}
+              </ButtonLink>
+            </div>
           </div>
+          <div className={styles.bookArea}>
+            <MenuBook />
+          </div>
+          {/* Reserved spot for the cat assistant (future: it walks in from here). */}
           <div className={styles.assistant}>
             <AssistantTeaser />
           </div>
         </div>
-        <MenuBook />
       </section>
 
       {/* TODO(data): "popular" needs real order statistics — until then all chapters are shown in menu order. */}

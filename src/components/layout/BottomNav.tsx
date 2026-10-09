@@ -32,7 +32,12 @@ export function BottomNav() {
               <Icon name={item.icon} />
               <span aria-hidden={item.icon === 'bag' ? true : undefined}>{t(item.key)}</span>
               {item.icon === 'bag' && itemCount > 0 && (
-                <span className={styles.badge} aria-hidden="true" data-testid="bottom-cart-count">
+                <span
+                  key={itemCount}
+                  className={styles.badge}
+                  aria-hidden="true"
+                  data-testid="bottom-cart-count"
+                >
                   {itemCount}
                 </span>
               )}

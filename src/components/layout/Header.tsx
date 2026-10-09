@@ -44,7 +44,7 @@ export function Header() {
           >
             <Icon name="bag" />
             {itemCount > 0 && (
-              <span className={styles.count} aria-hidden="true">
+              <span key={itemCount} className={styles.count} aria-hidden="true">
                 {itemCount}
               </span>
             )}

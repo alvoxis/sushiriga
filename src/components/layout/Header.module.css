@@ -82,3 +82,14 @@
     display: flex;
   }
 }
+
+/* Re-mounted (keyed by count) on every change → a short "bump" confirms the add. */
+.count {
+  animation: badge-bump 360ms var(--ease-out);
+}
+
+@keyframes badge-bump {
+  40% {
+    transform: scale(1.35);
+  }
+}

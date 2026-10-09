@@ -1,15 +1,76 @@
-.hero {
+.heroWrap {
   position: relative;
+  overflow: hidden; /* the decorative backdrop may extend past the viewport */
+  isolation: isolate;
+}
+
+/* Soft key light + a faint ink-wash circle behind the book. Pure CSS, no images. */
+.backdrop {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 36rem at 72% 42%, rgb(255 252 244 / 0.95), transparent 70%),
+    radial-gradient(40rem 28rem at 10% 0%, rgb(217 199 163 / 0.18), transparent 70%);
+}
+
+.backdrop::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 68%;
+  width: min(44rem, 120vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    closest-side,
+    transparent 78%,
+    rgb(34 48 74 / 0.06) 82%,
+    rgb(34 48 74 / 0.1) 88%,
+    rgb(34 48 74 / 0.04) 94%,
+    transparent
+  );
+}
+
+.hero {
   display: grid;
+  grid-template-areas:
+    'intro'
+    'book'
+    'assistant';
   gap: var(--space-6);
-  padding-block: var(--space-7) var(--space-6);
+  padding-block: var(--space-6) var(--space-7);
+}
+
+.intro {
+  grid-area: intro;
+}
+
+.bookArea {
+  grid-area: book;
+  min-width: 0;
+}
+
+.assistant {
+  grid-area: assistant;
 }
 
 @media (min-width: 60rem) {
   .hero {
-    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr);
+    grid-template-areas:
+      'intro book'
+      'assistant book';
     align-items: center;
-    padding-block: var(--space-8);
+    column-gap: var(--space-7);
+    min-height: calc(100dvh - var(--header-height) - 3rem);
+    padding-block: var(--space-7);
+  }
+
+  .assistant {
+    align-self: start;
   }
 }
 
@@ -30,10 +91,6 @@
   flex-wrap: wrap;
   gap: var(--space-3);
   margin-top: var(--space-5);
-}
-
-.assistant {
-  margin-top: var(--space-6);
 }
 
 /* Thin brush-like rule — the only "ink" ornament on the page. */
