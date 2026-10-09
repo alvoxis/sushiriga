@@ -1,0 +1,665 @@
+[
+  {
+    "section": "SUSHI BURGER",
+    "items": [
+      {
+        "name": "VEGA BURGER",
+        "description": "Rīsi, nori, krabju nūjiņas, avokado, wakame, tempura maisījums, panko, unagi mērce\nРис, нори, крабовые палочки, авокадо,вакаме салат, темпура микс, панко, унаги соус\nRice, nori, crab sticks, avocado, wakame salad, tempura mix, panko, unagi souce",
+        "price": "€9.00",
+        "labels": []
+      },
+      {
+        "name": "CHICKEN BURGER",
+        "description": "Rīsi, nori, krēmsiers, vista, gurķis, tomāts, tempura maisījums, panko, unagi mērci\nРис, нори, сливочный сыр, курица, огурец, помидор, темпура микс, панко, унаги соус\nRice, nori, cream cheese, chicken, cucumber, tomato, tempura mix, panko, unagi sauce",
+        "price": "€11.50",
+        "labels": []
+      },
+      {
+        "name": "SALOMON BURGER",
+        "description": "Rīsi, nori, krēmsiers, gurķis, avokado, mango, lasis, tempura maisījums, panko, unagi mērce\nРис, нори, сливочный сыр, лосось, манго, огурец, авокадо, темпура микс, панко, унаги\nсоус\nRice, nori, cream cheese, salmon, mango, cucumber, avocado, Tempura mix, panko, unagi\nsauce",
+        "price": "€12.00",
+        "labels": []
+      },
+      {
+        "name": "TERIJAKI BURGER",
+        "description": "Rīsi nori krēmsiera salāti garneles gurķis cepts lasis teryaki, Tempra Mix un kraukšķīgs panku ar unagi mērci\n\nРис нори крем сливочный сыр салатный креветки огурец жаренны лосось теряки, Tempra Mix и хрустящая панку с унаги соусом\nRice nori cream cheese salad shrimp cucumber fried salmon teryaki, Tempra Mix and crispy panku with unagi sauce",
+        "price": "€11.50",
+        "labels": []
+      },
+      {
+        "name": "EBI BURGER",
+        "description": "Rīsi nori avokado tīģergarneļu krēmsiers Tempura maisījums un kraukšķīgs panku ar unagi mērci\nРис нори авокадо тигровый креветки сливочный сыр Темпура микс и хрустящая панку с унаги соусом\nRice nori avocado tiger prawns cream cheese tempura mix and crispy panku with unagi sauce",
+        "price": "€11.50",
+        "labels": []
+      }
+    ]
+  },
+  {
+    "section": "poke",
+    "items": [
+      {
+        "name": "Poke Salmon",
+        "description": "Lasis/Rīsi/Avokado/Waccame/Gurķi/Edamame/Ingvers\nЛосось/Рис/Авакадо/Ваккаме/Огурец/Эдамамэ/Имбирь \nSalmon/Rice/Avocado/Wakame/Cucumber/Edamame/Ginger",
+        "price": "€13.00",
+        "labels": []
+      },
+      {
+        "name": "Poke Eel",
+        "description": "Zutis/Rīsi/Avokado/Vakame/Gurķis/Edamame/Ingvers\nУгорь/Рис/Авакадо/Ваккаме/Огурец/Эдамамэ/Имбирь \nEel/Rice/Avocado/Wakame/Cucumber/Edamame/Ginger",
+        "price": "€14.00",
+        "labels": []
+      },
+      {
+        "name": "Poke Shrimp",
+        "description": "Garneles/Rīsi/Avokado/Vakame/Gurķi/Edamame/Ingvers\nКреветки/Рис/Авакадо/Ваккаме/Огурец/Эдамамэ/Имбирь \nShrimp/Rice/Avocado/Wakame/Cucumber/Edamame/Ginger",
+        "price": "€13.00",
+        "labels": []
+      },
+      {
+        "name": "Poke Chicken",
+        "description": "Vistas/Rīsi/Avokado/Vakame/Gurķi/Edamame/Ingvers\nКурица/Рис/Авакадо/Ваккаме/Огурец/Эдамамэ/Имбирь \nChicken/Rice/Avocado/Wakame/Cucumber/Edamame/Ginger",
+        "price": "€13.00",
+        "labels": []
+      }
+    ]
+  },
+  {
+    "section": "NIGIRI & GUNKAN",
+    "items": [
+      {
+        "name": "LASIS  NIGIRI",
+        "description": "Rīsi, lasis\nРис, лосось\n\nRici, salmon",
+        "price": "€3.00",
+        "labels": []
+      },
+      {
+        "name": "GOURMED NIGIRI",
+        "description": "Rīsi, kūpināts lasis\nРис, копчёный лосось\nRice, smoked salmon",
+        "price": "€3.00",
+        "labels": []
+      },
+      {
+        "name": "UNAGI NIGIRI",
+        "description": "Rīsi, zutis\nРис, угорь\nRici, eel",
+        "price": "€3.00",
+        "labels": []
+      },
+      {
+        "name": "FRIED SALMON NIGIRI",
+        "description": "Rīsi, cepts lasis\nРис, лосось жареный\nRice, fried salmon",
+        "price": "€3.00",
+        "labels": []
+      }
+    ]
+  },
+  {
+    "section": "HOSOMAKI",
+    "items": [
+      {
+        "name": "20. SAKE MAKI",
+        "description": "Rīsi, nori, lasis\nРис, нори, ласось\nRice, nori, salmon",
+        "price": "€4.00",
+        "labels": []
+      },
+      {
+        "name": "21. SAKE CREAM MAKI",
+        "description": "Rīsi, nori, krēmsiers, lasis\nРис, нори,сливочный сыр, лосось\nRice, nori, cream cheese, salmon",
+        "price": "€4.50",
+        "labels": []
+      },
+      {
+        "name": "22 Hot Tomago maki",
+        "description": "Rīsi, nori, japāņu omlete ar pikana mērcē\nРис, нори, японский омлет, пикантный соус\nRice, nori, japanese omlette, spicy sauce",
+        "price": "€4.50",
+        "labels": []
+      },
+      {
+        "name": "23. EBI MAKI",
+        "description": "Rīsi, nori, tīģergarneles\nРис, нори, тигровый креветки\nRice, nori, tiger shrimp",
+        "price": "€4.00",
+        "labels": []
+      },
+      {
+        "name": "24. AVAKADO MAKI",
+        "description": "Rīsi, nori, avocado\nРис, нори, авокадо\nRice, nori, avocado",
+        "price": "€4.00",
+        "labels": []
+      },
+      {
+        "name": "25. KAPPA MAKI",
+        "description": "Rīsi, nori, gurķis, sezams\nРис, нори, огурец, сезам\nRice, nori, cucumber, sesame",
+        "price": "€4.00",
+        "labels": []
+      },
+      {
+        "name": "26. UNAGI MAKI",
+        "description": "Rīsi, nori, zutis, sezams, unagi mērce\nРис, нори, угорь, сезам, унаги соус\nRice, nori, eel, sesame, unagi sauce",
+        "price": "€4.00",
+        "labels": []
+      },
+      {
+        "name": "27. TOMAGO MAKI",
+        "description": "Rīsi, nori, japāņu omlete\nРис, нори, японский омлет\nRice, nori, japanese omlette",
+        "price": "€4.00",
+        "labels": []
+      },
+      {
+        "name": "28. CHUKKA MAKI",
+        "description": "Rīsi, nori, wakame, sezams\nРис, нори, вакаме салат, сезам\nRice, nori, wakame salad, sesame",
+        "price": "€4.00",
+        "labels": []
+      },
+      {
+        "name": "29 Kunsei Maki",
+        "description": "Rīsi, nori, kūpināts lasis\nРисб нориб копчуный лосось\nRice, nori, smoked salmon",
+        "price": "€5.00",
+        "labels": []
+      }
+    ]
+  },
+  {
+    "section": "ROLLI",
+    "items": [
+      {
+        "name": "31 PHILADELFIA ClASSIC",
+        "description": "Rīsi, nori, krēmsiers, gurķis, lasis\nРис, нори, сливочный сыр, огурец, лосось\nRice, nori, cream cheese, cucumber, salmon",
+        "price": "€10.00",
+        "labels": []
+      },
+      {
+        "name": "32.  PHILADELPHIA LUX",
+        "description": "Rīsi, nori, krēmsiers, avokado, lasis\nРис, нори, сливочный сыр, авокадо, лосось\nRice, nori, cream cheese, avocado, salmon",
+        "price": "€10.00",
+        "labels": []
+      },
+      {
+        "name": "33.PHILADELFIA GOLD",
+        "description": "Rīsi, nori, krēmsiers, gurķis, lasis, citrons, dilles\nРис, нори, сливочный сыр, огурец, лосось, лемон, укроп\nRice, nori, cream cheese, cucumber, salmon, lemon, dill",
+        "price": "€10.00",
+        "labels": []
+      },
+      {
+        "name": "34 KUNSEI PHILADELFIA",
+        "description": "Rīsi, nori, krēmsiers, gurķis, kūpināts lasis\nрис, нори, сливочный сыр, огурец, копченый лосось\nRice, nori, cream cheese, cucumber, smoked salmon",
+        "price": "€12.50",
+        "labels": []
+      },
+      {
+        "name": "35. CANADA UNAGI",
+        "description": "Rīsi, nori, krēmsiers, zutis, gurķis, sezams, unagi mērce\nРис, нори, сливочный сыр, угорь, сезам, унаги соус\nRice, nori, cream cheese, eel, cucumber, sesame, unagi sauce",
+        "price": "€13.00",
+        "labels": []
+      },
+      {
+        "name": "36. SALMON TARTAR",
+        "description": "Rīsi, nori, krēmsiers, lasis, laša tartars\nРис, нори, сливочный сыр, лосось, тартар из лосося\n\nRice, nori, cream cheese, salmon, salmon tartare",
+        "price": "€7.50",
+        "labels": []
+      },
+      {
+        "name": "37. SPICY EBI",
+        "description": "Rīsi, nori, krēmsiers, salātgarnelēs, pikantās garneles\nРис, нори, сливочный сыр, слатный криветки, пикантный креветки\nRice, nori, cream cheese, salad shripm, spice shrimp",
+        "price": "€7.50",
+        "labels": []
+      },
+      {
+        "name": "38. SAKE BONITO",
+        "description": "Rīsi, nori, krēmsiers, cepts terijaki lasis, lidojošās zivs ikri, tunča pārslas\nРис, нори, сливочный сыр, лосось терияки, красная массаго, стружка тунца\nRice, nori, cream cheese, teriyaki salmon, red massago, tuna shavings",
+        "price": "€8.00",
+        "labels": []
+      },
+      {
+        "name": "39. Unagi Bonito",
+        "description": "Rīsi, nori, krēmsiers, gurķis, zutis, cepts terijaki lasis, tunča pārslas\nРис, нори, сливочный сыр, огурец, угорь, терияки лосось, стружка тунца\nRice, nori, cream cheese, cucumber, eel, teriyaki salmon, tuna flakes",
+        "price": "€10.50",
+        "labels": []
+      },
+      {
+        "name": "40.Maestro",
+        "description": "Rīsi, nori, krēmsiers, gurķis, tomago, sezama sēklas, dilles, pikantā laša merse\nРис, нори, сливочный сыр, огурец, томаго, сезам, укроп, пикантный лосось\nRici, nori, cream cheese, cucumber, tomago, sesame, dill, spicy salmon",
+        "price": "€10.50",
+        "labels": []
+      },
+      {
+        "name": "41. PHILADELPHIA LIGHT",
+        "description": "Rīsi, nori, krēmsiers, lasis, gurķis, melnais un baltais sezams\nРис, нори, сливычный сыр, лосось, огурец, чурный белый сезам\nRice, nori, cream cheese, salmon, cucumber, black white sesame",
+        "price": "€7.50",
+        "labels": []
+      },
+      {
+        "name": "42. CALIFORNIA",
+        "description": "Rīsi, nori, gurķi, avokado, krabju nūjiņas, lidojošās zivs ikri\nРис, нори, огурец, авокадо, краб, красная массаго\nRice, nori, cucumber, avocado, crab sticks, red massago",
+        "price": "€6.50",
+        "labels": []
+      },
+      {
+        "name": "43.  SAKE  MASAKO",
+        "description": "Rīsi, nori, krēmsiers, lasis, gurķis, lidojošās zivs ikri\nРис, нори, сливочный сыр, лосось, огурец, красная массаго\nRice, nori, cream cheese, salmon, cucumber, red massago",
+        "price": "€7.50",
+        "labels": []
+      }
+    ]
+  },
+  {
+    "section": "CEPTI ROLLI",
+    "items": [
+      {
+        "name": "50. ALASKA",
+        "description": "Rīsi, nori, krēmsiers, japāņu omlete, gurķis lidojošās zivs ikri, garneles sierā mērcē, unagi mērce\nРис, нори, сливочный сыр, томаго, огурец,красная масаго, сырные креветки, унаги соус\nRice, nori, cream cheese, tomago, cucumber, red masago, cheese shrimp, unagi sauce",
+        "price": "€7.50",
+        "labels": []
+      },
+      {
+        "name": "51. SAMURAI",
+        "description": "Rīsi, nori, krēmsiers, japāņu omlete, pikantas garneles, unagi mērce\nРис, нори, сливочный сыр, томаго, Спайс креветки, унаги соус\nRice, nori, cream cheese, tomago, spice shrimp, unagi sauce",
+        "price": "€11.00",
+        "labels": []
+      },
+      {
+        "name": "52. KOGANE",
+        "description": "Rīsi, nori, krēmsiers, avokado,japāņu omlete, vista, pikānta mērce, sezams, unagi mērce\nРис, Нори, сливочный сыр, авокадо, томаго, курица, спайс соус, Сезам, унаги соус\nRice, nori, cream cheese, avocado, tomago, chicken, spice sauce, sesame, unagi sauce",
+        "price": "€8.00",
+        "labels": []
+      },
+      {
+        "name": "53. SAPPORO",
+        "description": "Rīsi, nori, krēmsiers, avokado, japāņu omlete, krabis pikantā mērce, sezams, unagi mērce\nРис, нори, сливочный сыр, авокадо, томаго, Спайс краб, Сезам, унаги соус\nRice, nori, cream cheese, avocado, tomago, spice crab, sesame, unagi sauce",
+        "price": "€7.50",
+        "labels": []
+      },
+      {
+        "name": "54. KANAGAWA",
+        "description": "Rīsi, nori, krēmsiers, gurķis, lidojošās zivs ikri, lasis pikantā mērcē, unagi mērce\nРис, нори, сливочный сыр, огурец, Красная масаго, Спайс лосось, унаги соус\nRice, nori, cream cheese, cucumber, red masago, spice salmon, unagi sauce",
+        "price": "€10.50",
+        "labels": []
+      },
+      {
+        "name": "55. HIJI",
+        "description": "Rīsi, nori, krēmsiers, gurķis, zutis pikantā mērcē, unagi mērce\nРис, нори, сливочный сыр, огурец, Спайс угорь, унаги соус\nRice, nori, cream cheese, cucumber, spice eel, unagi sauce",
+        "price": "€12.00",
+        "labels": []
+      },
+      {
+        "name": "56. CEPTS CRABIS",
+        "description": "Rīsi, nori, krēmsiers, gurķis, krabis siera mērcē, unagi mērce\nРис, нори, сливочный сыр, огурец, краб с сырным соусом, унаги соус\n\nRice, nori, cream cheese, cucumber, crab with cheese sauce, unagi sauce",
+        "price": "€7.00",
+        "labels": []
+      },
+      {
+        "name": "57.Tiger Mix",
+        "description": "Rīsi, nori, tīģergarneles, melnais un baltais sezams, garneles pikantā mērcē, unagi mērce\nРис, нори, тигровый креветки, чёрно-белый сезам, Спайс креветки, унаги соус\nRice, nori, tiger shrimp, black and white sesame, spice shrimp, unagi sauce",
+        "price": "€10.50",
+        "labels": []
+      },
+      {
+        "name": "58 Philadelphia Fried",
+        "description": "Rīsi, nori, krēmsiers, cepts lasis, gurķis, ceptas garneles, unagi mērce\nРис, нори, сливочный сыр, жареный лосось, огурец, жареный креветки, унаги соус\nRice, nori, cream cheese, fried salmon, cucumber, fried shrimp, unagi sauce",
+        "price": "€11.50",
+        "labels": []
+      },
+      {
+        "name": "59 Verona",
+        "description": "Rīsi, nori, krēmsiers, vista, siers, gurķis, siera mērce, baltais sezams, unagi mērce\nРис, Нори, сливочный сыр, курица, сыр гауда, огурец, сырный соус, белый Сезам, унаги соус\nRice, nori, cream cheese, chicken, gouda cheese, cucumber, cheese sauce, white sesame, unagi sauce",
+        "price": "€8.00",
+        "labels": []
+      }
+    ]
+  },
+  {
+    "section": "TEMPURA",
+    "items": [
+      {
+        "name": "70. WAKAME TEMPURA",
+        "description": "Rīsi, nori, krēmsiers, avokado, cepts terijaki lasis, gurķis, wakame, tempura maisījums, panko, unagi mērce\nРис, нори, сливочный сыр, авокадо, терияки лосось, огурец, вакаме, темпура, панко, унаги соус\nRice, nori, cream cheese, avocado, teriyaki salmon, cucumber, wakame, tempura, panko, unagi sauce",
+        "price": "€8.50",
+        "labels": []
+      },
+      {
+        "name": "71 VISTAS TEMPURA",
+        "description": "Rīsi, nori, krēmsiers, vista, gurķis, baltais sezams, tempuras maisījums, panko, unagi mērce\nРис, нори, сливочный сыр, курица, огурец, Сезам белый, темпура микс, панко, унаги соус\nRice, nori, cream cheese, chicken, cucumber, white sesame, tempura mix, panko, unagi sauce",
+        "price": "€7.00",
+        "labels": []
+      },
+      {
+        "name": "72 SAKE FRY",
+        "description": "Rīsi, nori, krēmsiers, gurķis, lasis, japāņu omlete, tempuras maisījums, panko, unagi mērce\nРис, Нори, сливочный сыр, огурец, лосось, томаго, темпура микс, панко, унаги соус\nRice, Nori, Cream Cheese, Cucumber, Salmon, Tomago, Tempura Mix, Panko, Unagi Sauce",
+        "price": "€7.50",
+        "labels": []
+      },
+      {
+        "name": "73 UNAGI CRISP",
+        "description": "Rīsi, nori, krēmsiers, zutis, cepts terijaki lasis, gurķis, tempuras maisījums, panko, unagi mērce\nРис, нори, сливочный сыр, угорь, лосось терияки, огурец, темпура микс, панко, унаги соус\nRice, nori, cream cheese, eel, salmon teriyaki, cucumber, tempura mix, panko, unagi sauce",
+        "price": "€8.50",
+        "labels": []
+      },
+      {
+        "name": "74 Ebi Panko",
+        "description": "Rīsi, nori, krēmsiers, avokado, tīģergarneles, tempuras maisījums, unagi mērce\nРис, нори, сливочный сыр, авокадо, тигровый креветки, темпура микс, унаги соус\nRice, nori, cream cheese, avocado, tiger shrimp, tempura mix, unagi sauce",
+        "price": "€7.50",
+        "labels": []
+      }
+    ]
+  },
+  {
+    "section": "DOUBLE MIX 1+1",
+    "items": [
+      {
+        "name": "80 KAPA MAKI 1+1",
+        "description": "Rīsi, nori, gurķis, sezams\nРис, нори, огурец, сезам\nRice, nori, cucumber, sesame",
+        "price": "€6.00",
+        "labels": []
+      },
+      {
+        "name": "81. AVAKADO MAKI 1+1",
+        "description": "Rīsi, nori, avocado\nРис, нори, авокадо\nRice, nori, avocado",
+        "price": "€6.00",
+        "labels": []
+      },
+      {
+        "name": "82. SAKE MAKI 1+1",
+        "description": "Rīsi, nori, lasis\nРис, нори, ласось\nRice, nori, salmon",
+        "price": "€7.00",
+        "labels": []
+      },
+      {
+        "name": "83  HOT TOMAGO SPICY MAKI 1+1",
+        "description": "Rīsi, nori, japāņu omlete ar pikantu mērci\nТомаго с спайс соусом\nTomago Spice",
+        "price": "€7.00",
+        "labels": []
+      },
+      {
+        "name": "84. PHILADELPHIA 1+1",
+        "description": "Rolls ar svaigu lasi, avokado un mīkstu krēmsieru.\nРолл со свежим лососем, авокадо и нежным сливочным сыром.\nRoll with fresh salmon, avocado and soft cream cheese.",
+        "price": "€17.50",
+        "labels": []
+      },
+      {
+        "name": "85 Phila Mix 1+1",
+        "description": "Philadelphia Lux 8 gab\nRīsi, nori, krēmsiers, avokado, lasis\n\nPhiladelphia Classic 8 gab\nRīsi, nori, krēmsiers, gurķis, lasis",
+        "price": "€17.50",
+        "labels": []
+      },
+      {
+        "name": "86 Phila Mix 2 1+1",
+        "description": "Philadelphia Gold 8 gab \nRīsi, nori, krēamsiers, gurķis, citrons, dilles, lasis\n\nKunsei Philadelphia 8 gab\nRīsi, nori, krēamsiers , gurķis, kūpināts lasis",
+        "price": "€18.50",
+        "labels": []
+      },
+      {
+        "name": "87. SUNRISE 1+1",
+        "description": "Unagi Crisp 8 gab\nRīsi, nori, krēmsiers, gurķis,cepts terijaki lasis, zutis tempra, panko, unagi mērce\n\nSake Bovito 8 gab\nRīsi nori, krēmsiers, gurķis, cepts terijaki lasis, tunča pārslas, unagi mērce",
+        "price": "€15.00",
+        "labels": []
+      },
+      {
+        "name": "88. BUSHIDO 1+1",
+        "description": "Sake Bonito 8 gab\nRīsi, nori, krēmsiers, gurķis, cepts terijaki lasis, tunča pārslas, unagi mērce\nUnagi Bonito 8 gab\nRīsi, nori, krēmsiers, gurķis, cepts terijaki lasis, zutis, tunča pārslas, unagi mērce",
+        "price": "€16.00",
+        "labels": []
+      },
+      {
+        "name": "89. KANAGAWA 1+1",
+        "description": "Rīsi, nori, krēmsiers, gurķis, lidojošās zivs ikri, lasis pikantā mērcē, unagi mērce\nРис, нори, сливочный сыр, огурец, Красная масаго, Спайс лосось, унаги соус\nRice, nori, cream cheese, cucumber, red masago, spice salmon, unagi sauce",
+        "price": "€17.50",
+        "labels": []
+      },
+      {
+        "name": "90. SPICY EBI 1+1",
+        "description": "Rīsi, nori, krēmsiers, salātgarnelēs, pikantās garneles\nРис, нори, сливочный сыр, слатный криветки, пикантный креветки\nRice, nori, cream cheese, salad shripm, spice shrimp",
+        "price": "€13.00",
+        "labels": []
+      },
+      {
+        "name": "91. PHILADELPHIA LIGHT 1+1",
+        "description": "Rīsi, nori, krēmsiers, lasis, gurķis, melnais un baltais sezams\nРис, нори, сливычный сыр, лосось, огурец, чурный белый сезам\nRice, nori, cream cheese, salmon, cucumber, black white sesame\nРолл со свежим лососем, огурцом, нежным сливочным сыром и кунжутом.   \n\nRoll with fresh salmon, cucumber, soft cream cheese and sesame.",
+        "price": "€13.00",
+        "labels": []
+      },
+      {
+        "name": "92. KOGANE 1+1.",
+        "description": "Rīsi, nori, krēmsiers, avokado,japāņu omlete, vista, pikānta mērce, sezams, unagi mērce\nРис, Нори, сливочный сыр, авокадо, томаго, курица, спайс соус, Сезам, унаги соус\nRice, nori, cream cheese, avocado, tomago, chicken, spice sauce, sesame, unagi sauce",
+        "price": "€14.00",
+        "labels": []
+      },
+      {
+        "name": "93.RED HEAT MIX",
+        "description": "KANAGAWA 8GAB\nPHILADELFIA CLASSIC 8 GAB",
+        "price": "€17.50",
+        "labels": []
+      },
+      {
+        "name": "94.TORI-SAKE MIX",
+        "description": "PHILADELPHIA LIGHT8 GAB\nKOGANE 8 GAB",
+        "price": "€13.50",
+        "labels": []
+      },
+      {
+        "name": "95.ROYAL FUSION",
+        "description": "HIJI 8 GAB\nSAKE MASAGO 8GAB",
+        "price": "€17.00",
+        "labels": []
+      },
+      {
+        "name": "96.OCEAN CREAM DUO",
+        "description": "SPICY EBI 8 GAB\nSALMON TARTARE 8 GAB",
+        "price": "€15.00",
+        "labels": []
+      }
+    ]
+  },
+  {
+    "section": "SPECIAL",
+    "items": [
+      {
+        "name": "OKI DOKI. 16+16",
+        "description": "rīsi nori krēmsiers cepta laša sezama siera mērce ar unagi mērci 16 gab\nrīsi nori krēmsiers vistas melnais sezams ar unagi mērci 16 gab\nрис нори сливичный сыр жаренный  лосось кунжут сырный соус с унаги соусом 16 штук \nрис нори сливичный сыр курица черным сезам с унаги соусом  16 штук \nrice nori cream cheese fried salmon sesame cheese sauce with unagi sauce 16 pieces\nrice nori cream cheese chicken black sesame with unagi sauce 16 piece",
+        "price": "€25.00",
+        "labels": []
+      }
+    ]
+  },
+  {
+    "section": "SUSHI SETI",
+    "items": [
+      {
+        "name": "AZOSHI SET 64G",
+        "description": "Spice Ebi 8 gab\nSalmon Spice 8 gab\nKinoja 8 gab\nNirogo Ebi 8 gab\nPhiladelphia classic 8 gab\nKanada Unagi 8 gab\nSurf Fish 8 gab\nMango Kiri 8 gab",
+        "price": "€65.00",
+        "labels": []
+      },
+      {
+        "name": "SAKE SETTO 56 gab",
+        "description": "Sake Maki 8 gab\nKunsei Maki 8 gab\nTeriyaki Maki 8 gab\nSakura Smoke 8 gab\nTokyo Wave 8 gab\nShogun 8 gab\nUmi no Hikari 8 gab",
+        "price": "€45.00",
+        "labels": []
+      },
+      {
+        "name": "BONITO SET 32  gab",
+        "description": "Unagi Bonito 8 gab\nSpring roll Bonito 8 gab\nUnagi Crisp 8 gab\nWakame Tempura 8 gab",
+        "price": "€32.00",
+        "labels": []
+      },
+      {
+        "name": "TEMPURA SET 32 gab",
+        "description": "Sake Fry 8 gab\nUnagi Crisp 8 gab\nEbi Panko 8 gab\nVistas Tempura 8 gab",
+        "price": "€27.00",
+        "labels": []
+      },
+      {
+        "name": "PHILADELPHIA SET 34 gab",
+        "description": "Philadelphia Lux 8gab\nPhiladelphia Classic 8gab\nPhiladelphia Gold 8 gab\nKunsia Philadelphia 8 gab\nSalmon nigiri 1gab \nKunsia Nigiri 1gab",
+        "price": "€35.00",
+        "labels": []
+      },
+      {
+        "name": "KRASTS SET 32GAB",
+        "description": "Samurajs Kanagava  Verona Ebimaki chees souse",
+        "price": "€32.00",
+        "labels": []
+      },
+      {
+        "name": "DAVANA SET 40 GAB",
+        "description": "California  ,Spicy Ebi Syake masago,Saki Maki ,Konago Maki",
+        "price": "€30.00",
+        "labels": []
+      },
+      {
+        "name": "PREMIUM SET   56GAB",
+        "description": "Philadelfia lux, Unagi Bonito, Mguro lasi,Ebi masago maki ,Wakame maki,Spicy avakado maki,Tomago chees maki",
+        "price": "€45.00",
+        "labels": []
+      },
+      {
+        "name": "CHICKEN COMBO 32GAB",
+        "description": "Sakura 8pcs. Chicken, cream cheese, white sesame, cheese sauce.\nOcean 8pcs. Chicken, cream cheese, black sesame, spicy sauce.\nFlame 8pcs. Cream cheese, cucumber, fried onions, chicken in spicy sauce.\nNoir 8pcs. Cream cheese, cucumber, salmon teriyaki sauce, chicken in cheese sauce.",
+        "price": "€25.00",
+        "labels": []
+      },
+      {
+        "name": "CRAB  32GAB",
+        "description": "Reef 8pcs. White sesame, cream cheese, cucumber, crab in spicy sauce.\nHarbor 8pcs. Cream cheese, cucumber, crab in cheese sauce.\nNaomi 8pcs. Black sesame, cream cheese, avocado, fried onions, cheese sauce\nSteam 8pcs. White and black sesame, cream cheese, shrimp, spicy sauce.",
+        "price": "€25.00",
+        "labels": []
+      },
+      {
+        "name": "HOTTO SET 48GAB",
+        "description": "Azi maki - Salad shrimp, black sesame, shrimp in spicy sauce\nHotto maki - Cucumber, cream cheese, white sesame, crab in cheese sauce\nShinsi maki - Cream cheese, tiger prawns, avocado, flying fish roe, eel in spicy sauce Tomashi maki - Cream cheese, Japanese omelette, mango, cheese sauce\nHofu maki - Cream cheese, seaweed salad, salmon, shrimp in cheese sauce\nChicken Tempura - Cream cheese, cucumber, white sesame, chicken",
+        "price": "€49.99",
+        "labels": []
+      },
+      {
+        "name": "UMAI SET 72GAB.",
+        "description": "Philadelphia Classic - Cream cheese, cucumber, salmon\nCalifornia - Avocado, cucumber, crab sticks, flying fish roe\nSake Avocado - Avocado, salmon\nEbi Mango - Cream cheese, shrimp, mango, flying fish roe\nKoibito - Cream cheese, Japanese omelette, shrimp, flying fish roe\nSakura Green - Cream cheese, avocado, shrimp, white sesame, seaweed salad\nEbi Maki - Tiger prawns in spicy sauce\nAvocado Maki - Avocado in cheese sauce\nSake Maki - Salmon with cream cheese",
+        "price": "€49.99",
+        "labels": []
+      }
+    ]
+  },
+  {
+    "section": "DZĒRIENI",
+    "items": [
+      {
+        "name": "Coca-Cola 0.33l",
+        "description": null,
+        "price": "€1.50",
+        "labels": []
+      },
+      {
+        "name": "Coca-Cola zero",
+        "description": null,
+        "price": "€1.50",
+        "labels": []
+      },
+      {
+        "name": "SPRITE 0.33l",
+        "description": null,
+        "price": "€1.50",
+        "labels": []
+      },
+      {
+        "name": "FANTA 0.33l",
+        "description": null,
+        "price": "€1.50",
+        "labels": []
+      },
+      {
+        "name": "Sparkling mineral water 0.33l",
+        "description": "Minerālūdens gāzēts",
+        "price": "€1.50",
+        "labels": []
+      },
+      {
+        "name": "Mineral water still 0.33l",
+        "description": "Minerālūdens negāzēts",
+        "price": "€1.50",
+        "labels": []
+      }
+    ]
+  },
+  {
+    "section": "Snacks",
+    "items": [
+      {
+        "name": "King prawns 6 gab +souse",
+        "description": "Zeltaini brūnas tīģergarneles ceptas rīvmaizē. Tiek pasniegtas ar vasabi aioli.\nТигровые креветки обжаренные в сухарях до золотистого цвета. Подаются с васаби айоли. \nTiger prawns fried in breadcrumbs until golden. Served with wasabi aioli.",
+        "price": "€3.50",
+        "labels": []
+      },
+      {
+        "name": "Spring rolls 6 gab+souse",
+        "description": "Kraukšķīgie pavasara rullīši, pildīti ar dārzeņiem, no kuriem vienkārši nevar atrauties. .\nХрустящие спринг-роллы с овощами, от которых невозможно оторваться.\nCrispy spring rolls filled with vegetables that you just can't stop eating.",
+        "price": "€3.00",
+        "labels": []
+      },
+      {
+        "name": "French fries 180 g",
+        "description": "Garšīgi, zeltaini, svaigi vārīti kartupeļi, nedaudz apkaisīti ar sāli. Tiek pasniegti \nВосхитительный, золотистый, свежеприготовленный картофель, слегка приправленный солью.\nDelicious, golden, freshly prepared potatoes, lightly seasoned with salt.",
+        "price": "€2.50",
+        "labels": []
+      },
+      {
+        "name": "Fried crispy chicken nuggets",
+        "description": "6 gab+ souse",
+        "price": "€3.50",
+        "labels": []
+      },
+      {
+        "name": "Copy of French fries 230 g",
+        "description": "Garšīgi, zeltaini, svaigi vārīti kartupeļi, nedaudz apkaisīti ar sāli. Tiek pasniegti \nВосхитительный, золотистый, свежеприготовленный картофель, слегка приправленный солью.\nDelicious, golden, freshly prepared potatoes, lightly seasoned with salt.",
+        "price": "€4.00",
+        "labels": []
+      },
+      {
+        "name": "Copy of Fried crispy chicken nuggets",
+        "description": "9 gab+ souse",
+        "price": "€4.50",
+        "labels": []
+      }
+    ]
+  },
+  {
+    "section": "SOUSES",
+    "items": [
+      {
+        "name": "Soy sauce",
+        "description": null,
+        "price": "€0.70",
+        "labels": []
+      },
+      {
+        "name": "Garlic sauce",
+        "description": null,
+        "price": "€0.70",
+        "labels": []
+      },
+      {
+        "name": "Teriyaki sauce",
+        "description": null,
+        "price": "€0.70",
+        "labels": []
+      },
+      {
+        "name": "Sweet Chili Sauce",
+        "description": null,
+        "price": "€0.70",
+        "labels": []
+      },
+      {
+        "name": "BBQ sauce",
+        "description": null,
+        "price": "€0.70",
+        "labels": []
+      },
+      {
+        "name": "Ketchup",
+        "description": null,
+        "price": "€0.70",
+        "labels": []
+      }
+    ]
+  },
+  {
+    "section": "ALLERGENS",
+    "items": []
+  }
+]
