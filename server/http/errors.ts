@@ -2,6 +2,8 @@ import type { Context } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import { OrderError, type OrderErrorCode } from '@/services/orders/orderService';
+import { PaymentProviderError, WebhookSignatureError } from '../payments/gateway';
+import { PaymentError } from '../services/payments';
 import { ReviewError } from '../services/reviews';
 
 /** Every API error has the same shape: `{ error: { code, message } }`. Never a stack trace. */
@@ -35,6 +37,16 @@ export function handleError(error: unknown, c: Context) {
   }
   if (error instanceof ReviewError) {
     return apiError(c, REVIEW_STATUS[error.code], error.code, error.message);
+  }
+  if (error instanceof PaymentError) {
+    const status = error.code === 'payments-unavailable' ? 503 : 409;
+    return apiError(c, status, error.code, error.message);
+  }
+  if (error instanceof PaymentProviderError) {
+    return apiError(c, 502, 'payment-provider-error', error.message);
+  }
+  if (error instanceof WebhookSignatureError) {
+    return apiError(c, 400, 'invalid-signature', error.message);
   }
   if (error instanceof HTTPException) {
     // Thrown by Hono middleware, e.g. the body size limit (413).

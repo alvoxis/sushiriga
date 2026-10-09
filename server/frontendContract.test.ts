@@ -5,12 +5,16 @@ import {
   createHttpCatalogService,
   createHttpLocationService,
   createHttpOrderService,
+  createHttpPaymentService,
   createHttpPromoService,
   createHttpReviewService,
 } from '@/services/http/httpServices';
 import { OrderError } from '@/services/orders/orderService';
 import type { CheckoutRequest } from '@/types';
+import Stripe from 'stripe';
 import { createServerContext } from './context';
+import { createStripeGateway } from './payments/gateway';
+import { fakeIntents, stripeConfig } from './test/fakeStripe';
 
 /**
  * Contract test: the frontend's HTTP services (src/services/http) talking to the real backend
@@ -18,8 +22,15 @@ import { createServerContext } from './context';
  */
 const riga = (time: string) => new Date(`2026-10-05T${time}:00+03:00`); // a Monday
 
-function setup() {
+function setup({ payments = false } = {}) {
   let now = riga('12:00');
+  const stripe = fakeIntents();
+  const gateway = payments
+    ? createStripeGateway(stripeConfig, {
+        paymentIntents: stripe.api,
+        webhooks: new Stripe(stripeConfig.secretKey).webhooks,
+      } as unknown as Stripe)
+    : null;
   const server = createServerContext(
     {
       production: false,
@@ -30,8 +41,10 @@ function setup() {
       corsOrigins: [],
       publicDir: null,
       trustProxy: false,
+      stripe: payments ? stripeConfig : null,
     },
     () => now,
+    gateway,
   );
   // The browser's localStorage (order access tokens live there).
   const storage = new Map<string, string>();
@@ -47,7 +60,9 @@ function setup() {
   return {
     server,
     storage,
+    stripe,
     orders: createHttpOrderService(http),
+    payments: createHttpPaymentService(http),
     promo: createHttpPromoService(http),
     reviews: createHttpReviewService(http),
     catalog: createHttpCatalogService(http, { categories, products }),
@@ -140,5 +155,35 @@ describe('frontend HTTP services ↔ backend', () => {
     await expect(offline).rejects.toMatchObject({ code: 'network' });
     // The verified menu bundled with the site is still shown while offline.
     expect((await app.catalog.getCatalog()).products).toHaveLength(99);
+  });
+
+  it('online payment: availability, a server-priced payment, PAID only after Stripe confirms', async () => {
+    const off = setup();
+    expect(await off.payments.availability()).toEqual({
+      available: false,
+      reason: 'not-configured',
+    });
+
+    const app = setup({ payments: true });
+    expect(await app.payments.availability()).toEqual({
+      available: true,
+      provider: 'stripe',
+      publishableKey: 'pk_test_unit',
+    });
+    const order = await app.orders.placeOrder((await app.orders.quote(request)).quoteId);
+    expect(await app.payments.start(order.id)).toEqual({
+      clientSecret: 'pi_1_secret_abc',
+      amount: 2200,
+    });
+    expect((await app.payments.refresh(order.id)).status).toBe('PENDING_PAYMENT');
+    app.stripe.succeed('pi_1');
+    expect((await app.payments.refresh(order.id)).status).toBe('PAID');
+    await expect(app.payments.start(order.id)).rejects.toMatchObject({
+      code: 'payment-not-needed',
+    });
+
+    // Another browser (no access token) cannot start or check the payment.
+    app.storage.clear();
+    await expect(app.payments.start(order.id)).rejects.toMatchObject({ code: 'failed' });
   });
 });

@@ -18,6 +18,7 @@ function setup(overrides: Partial<ServerConfig> = {}) {
     corsOrigins: [],
     publicDir: null,
     trustProxy: false,
+    stripe: null,
     ...overrides,
   };
   const context = createServerContext(config, () => now);

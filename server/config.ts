@@ -23,6 +23,47 @@ export interface ServerConfig {
    * pickup-time rules are deterministic. Refused in production.
    */
   testClockStart?: Date;
+  /** Stripe keys — all three or none. null = online payment is not offered. */
+  stripe: StripeConfig | null;
+}
+
+export interface StripeConfig {
+  /** sk_… or restricted rk_… — server only. */
+  secretKey: string;
+  /** whsec_… — verifies webhook signatures. */
+  webhookSecret: string;
+  /** pk_… — public, handed to the browser for the Payment Element. */
+  publishableKey: string;
+}
+
+function readStripe(env: NodeJS.ProcessEnv, production: boolean): StripeConfig | null {
+  const secretKey = env.STRIPE_SECRET_KEY?.trim() ?? '';
+  const webhookSecret = env.STRIPE_WEBHOOK_SECRET?.trim() ?? '';
+  const publishableKey = env.STRIPE_PUBLISHABLE_KEY?.trim() ?? '';
+  const given = [secretKey, webhookSecret, publishableKey].filter(Boolean).length;
+  if (given === 0) return null;
+  if (given < 3) {
+    throw new ConfigError(
+      'Set all of STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET and STRIPE_PUBLISHABLE_KEY (or none).',
+    );
+  }
+  if (!/^(sk|rk)_(test|live)_/.test(secretKey)) {
+    throw new ConfigError('STRIPE_SECRET_KEY must be a secret (sk_…) or restricted (rk_…) key');
+  }
+  if (!publishableKey.startsWith('pk_')) {
+    throw new ConfigError('STRIPE_PUBLISHABLE_KEY must be a publishable key (pk_…)');
+  }
+  if (!webhookSecret.startsWith('whsec_')) {
+    throw new ConfigError('STRIPE_WEBHOOK_SECRET must be a webhook signing secret (whsec_…)');
+  }
+  const secretLive = secretKey.includes('_live_');
+  if (secretLive !== publishableKey.startsWith('pk_live_')) {
+    throw new ConfigError('Stripe keys mix test and live mode');
+  }
+  if (production && !secretLive) {
+    console.warn('[config] Stripe is in TEST mode: no real money will be charged.');
+  }
+  return { secretKey, webhookSecret, publishableKey };
 }
 
 export class ConfigError extends Error {
@@ -73,5 +114,6 @@ export function readServerConfig(env: NodeJS.ProcessEnv = process.env): ServerCo
     publicDir: env.PUBLIC_DIR === '' ? null : (env.PUBLIC_DIR?.trim() ?? './dist'),
     trustProxy: env.TRUST_PROXY === '1' || env.TRUST_PROXY === 'true',
     ...(testClockStart ? { testClockStart } : {}),
+    stripe: readStripe(env, production),
   };
 }

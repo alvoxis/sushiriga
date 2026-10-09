@@ -16,6 +16,36 @@ export interface StoredReview extends Review {
   status: ReviewStatus;
 }
 
+export interface PaymentRecord {
+  orderId: string;
+  provider: 'stripe';
+  intentId: string;
+  amount: number;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface PaymentRow {
+  order_id: string;
+  provider: 'stripe';
+  intent_id: string;
+  amount: number;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+
+const paymentFromRow = (row: PaymentRow): PaymentRecord => ({
+  orderId: row.order_id,
+  provider: row.provider,
+  intentId: row.intent_id,
+  amount: row.amount,
+  status: row.status,
+  createdAt: row.created_at,
+  updatedAt: row.updated_at,
+});
+
 export interface ProductOverride {
   productId: string;
   available: boolean | null;
@@ -135,6 +165,22 @@ export function createStore(db: Database) {
          available = excluded.available, price = excluded.price, updated_at = excluded.updated_at`,
     ),
     deleteOverride: db.prepare('DELETE FROM product_overrides WHERE product_id = ?'),
+    findPayment: db.prepare('SELECT * FROM payments WHERE order_id = ?'),
+    findPaymentByIntent: db.prepare('SELECT * FROM payments WHERE intent_id = ?'),
+    upsertPayment: db.prepare(
+      `INSERT INTO payments (order_id, provider, intent_id, amount, status, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?)
+       ON CONFLICT (order_id) DO UPDATE SET
+         provider = excluded.provider, intent_id = excluded.intent_id, amount = excluded.amount,
+         status = excluded.status, updated_at = excluded.updated_at`,
+    ),
+    setPaymentStatus: db.prepare(
+      'UPDATE payments SET status = ?, updated_at = ? WHERE intent_id = ?',
+    ),
+    findWebhookEvent: db.prepare('SELECT 1 FROM webhook_events WHERE id = ?'),
+    insertWebhookEvent: db.prepare(
+      'INSERT OR IGNORE INTO webhook_events (id, type, received_at) VALUES (?, ?, ?)',
+    ),
   };
 
   const parseOrder = (row: unknown): Order | undefined =>
@@ -267,6 +313,40 @@ export function createStore(db: Database) {
       },
       setStatus(id: string, status: ReviewStatus): boolean {
         return Number(sql.setReviewStatus.run(status, id).changes) > 0;
+      },
+    },
+
+    payments: {
+      find(orderId: string): PaymentRecord | undefined {
+        const row = sql.findPayment.get(orderId) as PaymentRow | undefined;
+        return row ? paymentFromRow(row) : undefined;
+      },
+      findByIntent(intentId: string): PaymentRecord | undefined {
+        const row = sql.findPaymentByIntent.get(intentId) as PaymentRow | undefined;
+        return row ? paymentFromRow(row) : undefined;
+      },
+      save(payment: Omit<PaymentRecord, 'createdAt' | 'updatedAt'>, now: Date): void {
+        const at = now.toISOString();
+        sql.upsertPayment.run(
+          payment.orderId,
+          payment.provider,
+          payment.intentId,
+          payment.amount,
+          payment.status,
+          at,
+          at,
+        );
+      },
+      setStatus(intentId: string, status: string, now: Date): void {
+        sql.setPaymentStatus.run(status, now.toISOString(), intentId);
+      },
+    },
+
+    webhookEvents: {
+      has: (id: string): boolean => sql.findWebhookEvent.get(id) !== undefined,
+      /** Records an event id; false if it was already processed. */
+      record(id: string, type: string, now: Date): boolean {
+        return Number(sql.insertWebhookEvent.run(id, type, now.toISOString()).changes) > 0;
       },
     },
 

@@ -64,6 +64,25 @@ const MIGRATIONS: string[] = [
     updated_at  TEXT NOT NULL
   );
   `,
+  `
+  -- One payment attempt per order (a new attempt replaces a cancelled one).
+  CREATE TABLE payments (
+    order_id    TEXT PRIMARY KEY REFERENCES orders(id),
+    provider    TEXT NOT NULL,
+    intent_id   TEXT NOT NULL UNIQUE,
+    amount      INTEGER NOT NULL CHECK (amount >= 0),
+    status      TEXT NOT NULL,
+    created_at  TEXT NOT NULL,
+    updated_at  TEXT NOT NULL
+  );
+
+  -- Webhook deliveries already processed (providers retry; each event is applied once).
+  CREATE TABLE webhook_events (
+    id          TEXT PRIMARY KEY,
+    type        TEXT NOT NULL,
+    received_at TEXT NOT NULL
+  );
+  `,
 ];
 
 export type Database = DatabaseSync;

@@ -20,6 +20,7 @@ import {
 } from './http/schemas';
 import type { CatalogService } from './services/catalog';
 import type { OrderService } from './services/orders';
+import type { PaymentService } from './services/payments';
 import type { ReviewService } from './services/reviews';
 
 export interface AppDeps {
@@ -27,6 +28,7 @@ export interface AppDeps {
   store: Store;
   catalog: CatalogService;
   orders: OrderService;
+  payments: PaymentService;
   reviews: ReviewService;
   now: () => Date;
 }
@@ -50,7 +52,7 @@ async function parseBody<S extends z.ZodType>(
 }
 
 export function createApp(deps: AppDeps) {
-  const { config, store, catalog, orders, reviews } = deps;
+  const { config, store, catalog, orders, payments, reviews } = deps;
   const app = new Hono();
 
   const clientIp = (c: Context): string => {
@@ -68,16 +70,24 @@ export function createApp(deps: AppDeps) {
   const limit = (name: string, perMinute: number) =>
     rateLimit({ name, limit: perMinute, windowMs: MINUTE, clientKey: clientIp });
 
+  // Stripe's Payment Element must load from Stripe (PCI): allowed only when payments are set up.
+  const stripe = payments.publicConfig() !== null;
   app.use(
     '*',
     secureHeaders({
       contentSecurityPolicy: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'"],
+        scriptSrc: [
+          "'self'",
+          ...(stripe ? ['https://js.stripe.com', 'https://*.js.stripe.com'] : []),
+        ],
         styleSrc: ["'self'", "'unsafe-inline'"],
-        imgSrc: ["'self'", 'data:'],
+        imgSrc: ["'self'", 'data:', ...(stripe ? ['https://*.stripe.com'] : [])],
         fontSrc: ["'self'"],
-        connectSrc: ["'self'"],
+        connectSrc: ["'self'", ...(stripe ? ['https://api.stripe.com'] : [])],
+        frameSrc: stripe
+          ? ['https://js.stripe.com', 'https://*.js.stripe.com', 'https://hooks.stripe.com']
+          : ["'none'"],
         frameAncestors: ["'none'"],
         baseUri: ["'self'"],
         formAction: ["'self'"],
@@ -85,7 +95,12 @@ export function createApp(deps: AppDeps) {
       },
       strictTransportSecurity: config.production ? 'max-age=31536000; includeSubDomains' : false,
       crossOriginEmbedderPolicy: false,
-      permissionsPolicy: { camera: [], microphone: [], geolocation: [], payment: ['self'] },
+      permissionsPolicy: {
+        camera: [],
+        microphone: [],
+        geolocation: [],
+        payment: stripe ? ['self', 'https://js.stripe.com'] : ['self'],
+      },
     }),
   );
 
@@ -102,7 +117,11 @@ export function createApp(deps: AppDeps) {
       }),
     );
   }
-  api.use('*', bodyLimit({ maxSize: 32 * 1024 }));
+  const smallBodies = bodyLimit({ maxSize: 32 * 1024 });
+  const webhookBodies = bodyLimit({ maxSize: 512 * 1024 }); // provider events can be larger
+  api.use('*', (c, next) =>
+    c.req.path.endsWith('/stripe/webhook') ? webhookBodies(c, next) : smallBodies(c, next),
+  );
   api.use('*', async (c, next) => {
     await next();
     if (!c.res.headers.has('Cache-Control')) c.header('Cache-Control', 'no-store');
@@ -159,6 +178,24 @@ export function createApp(deps: AppDeps) {
     const body = await parseBody(c, reviewSchema);
     if (body instanceof Response) return body;
     return c.json(reviews.submit(order.id, body), 201);
+  });
+
+  api.get('/config', (c) => c.json({ payments: payments.publicConfig() }));
+
+  api.post('/orders/:id/payment', limit('payment', 20), async (c) => {
+    const order = orders.get(c.req.param('id'), c.req.header(ORDER_TOKEN_HEADER));
+    return c.json(await payments.start(order.id));
+  });
+
+  api.post('/orders/:id/payment/refresh', limit('payment-refresh', 60), async (c) => {
+    const order = orders.get(c.req.param('id'), c.req.header(ORDER_TOKEN_HEADER));
+    return c.json(await payments.refresh(order.id));
+  });
+
+  // Called by Stripe, authenticated by the signature over the RAW body (not by a token).
+  api.post('/stripe/webhook', async (c) => {
+    await payments.handleWebhook(await c.req.text(), c.req.header('stripe-signature'));
+    return c.json({ received: true });
   });
 
   api.get('/reviews', (c) => {
