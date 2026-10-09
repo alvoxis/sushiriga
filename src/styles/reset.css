@@ -40,11 +40,14 @@ button {
 }
 
 p,
+li,
+dd,
 h1,
 h2,
 h3,
 h4 {
-  overflow-wrap: break-word;
+  /* Menu texts contain long unbroken runs ("Lasis/Rīsi/Avokado/…") — never let them overflow. */
+  overflow-wrap: anywhere;
 }
 
 ul[role='list'],

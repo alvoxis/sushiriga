@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { paths, ROUTES } from '@/app/routes';
 import { ButtonLink, ImagePlaceholder, PageHeader, Price } from '@/components/ui';
+import { bookTheme } from '@/features/menu/bookThemes';
 import { QuantityStepper } from '@/features/cart/components/QuantityStepper';
 import { categoryName, findCategory, findProduct, productName } from '@/features/menu/catalog';
 import { useCatalog } from '@/features/menu/CatalogContext';
@@ -48,7 +49,11 @@ export default function ProductPage() {
         </ol>
       </nav>
       <article className={styles.product}>
-        <ImagePlaceholder label={t('menu.photoSoon')} ratio="16 / 10" />
+        <ImagePlaceholder
+          label={t('menu.photoSoon')}
+          ratio="16 / 10"
+          tone={bookTheme(category.id).cloth}
+        />
         <div className={styles.productInfo}>
           {product.number && (
             <p className="eyebrow">{t('menu.number', { number: product.number })}</p>

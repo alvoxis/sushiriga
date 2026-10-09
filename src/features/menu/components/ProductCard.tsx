@@ -3,6 +3,7 @@ import { paths } from '@/app/routes';
 import { ImagePlaceholder, Price } from '@/components/ui';
 import { useTranslation } from '@/i18n';
 import type { Product } from '@/types';
+import { bookTheme } from '../bookThemes';
 import { productName } from '../catalog';
 import { AddToCartButton } from './AddToCartButton';
 import { LocalizedBlock } from './LocalizedBlock';
@@ -14,7 +15,7 @@ export function ProductCard({ product }: { product: Product }) {
   const name = productName(product, locale);
   return (
     <article className={styles.card} data-testid="product-card">
-      <ImagePlaceholder compact ratio="1 / 1" />
+      <ImagePlaceholder compact ratio="1 / 1" tone={bookTheme(product.category).cloth} />
       <div className={styles.cardBody}>
         <h3 className={styles.cardTitle}>
           {product.number && (

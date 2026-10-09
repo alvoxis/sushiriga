@@ -10,17 +10,20 @@ export function ImagePlaceholder({
   label,
   ratio = '4 / 3',
   compact,
+  tone,
   className,
 }: {
   label?: string;
   ratio?: string;
   compact?: boolean;
+  /** Tint (e.g. the category cloth colour) so placeholders feel part of their chapter. */
+  tone?: string;
   className?: string;
 }) {
   return (
     <div
       className={cn(styles.placeholder, compact && styles.compact, className)}
-      style={{ '--ratio': ratio } as CSSProperties}
+      style={{ '--ratio': ratio, ...(tone ? { '--tone': tone } : {}) } as CSSProperties}
       aria-hidden="true"
     >
       <svg

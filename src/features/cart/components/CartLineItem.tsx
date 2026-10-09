@@ -1,6 +1,7 @@
 import { Link } from 'react-router';
 import { paths } from '@/app/routes';
 import { Button, Icon, ImagePlaceholder, Price } from '@/components/ui';
+import { bookTheme } from '@/features/menu/bookThemes';
 import { productName } from '@/features/menu/catalog';
 import { useTranslation } from '@/i18n';
 import type { CartLine, Product } from '@/types';
@@ -14,7 +15,12 @@ export function CartLineItem({ line, product }: { line: CartLine; product: Produ
   const name = productName(product, locale);
   return (
     <li className={styles.line} data-testid="cart-line">
-      <ImagePlaceholder compact ratio="1 / 1" className={styles.lineImage} />
+      <ImagePlaceholder
+        compact
+        ratio="1 / 1"
+        tone={bookTheme(product.category).cloth}
+        className={styles.lineImage}
+      />
       <h3 className={styles.lineName}>
         <Link to={paths.product(product.id)}>{name}</Link>
         <span className={styles.lineUnit}>{formatPrice(line.unitPrice)}</span>

@@ -5,6 +5,7 @@ import { Book, BookCover, BookPage, useBookControls } from '@/components/book';
 import { ButtonLink } from '@/components/ui';
 import { useTranslation } from '@/i18n';
 import type { Category } from '@/types';
+import { MENU_BOOK_THEME, themeStyle } from '../bookThemes';
 import {
   categoryName,
   minPrice,
@@ -81,11 +82,14 @@ export function MenuBook() {
   return (
     <Book
       title={t('book.menuTitle')}
+      style={themeStyle(MENU_BOOK_THEME)}
       cover={
         <BookCover
           title="SUSHIRIGA"
           eyebrow={t('book.coverSubtitle')}
           subtitle={t('book.menuTitle')}
+          pattern={MENU_BOOK_THEME.pattern}
+          openLabel={t('book.open')}
           footer={<span>Rīga</span>}
         />
       }
