@@ -51,6 +51,11 @@ describe('pickup slots', () => {
     expect(slots.map(fmt)).toEqual(['18:30', '18:45', '19:00']); // 21:30, 21:45, 22:00 local
   });
 
+  it('before opening, the first slot is opening time + preparation time', () => {
+    const fmt = (d: Date) => d.toISOString().slice(11, 16);
+    expect(fmt(pickupSlots(location, at('09:00'), 30)[0]!)).toBe('08:30'); // 11:30 local
+  });
+
   it('has no slots on a closed day and no ASAP after closing', () => {
     expect(pickupSlots(location, new Date('2026-10-06T12:00:00+03:00'), 30)).toEqual([]);
     expect(canOrderAsap(location, at('21:45'), 30)).toBe(false);

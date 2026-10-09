@@ -32,8 +32,11 @@ export function pickupSlots(
   for (let t = earliest; t.getTime() - now.getTime() <= 24 * 60 * 60_000; t = addMinutes(t, step)) {
     const parts = zonedParts(t, location.timeZone);
     if (parts.weekday !== today.weekday) break;
+    // Food can be ready at the earliest `preparationMinutes` after opening.
     const fits = intervalsFor(location, parts.weekday).some(
-      (i) => parts.minutes >= parseClock(i.opens) && parts.minutes <= parseClock(i.closes),
+      (i) =>
+        parts.minutes >= parseClock(i.opens) + preparationMinutes &&
+        parts.minutes <= parseClock(i.closes),
     );
     if (fits) slots.push(t);
   }

@@ -1,14 +1,14 @@
 import { Link } from 'react-router';
 import { ROUTES } from '@/app/routes';
 import { socialLinks } from '@/data/business';
-import { locations } from '@/data/locations';
+import { useActiveLocations } from '@/features/pickup/useLocations';
 import { useTranslation } from '@/i18n';
 import { Logo } from './Logo';
 import styles from './Footer.module.css';
 
 export function Footer() {
   const { t } = useTranslation();
-  const active = locations.filter((l) => l.active);
+  const active = useActiveLocations();
   return (
     <footer className={styles.footer}>
       <div className={`container ${styles.grid}`}>

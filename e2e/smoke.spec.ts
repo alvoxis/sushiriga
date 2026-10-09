@@ -31,7 +31,7 @@ test('product → cart → quantity → total', async ({ page, isMobile }) => {
   const nav = isMobile
     ? page.getByRole('navigation', { name: 'Quick navigation' })
     : page.getByRole('banner');
-  await nav.getByRole('link', { name: 'Cart, 1 items' }).click();
+  await nav.getByRole('link', { name: 'Cart, items: 1' }).click();
 
   await expect(page.getByTestId('cart-total')).toHaveText('€10.50');
   await page.getByRole('button', { name: 'One more Maestro' }).click();

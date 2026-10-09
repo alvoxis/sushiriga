@@ -1,7 +1,6 @@
 import { Link } from 'react-router';
 import { paths, ROUTES } from '@/app/routes';
 import { ButtonLink, PlaceholderPanel } from '@/components/ui';
-import { locations } from '@/data/locations';
 import { AssistantTeaser } from '@/features/assistant/components/AssistantTeaser';
 import {
   categoryName,
@@ -12,6 +11,7 @@ import {
 import { useCatalog } from '@/features/menu/CatalogContext';
 import { MenuBook } from '@/features/menu/components/MenuBook';
 import { LocationCard } from '@/features/pickup/components/LocationCard';
+import { useActiveLocations } from '@/features/pickup/useLocations';
 import { useDocumentTitle } from '@/hooks';
 import { useTranslation } from '@/i18n';
 import styles from './HomePage.module.css';
@@ -21,7 +21,7 @@ export default function HomePage() {
   const catalog = useCatalog();
   useDocumentTitle(undefined);
   const chapters = visibleCategories(catalog);
-  const activeLocations = locations.filter((l) => l.active);
+  const activeLocations = useActiveLocations();
 
   return (
     <>

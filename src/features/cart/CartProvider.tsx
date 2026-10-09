@@ -50,20 +50,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setPromoState(null);
   }, []);
 
-  const value = useMemo<CartContextValue>(
-    () => ({
+  const value = useMemo<CartContextValue>(() => {
+    const cart = buildCart(items, products, promo);
+    return {
       items,
-      cart: buildCart(items, products, promo),
-      itemCount: cartItemCount(items),
+      cart,
+      // Count only lines that resolve to available catalog products (what the cart page shows).
+      itemCount: cartItemCount(cart.items),
       promo,
       add,
       setQuantity,
       remove,
       clear,
       setPromo: setPromoState,
-    }),
-    [items, products, promo, add, setQuantity, remove, clear],
-  );
+    };
+  }, [items, products, promo, add, setQuantity, remove, clear]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
