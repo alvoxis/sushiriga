@@ -100,6 +100,48 @@ Docker: `docker build -t sushiriga . && docker run -p 8787:8787 -v sushiriga-dat
 вместо сети Stripe — память. `e2e-server/stripe.spec.ts` — настоящая оплата тестовой картой в
 test mode; запускается только с test-ключами в окружении, иначе помечается как skipped.
 
+## Админ-панель (`/admin`)
+
+Отдельный layout и lazy-чанки (клиенты их не загружают), `noindex`. Работает только с backend.
+
+**Учётные записи** создаёт владелец через CLI — регистрации нет:
+
+```bash
+npm run server:cli -- staff:add --email anna@sushiriga.lv --name Anna --role admin   # пароль спросит без эха
+npm run server:cli -- staff:list
+npm run server:cli -- staff:password --email anna@sushiriga.lv   # и выход на всех устройствах
+npm run server:cli -- staff:disable --email anna@sushiriga.lv     # staff:enable — вернуть
+# Docker: docker exec -it <container> node dist-server/cli.js staff:add --email … --role admin
+```
+
+Пароль — минимум 12 символов, хранится как scrypt-хэш. Вход: HttpOnly-cookie `sr_staff`
+(`SameSite=Strict`, `Secure` в production, `Path=/api/admin`, 12 часов), в базе — только SHA-256
+токена. Изменяющие запросы требуют заголовок `X-SushiRiga-Admin: 1` (защита от CSRF; этот
+заголовок не разрешён в CORS). Неверный e-mail и неверный пароль дают одинаковый ответ; вход —
+не чаще 10 попыток в минуту с одного IP.
+
+| Роль    | Может                                                                                                                            |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `staff` | заказы: принять (время 10–80 мин, по умолчанию 30), статусы, задержка с причиной, смена времени, отмена; отметка «нет в наличии» |
+| `admin` | всё то же + цены блюд, промокоды, модерация отзывов                                                                              |
+
+Правила (сервер): `PAID` ставит только оплата; `ACCEPTED` — только через «Принять» с временем;
+остальные переходы — по `ORDER_TRANSITIONS`. Отмена оплаченного заказа сначала делает полный
+возврат через Stripe (idempotency key на заказ) и пишет номер возврата в историю; без Stripe
+отмена оплаченного заказа отклоняется. Доска заказов обновляется каждые 15 секунд, сводка дня —
+оплаченные заказы, выручка, чаевые.
+
+| Метод и путь                                                                  | Роль                 |
+| ----------------------------------------------------------------------------- | -------------------- |
+| `POST /api/admin/login`, `/logout`, `GET /me`                                 | —                    |
+| `GET /api/admin/orders?status=…`, `/orders/:id`, `/summary`                   | staff                |
+| `POST /api/admin/orders/:id/accept` `{ preparationTime }`                     | staff                |
+| `POST /api/admin/orders/:id/status` `{ status, note? }`                       | staff                |
+| `POST /api/admin/orders/:id/preparation-time` `{ minutes }`                   | staff                |
+| `GET /api/admin/menu`, `POST /api/admin/menu/:id` `{ available?, price? }`    | staff (цена — admin) |
+| `GET/POST /api/admin/promo-codes`                                             | admin                |
+| `GET /api/admin/reviews?status=…`, `POST /api/admin/reviews/:id` `{ status }` | admin                |
+
 ## Безопасность
 
 - CSP `default-src 'self'` (без inline-скриптов; Stripe — только при настроенных ключах),
@@ -118,5 +160,11 @@ test mode; запускается только с test-ключами в окр�
   заголовки, раздача SPA, сохранность после перезапуска.
 - `server/frontendContract.test.ts` — HTTP-сервисы фронтенда (`src/services/http`) против
   настоящего приложения сервера в процессе.
+- `server/admin.test.ts` — вход персонала, cookie, CSRF, истечение сессии, роли, доска заказов,
+  возврат при отмене, меню, промокоды, модерация.
 - `e2e-server/` (`npm run test:e2e:server`) — Playwright против production-сборки сервера с
-  чистой SQLite: оформление, чтение заказа после перезагрузки, отказ без токена, 360 px.
+  чистой SQLite: оформление, чтение заказа после перезагрузки, отказ без токена, 360 px; полный
+  цикл «оплата → персонал принимает → готовится → готов → выдан → отзыв → публикация», возврат
+  при отмене, промокод из админки в корзине, «нет в наличии». Без ключей Stripe вызовы Stripe API
+  идут в локальную заглушку `e2e-server/fakeStripeApi.mjs` (только для тестов, `STRIPE_API_BASE`
+  в production запрещён); с test-ключами — в настоящий Stripe.
