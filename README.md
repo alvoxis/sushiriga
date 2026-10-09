@@ -4,7 +4,8 @@
 кот-помощник, который в будущем станет AI-ассистентом.
 
 > Этап 1 — фундамент: архитектура, дизайн-система, книга, каталог, корзина, guest checkout
-> на mock-сервисах. Реальные оплата, AI, SMS, POS и вторая точка **не подключены**.
+> на mock-сервисах. Реальные оплата, AI, SMS, POS, Bolt Food и вторая точка **не подключены**.
+> Все заказы и «оплаты» сейчас — **демо**: деньги не списываются, ресторан ничего не получает.
 
 ## Стек
 
@@ -20,14 +21,27 @@
 
 Runtime-зависимостей всего три: `react`, `react-dom`, `react-router`. Шрифты — системные (0 загрузок).
 
-## Установка и запуск
+## Быстрый старт
 
-Нужен Node.js ≥ 20.19 (см. `.nvmrc`).
+Нужен Node.js ≥ 20.19 (рекомендуется 22, см. `.nvmrc`).
 
 ```bash
-npm install
-npm run dev          # http://localhost:5173 (доступно и с телефона в той же сети)
+git clone https://github.com/alvoxis/sushiriga.git
+cd sushiriga
+npm ci                       # установка зависимостей по lock-файлу
+npm run dev                  # http://localhost:5173 (доступно и с телефона в той же сети)
 ```
+
+Проверка перед коммитом / как в CI:
+
+```bash
+npm run check                # lint + format + typecheck + unit/integration tests + build
+npx playwright install chromium   # один раз
+npm run test:e2e             # e2e: desktop + mobile Chromium
+```
+
+Production-сборка: `npm run build` → статические файлы в `dist/`, локальный просмотр — `npm run preview`.
+Сайт — SPA: на хостинге все пути нужно отдавать через `index.html` (fallback-роутинг).
 
 ## Команды
 
@@ -80,13 +94,14 @@ src/
     book/         Book, BookCover, BookSpine, BookPages, BookPage, BookNavigation
     ui/           Button, Card, Badge, Modal, Toast, TextField, ChoiceGroup, ImagePlaceholder…
     layout/       Header, BottomNav, Footer, LanguageSwitcher, Logo, SkipLink, DemoBanner
-  services/       интерфейсы + mock-реализации (catalog, orders, promo, payments, auth, assistant, reviews, locations)
+  services/       интерфейсы сервисов + createServices.ts (точка сборки) + notConnected.ts
+    mock/         ТОЛЬКО демо: заказы, демо-оплата, промокоды DEMO*, отзывы, ассистент (изолировано ESLint)
   data/           меню (13 файлов категорий), аллергены, точки
   i18n/           translations/{lv,ru,en}.ts, провайдер, типизированные ключи
   types/ hooks/ utils/ styles/ test/
 e2e/              Playwright
 docs/             ARCHITECTURE.md, MENU_DATA.md
-scripts/menu-import/  как меню перенесено с sushiriga.lv
+scripts/menu-import/  импорт меню с sushiriga.lv + source-snapshot.json (снимок для теста целостности)
 ```
 
 ## Маршруты
@@ -106,6 +121,7 @@ scripts/menu-import/  как меню перенесено с sushiriga.lv
   цены всегда из каталога.
 - Промокоды (mock: `DEMO10` −10 %, `DEMO5` −5 € от 30 €, `DEMOEXPIRED`) — только демо.
 - Guest checkout: точка, «как можно скорее» / слот по часам работы, контакты, чаевые, демо-оплата.
+  Цены и скидку считает «сервер» (mock) по `productId`/количеству — браузерным суммам не доверяем.
 - Страница заказа: статус и таймлайн, отзыв после `PICKED_UP`. Время приготовления выбирает
   сотрудник при принятии заказа (10–80 мин); до этого клиент видит стандарт 30 мин. В демо-режиме
   роль сотрудника играет кнопка «следующий статус».
