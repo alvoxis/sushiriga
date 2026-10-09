@@ -6,7 +6,7 @@ import type { PromoService } from './promoService';
  * backend exists, codes are not accepted at all — no simulated discounts in the real UI.
  */
 export const unavailablePromoService: PromoService = {
-  available: false,
+  mode: 'unavailable',
   validate: async (code) => ({
     valid: false,
     code: normalizePromoCode(code),

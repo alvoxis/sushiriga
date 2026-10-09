@@ -4,6 +4,8 @@ import type { Cents } from './money';
 import type { PromoRejectionReason } from './promo';
 
 export const ORDER_STATUSES = [
+  /** Created and priced, NOT paid. Until payments exist every demo order stays here. */
+  'PENDING_PAYMENT',
   'PAID',
   'ACCEPTED',
   'PREPARING',
@@ -88,7 +90,8 @@ export interface Order {
   preparationTime: PreparationTimeOption | null;
   status: OrderStatus;
   statusHistory: OrderStatusChange[];
-  payment: OrderPayment;
+  /** `null` while the order is not paid (PENDING_PAYMENT). */
+  payment: OrderPayment | null;
   createdAt: string;
   updatedAt: string;
 }

@@ -16,6 +16,11 @@
   gap: var(--space-6);
 }
 
+/* The details form stays mounted during review; `display: flex` must not override `hidden`. */
+.form[hidden] {
+  display: none;
+}
+
 .step {
   display: flex;
   flex-direction: column;
@@ -72,4 +77,200 @@
   color: var(--color-danger);
   font-weight: 600;
   font-size: var(--text-sm);
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+.stepper {
+  display: flex;
+  gap: var(--space-2);
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  font-size: var(--text-sm);
+  color: var(--color-ink-muted);
+}
+
+.stepper li {
+  counter-increment: step;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.stepper li::before {
+  content: counter(step);
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: 50%;
+  font-size: var(--text-xs);
+  font-weight: 700;
+}
+
+.stepper li + li::after {
+  content: none;
+}
+
+.stepper li[aria-current='step'] {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+
+.stepper li[aria-current='step']::before {
+  background: var(--color-indigo);
+  border-color: var(--color-indigo);
+  color: var(--color-on-indigo);
+}
+
+.selectField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.estimate {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.asideTitle {
+  margin-bottom: var(--space-3);
+  font-size: var(--text-xl);
+}
+
+/* ---------- Review ---------- */
+.review {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.reviewTitle {
+  font-size: var(--text-2xl);
+  outline: none;
+}
+
+.reviewCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.reviewHeading {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+.reviewItems {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 0;
+  list-style: none;
+}
+
+.reviewItems li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.reviewItemName {
+  min-width: 0;
+}
+
+.qty {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.unit {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--color-ink-muted);
+}
+
+.amount {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.reviewTotals {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-line);
+  font-variant-numeric: tabular-nums;
+}
+
+.reviewTotals > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.reviewTotals dt {
+  color: var(--color-ink-soft);
+}
+
+.reviewTotal {
+  padding-top: var(--space-2);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+}
+
+.reviewTotal dt {
+  color: var(--color-ink) !important;
+}
+
+.reviewGrid {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 40rem) {
+  .reviewGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.reviewTime {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
+}
+
+.reviewContact {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-1) var(--space-4);
+}
+
+.reviewContact dt {
+  color: var(--color-ink-muted);
+}
+
+.reviewActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
 }

@@ -7,6 +7,8 @@ describe('order status transitions', () => {
   });
 
   it('follows the happy path', () => {
+    expect(canTransition('PENDING_PAYMENT', 'PAID')).toBe(true);
+    expect(canTransition('PENDING_PAYMENT', 'ACCEPTED')).toBe(false); // payment cannot be skipped
     expect(canTransition('PAID', 'ACCEPTED')).toBe(true);
     expect(canTransition('ACCEPTED', 'PREPARING')).toBe(true);
     expect(canTransition('PREPARING', 'ALMOST_READY')).toBe(true);

@@ -52,7 +52,8 @@
 
 .facts {
   display: grid;
-  grid-template-columns: auto 1fr;
+  /* Labels may wrap; values always keep most of the width (long words at 320 px). */
+  grid-template-columns: fit-content(40%) minmax(0, 1fr);
   gap: var(--space-2) var(--space-5);
 }
 
@@ -72,6 +73,11 @@
   display: flex;
   justify-content: space-between;
   gap: var(--space-3);
+}
+
+.items li > :last-child {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .demoNotice {

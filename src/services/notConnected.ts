@@ -15,6 +15,7 @@ const fail = (feature: string): never => {
 
 export const notConnectedOrders: OrderService = {
   quote: async () => fail('Orders'),
+  placeOrder: async () => fail('Orders'),
   awaitPaidOrder: async () => fail('Orders'),
   getOrder: async () => fail('Orders'),
   listCustomerOrders: async () => fail('Orders'),
@@ -26,7 +27,7 @@ export const notConnectedPayments: PaymentService = {
 };
 
 export const notConnectedPromo: PromoService = {
-  available: false,
+  mode: 'unavailable',
   validate: async () => fail('Promo codes'),
 };
 

@@ -39,7 +39,9 @@ export function PromoCodeForm() {
   }
 
   // Without a server check there is nothing honest to apply: show the field disabled and say why.
-  if (!promoService.available) {
+  const mock = promoService.mode === 'mock';
+
+  if (promoService.mode === 'unavailable') {
     return (
       <div className={styles.promo}>
         <TextField
@@ -55,8 +57,12 @@ export function PromoCodeForm() {
 
   if (promo) {
     return (
-      <div className={styles.promoApplied} role="status">
-        <span>{t('cart.promo.applied', { code: promo.code })}</span>
+      <div className={styles.promoApplied} role="status" data-mock={mock || undefined}>
+        <span>
+          {mock
+            ? t('cart.promo.appliedMock', { code: promo.code })
+            : t('cart.promo.applied', { code: promo.code })}
+        </span>
         <Button variant="ghost" size="sm" onClick={() => setPromo(null)}>
           {t('cart.promo.remove')}
         </Button>
@@ -74,6 +80,7 @@ export function PromoCodeForm() {
           autoComplete="off"
           autoCapitalize="characters"
           spellCheck={false}
+          {...(mock ? { hint: t('cart.promo.mockNote') } : {})}
           {...(error ? { error } : {})}
         />
         <Button type="submit" variant="secondary" disabled={pending}>

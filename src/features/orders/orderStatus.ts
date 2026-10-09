@@ -5,6 +5,8 @@ import type { OrderStatus } from '@/types';
  * DELAYED is a side-state: staff can delay an order and later resume it.
  */
 export const ORDER_TRANSITIONS: Record<OrderStatus, readonly OrderStatus[]> = {
+  // Only a confirmed payment (payment webhook on the backend) may move an order to PAID.
+  PENDING_PAYMENT: ['PAID', 'CANCELLED'],
   PAID: ['ACCEPTED', 'CANCELLED'],
   ACCEPTED: ['PREPARING', 'DELAYED', 'CANCELLED'],
   PREPARING: ['ALMOST_READY', 'READY', 'DELAYED', 'CANCELLED'],
@@ -21,6 +23,7 @@ export function canTransition(from: OrderStatus, to: OrderStatus): boolean {
 
 /** The happy path shown as a progress timeline to the customer. */
 export const ORDER_PROGRESS: readonly OrderStatus[] = [
+  'PENDING_PAYMENT',
   'PAID',
   'ACCEPTED',
   'PREPARING',

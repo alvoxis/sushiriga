@@ -50,16 +50,26 @@ export default function OrderPage() {
       : new Intl.DateTimeFormat(locale, {
           dateStyle: 'medium',
           timeStyle: 'short',
+          hourCycle: 'h23',
           timeZone: location?.timeZone,
         }).format(new Date(order.pickupTime));
-  const nextDemoStatus = ORDER_PROGRESS[ORDER_PROGRESS.indexOf(order.status) + 1];
+  // Demo stand-in for staff actions — but never for payment: PENDING_PAYMENT → PAID only ever
+  // happens through a real, confirmed payment.
+  const nextDemoStatus =
+    order.status === 'PENDING_PAYMENT'
+      ? undefined
+      : ORDER_PROGRESS[ORDER_PROGRESS.indexOf(order.status) + 1];
+  const unpaid = order.status === 'PENDING_PAYMENT';
 
   return (
     <div className="container">
-      <PageHeader eyebrow={t('order.thanks')} title={t('order.title', { id: order.id })} />
+      <PageHeader
+        eyebrow={unpaid ? t('order.createdUnpaid') : t('order.thanks')}
+        title={t('order.title', { id: order.id })}
+      />
       <div className={styles.twoColumns}>
         <div className="stack">
-          {order.payment.provider === 'demo' && (
+          {(config.demoMode || order.payment?.provider === 'demo') && (
             <p className={styles.demoNotice} role="note">
               {t('order.demoNotice')}
             </p>
@@ -97,7 +107,9 @@ export default function OrderPage() {
         <Card as="section" className="stack" aria-label={t('order.items')}>
           <dl className={styles.facts}>
             <dt>{t('order.pickupAt')}</dt>
-            <dd>{pickup}</dd>
+            <dd>
+              {pickup} <span className={styles.muted}>({t('order.preliminary')})</span>
+            </dd>
             <dt>{t('order.location')}</dt>
             <dd>{location ? `${location.name}, ${location.address.street}` : order.location}</dd>
             <dt>{t('order.preparationTime')}</dt>

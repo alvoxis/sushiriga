@@ -115,6 +115,7 @@ export const lv: Messages = {
     emptyCta: 'Atvērt ēdienkarti',
     subtotal: 'Starpsumma',
     discount: 'Atlaide',
+    discountMock: 'Atlaide (testa)',
     total: 'Kopā',
     remove: 'Noņemt {name}',
     increase: 'Vēl vienu: {name}',
@@ -132,6 +133,9 @@ export const lv: Messages = {
       remove: 'Noņemt promokodu',
       applied: 'Promokods {code} pielietots',
       checking: 'Pārbauda…',
+      mockNote:
+        'Demo režīms: darbojas tikai testa kodi (piem., DEMO10). Atlaidi nepārbauda restorāna serveris.',
+      appliedMock: 'Testa kods {code} pielietots — demo atlaide, serveris to nav pārbaudījis',
       unavailableHint:
         'Promokodi darbosies, kad restorāns varēs tos pārbaudīt savā serverī. Pagaidām atlaide netiek piemērota.',
       errors: {
@@ -155,7 +159,18 @@ export const lv: Messages = {
       contact: 'Kontaktinformācija',
       tip: 'Dāvini smaidu',
       payment: 'Maksājums',
+      review: 'Pārbaude',
     },
+    reviewCta: 'Pārbaudīt pasūtījumu',
+    reviewTitle: 'Pārbaudi pasūtījumu',
+    edit: 'Mainīt',
+    confirm: 'Apstiprināt demo pasūtījumu',
+    confirming: 'Veido pasūtījumu…',
+    confirmNote:
+      'Maksājumi nav pieslēgti: pasūtījums tiks izveidots ar statusu “Gaida apmaksu”. Nauda netiek iekasēta, un restorāns pasūtījumu nesaņem.',
+    timePreliminary: 'Provizoriski',
+    timeNote:
+      'Virtuves pašreizējā noslodze vēl nav zināma. Precīzu laiku restorāns apstiprinās pēc pasūtījuma saņemšanas.',
     location: 'Saņemšanas vieta',
     pickupTime: 'Saņemšanas laiks',
     asap: 'Pēc iespējas ātrāk (≈ {minutes} min)',
@@ -174,6 +189,8 @@ export const lv: Messages = {
       phone: 'Ievadi derīgu tālruņa numuru.',
       email: 'Ievadi derīgu e-pasta adresi.',
       time: 'Izvēlies saņemšanas laiku.',
+      slotGone: 'Šis laiks vairs nav pieejams — lūdzu, izvēlies citu.',
+      name: 'Ievadi vārdu (vismaz 2 rakstzīmes).',
     },
     paymentNotConnected: 'Tiešsaistes maksājumi vēl nav pieslēgti.',
     paymentDemo: 'Demo režīms: pasūtījums tiek simulēts, nauda netiek iekasēta.',
@@ -198,7 +215,10 @@ export const lv: Messages = {
   order: {
     title: 'Pasūtījums {id}',
     thanks: 'Paldies! Pasūtījums ir saņemts.',
+    createdUnpaid: 'Demo pasūtījums izveidots — nav apmaksāts',
+    preliminary: 'provizoriski',
     status: {
+      PENDING_PAYMENT: 'Gaida apmaksu',
       PAID: 'Apmaksāts',
       ACCEPTED: 'Pieņemts',
       PREPARING: 'Tiek gatavots',
@@ -209,6 +229,8 @@ export const lv: Messages = {
       CANCELLED: 'Atcelts',
     },
     statusHint: {
+      PENDING_PAYMENT:
+        'Maksājumi vēl nav pieslēgti, tāpēc pasūtījums nav apmaksāts un nav nosūtīts restorānam.',
       PAID: 'Gaidām, kad restorāns pieņems pasūtījumu.',
       ACCEPTED: 'Restorāns ir pieņēmis tavu pasūtījumu.',
       PREPARING: 'Tavi suši tiek gatavoti.',

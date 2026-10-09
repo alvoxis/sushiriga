@@ -1,6 +1,4 @@
 import { screen, within } from '@testing-library/react';
-import { createServices, readConfig } from '@/services';
-import { createMockPromoService } from '@/services/mock/mockPromoService';
 import { renderApp } from '@/test/renderApp';
 
 describe('SUSHIRIGA app', () => {
@@ -69,48 +67,6 @@ describe('SUSHIRIGA app', () => {
     expect(screen.getAllByTestId('cart-line')).toHaveLength(1);
   });
 
-  it('marks a demo order as not paid for real', async () => {
-    vi.useFakeTimers({ shouldAdvanceTime: true, now: new Date('2026-10-05T12:00:00+03:00') });
-    localStorage.setItem(
-      'sushiriga.cart.v1',
-      JSON.stringify([{ productId: 'maestro', quantity: 1 }]),
-    );
-    const { user } = renderApp('/checkout');
-    await user.type(await screen.findByLabelText('Name'), 'Anna');
-    await user.type(screen.getByLabelText('Phone'), '+371 20000000');
-    await user.click(screen.getByRole('button', { name: 'Place demo order' }));
-    expect(await screen.findByTestId('order-status')).toHaveTextContent('Paid');
-    expect(screen.getByText(/Demo order: no money was charged/)).toBeInTheDocument();
-    expect(
-      screen.getByText(/Confirmed by the restaurant when it accepts the order/),
-    ).toBeInTheDocument();
-    vi.useRealTimers();
-  });
-
-  it('promo codes are not simulated: without a server check the field is disabled', async () => {
-    localStorage.setItem(
-      'sushiriga.cart.v1',
-      JSON.stringify([{ productId: 'maestro', quantity: 2 }]),
-    );
-    renderApp('/cart');
-    expect(await screen.findByLabelText('Promo code')).toBeDisabled();
-    expect(screen.getByText(/No discount is applied for now/)).toBeInTheDocument();
-    expect(screen.getByTestId('cart-total')).toHaveTextContent('€21.00');
-  });
-
-  it('with a server that checks codes, an accepted code updates the total', async () => {
-    localStorage.setItem(
-      'sushiriga.cart.v1',
-      JSON.stringify([{ productId: 'maestro', quantity: 2 }]),
-    );
-    const services = { ...createServices(readConfig({})), promo: createMockPromoService() };
-    const { user } = renderApp('/cart', 'en', services);
-    await user.type(await screen.findByLabelText('Promo code'), 'demo10');
-    await user.click(screen.getByRole('button', { name: 'Apply' }));
-    expect(await screen.findByText('Promo code DEMO10 applied')).toBeInTheDocument();
-    expect(screen.getByTestId('cart-total')).toHaveTextContent('€18.90');
-  });
-
   it('turns book pages with the keyboard', async () => {
     const { user } = renderApp('/menu/tempura');
     const book = await screen.findByRole('region', { name: 'Tempura — menu book' });
@@ -130,21 +86,5 @@ describe('SUSHIRIGA app', () => {
     ).toBeInTheDocument();
     expect(localStorage.getItem('sushiriga.locale')).toBe('"ru"');
     expect(document.documentElement.lang).toBe('ru');
-  });
-
-  it('places a guest demo order without an account', async () => {
-    vi.useFakeTimers({ shouldAdvanceTime: true, now: new Date('2026-10-05T12:00:00+03:00') });
-    localStorage.setItem(
-      'sushiriga.cart.v1',
-      JSON.stringify([{ productId: 'maestro', quantity: 1 }]),
-    );
-    const { user } = renderApp('/checkout');
-    await user.type(await screen.findByLabelText('Name'), 'Anna');
-    await user.type(screen.getByLabelText('Phone'), '+371 20000000');
-    await user.click(screen.getByRole('radio', { name: '€2.00' }));
-    await user.click(screen.getByRole('button', { name: 'Place demo order' }));
-    expect(await screen.findByTestId('order-status')).toHaveTextContent('Paid');
-    expect(screen.getByText('€12.50')).toBeInTheDocument(); // 10.50 + 2.00 tip
-    vi.useRealTimers();
   });
 });

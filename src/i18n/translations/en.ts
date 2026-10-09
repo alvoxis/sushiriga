@@ -118,6 +118,7 @@ export const en = {
     emptyCta: 'Open the menu',
     subtotal: 'Subtotal',
     discount: 'Discount',
+    discountMock: 'Discount (test)',
     total: 'Total',
     remove: 'Remove {name}',
     increase: 'One more {name}',
@@ -135,6 +136,9 @@ export const en = {
       remove: 'Remove promo code',
       applied: 'Promo code {code} applied',
       checking: 'Checking…',
+      mockNote:
+        'Demo mode: only test codes work (e.g. DEMO10). The discount is not checked by the restaurant’s server.',
+      appliedMock: 'Test code {code} applied — demo discount, not checked by a server',
       unavailableHint:
         'Promo codes will work once the restaurant can check them on its server. No discount is applied for now.',
       errors: {
@@ -158,7 +162,18 @@ export const en = {
       contact: 'Contact details',
       tip: 'Give a smile',
       payment: 'Payment',
+      review: 'Review',
     },
+    reviewCta: 'Review order',
+    reviewTitle: 'Check your order',
+    edit: 'Change',
+    confirm: 'Confirm demo order',
+    confirming: 'Creating order…',
+    confirmNote:
+      'Payment is not connected: the order is created with the status “Awaiting payment”. Nothing is charged and the restaurant does not receive it.',
+    timePreliminary: 'Preliminary',
+    timeNote:
+      'The kitchen’s current load is not known yet. The restaurant confirms the exact time after it receives the order.',
     location: 'Pickup location',
     pickupTime: 'Pickup time',
     asap: 'As soon as possible (≈ {minutes} min)',
@@ -177,6 +192,8 @@ export const en = {
       phone: 'Please enter a valid phone number.',
       email: 'Please enter a valid e-mail address.',
       time: 'Please choose a pickup time.',
+      slotGone: 'This time is no longer available — please choose another one.',
+      name: 'Please enter your name (at least 2 characters).',
     },
     paymentNotConnected: 'Online payment is not connected yet.',
     paymentDemo: 'Demo mode: the order is simulated and no money is charged.',
@@ -201,7 +218,10 @@ export const en = {
   order: {
     title: 'Order {id}',
     thanks: 'Thank you! Your order is in.',
+    createdUnpaid: 'Demo order created — not paid',
+    preliminary: 'preliminary',
     status: {
+      PENDING_PAYMENT: 'Awaiting payment',
       PAID: 'Paid',
       ACCEPTED: 'Accepted',
       PREPARING: 'Preparing',
@@ -212,6 +232,8 @@ export const en = {
       CANCELLED: 'Cancelled',
     },
     statusHint: {
+      PENDING_PAYMENT:
+        'Payment is not connected yet, so this order is not paid and has not been sent to the restaurant.',
       PAID: 'Waiting for the restaurant to accept your order.',
       ACCEPTED: 'The restaurant has accepted your order.',
       PREPARING: 'Your sushi is being made.',

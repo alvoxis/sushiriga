@@ -49,9 +49,9 @@ function update(id: string, change: (order: Order) => Order): Order {
 
 /**
  * DEMO order backend running in the browser. It imitates the server's trust model: it prices
- * the cart itself (catalog prices, promo rules, tip limits) and only creates an order for a
- * confirmed payment of exactly the quoted amount. Orders live in this browser only and NEVER
- * reach the restaurant.
+ * the cart itself (catalog prices, promo rules, tip limits); `placeOrder` creates an UNPAID order
+ * (PENDING_PAYMENT) and only a confirmed payment of exactly the quoted amount marks it PAID.
+ * Orders live in this browser only and NEVER reach the restaurant.
  */
 export function createMockOrderService(deps: MockOrderDeps): OrderService & OrderAdminService {
   const promoCodes = deps.promoCodes ?? MOCK_PROMO_CODES;
@@ -123,6 +123,34 @@ export function createMockOrderService(deps: MockOrderDeps): OrderService & Orde
     };
   }
 
+  function createOrder(
+    { quote, request }: { quote: CheckoutQuote; request: CheckoutRequest },
+    status: 'PENDING_PAYMENT' | 'PAID',
+    payment: Order['payment'],
+  ): Order {
+    const at = now().toISOString();
+    const order: Order = {
+      id: createId('SR').toUpperCase(),
+      customer: request.customer,
+      items: quote.items,
+      subtotal: quote.subtotal,
+      discount: quote.discount,
+      tip: quote.tip,
+      total: quote.total,
+      ...(quote.promoCode ? { promoCode: quote.promoCode } : {}),
+      location: request.locationId,
+      pickupTime: request.pickupTime,
+      preparationTime: null, // chosen by staff in acceptOrder
+      status,
+      statusHistory: [{ status, at }],
+      payment,
+      createdAt: at,
+      updatedAt: at,
+    };
+    save([order, ...load()]);
+    return order;
+  }
+
   return {
     async quote(request) {
       await mockDelay();
@@ -131,44 +159,48 @@ export function createMockOrderService(deps: MockOrderDeps): OrderService & Orde
       return quote;
     },
 
-    async awaitPaidOrder(quoteId, payment) {
+    async placeOrder(quoteId) {
       await mockDelay();
       const existing = ordersByQuote.get(quoteId);
       if (existing) {
         const order = load().find((o) => o.id === existing);
-        if (order) return order;
+        if (order) return order; // idempotent: one quote → one order
       }
       const entry = quotes.get(quoteId);
       if (!entry) throw new OrderError('quote-not-found', `Quote ${quoteId} not found`);
-      const { quote, request } = entry;
+      const order = createOrder(entry, 'PENDING_PAYMENT', null);
+      ordersByQuote.set(quoteId, order.id);
+      return order;
+    },
+
+    async awaitPaidOrder(quoteId, payment) {
+      await mockDelay();
+      const entry = quotes.get(quoteId);
+      const existingId = ordersByQuote.get(quoteId);
+      const existing = existingId ? load().find((o) => o.id === existingId) : undefined;
+      if (existing?.status === 'PAID') return existing;
+      const total = existing?.total ?? entry?.quote.total;
+      if (total === undefined)
+        throw new OrderError('quote-not-found', `Quote ${quoteId} not found`);
       if (
         payment.status !== 'succeeded' ||
         payment.quoteId !== quoteId ||
-        payment.amount !== quote.total
+        payment.amount !== total
       ) {
         throw new OrderError('payment-not-confirmed', 'Payment does not match the quote');
       }
-      const at = now().toISOString();
-      const order: Order = {
-        id: createId('SR').toUpperCase(),
-        customer: request.customer,
-        items: quote.items,
-        subtotal: quote.subtotal,
-        discount: quote.discount,
-        tip: quote.tip,
-        total: quote.total,
-        ...(quote.promoCode ? { promoCode: quote.promoCode } : {}),
-        location: request.locationId,
-        pickupTime: request.pickupTime,
-        preparationTime: null, // chosen by staff in acceptOrder
-        status: 'PAID',
-        statusHistory: [{ status: 'PAID', at }],
-        payment: { provider: payment.provider, reference: payment.paymentId },
-        createdAt: at,
-        updatedAt: at,
-      };
-      save([order, ...load()]);
-      quotes.delete(quoteId);
+      const paid = { provider: payment.provider, reference: payment.paymentId };
+      if (existing) {
+        const at = now().toISOString();
+        return update(existing.id, (order) => ({
+          ...order,
+          status: 'PAID',
+          payment: paid,
+          statusHistory: [...order.statusHistory, { status: 'PAID', at }],
+          updatedAt: at,
+        }));
+      }
+      const order = createOrder(entry!, 'PAID', paid);
       ordersByQuote.set(quoteId, order.id);
       return order;
     },
@@ -211,6 +243,11 @@ export function createMockOrderService(deps: MockOrderDeps): OrderService & Orde
     async updateStatus(id, status: OrderStatus, note) {
       if (status === 'ACCEPTED') {
         throw new Error('Use acceptOrder(): accepting requires a preparation time');
+      }
+      if (status === 'PAID') {
+        throw new Error(
+          'Cannot change an order to PAID manually: only a confirmed payment does that',
+        );
       }
       return update(id, (order) => {
         if (!canTransition(order.status, status)) {

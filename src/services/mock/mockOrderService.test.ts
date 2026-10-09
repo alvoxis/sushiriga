@@ -54,6 +54,39 @@ describe('mock order backend — server-side pricing', () => {
   });
 });
 
+describe('mock order backend — placing an order without payment', () => {
+  it('placeOrder creates an UNPAID order (PENDING_PAYMENT, no payment) exactly once per quote', async () => {
+    const orders = service();
+    const quote = await orders.quote(request);
+    const order = await orders.placeOrder(quote.quoteId);
+    expect(order).toMatchObject({
+      status: 'PENDING_PAYMENT',
+      payment: null,
+      total: 2300,
+      preparationTime: null,
+    });
+    expect(await orders.placeOrder(quote.quoteId)).toEqual(order);
+    await expect(orders.placeOrder('quote-unknown')).rejects.toThrow(/not found/);
+  });
+
+  it('only a confirmed payment of the exact amount moves it to PAID — staff cannot skip payment', async () => {
+    const orders = service();
+    const quote = await orders.quote(request);
+    const { id } = await orders.placeOrder(quote.quoteId);
+    await expect(orders.updateStatus(id, 'PAID')).rejects.toThrow(/only a confirmed payment/);
+    await expect(orders.acceptOrder(id, 30)).rejects.toThrow(/not PAID/);
+    await expect(
+      orders.awaitPaidOrder(quote.quoteId, demoPayment(quote.quoteId, 100)),
+    ).rejects.toThrow(/does not match/);
+    const paid = await orders.awaitPaidOrder(
+      quote.quoteId,
+      demoPayment(quote.quoteId, quote.total),
+    );
+    expect(paid).toMatchObject({ id, status: 'PAID', payment: { provider: 'demo' } });
+    expect(paid.statusHistory.map((s) => s.status)).toEqual(['PENDING_PAYMENT', 'PAID']);
+  });
+});
+
 describe('mock order backend — payment and order lifecycle', () => {
   it('creates a PAID demo order only for a payment of exactly the quoted amount', async () => {
     const orders = service();
