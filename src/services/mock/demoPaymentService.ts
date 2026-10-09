@@ -1,25 +1,19 @@
 import type { AppConfig } from '../config';
-import type { PaymentService } from '../payments/paymentService';
-import { createId } from '@/utils/id';
-import { mockDelay } from './delay';
+import { PaymentError, type PaymentService } from '../payments/paymentService';
 
 /**
- * DEMO payment: "succeeds" without charging anything. Refuses to exist outside demo mode, so it
- * can never be mistaken for a real payment provider.
+ * DEMO: there is no payment at all — demo orders stay "awaiting payment" and nothing is ever
+ * presented as paid. Refuses to exist outside demo mode.
  */
 export function createDemoPaymentService(config: AppConfig): PaymentService {
   if (!config.demoMode) throw new Error('Demo payments are only available in demo mode');
+  const unavailable = async (): Promise<never> => {
+    throw new PaymentError('payments-unavailable', 'There is no payment in demo mode');
+  };
   return {
     provider: 'demo',
-    async pay({ quoteId, amount }) {
-      await mockDelay(300);
-      return {
-        paymentId: createId('demo-pay'),
-        status: 'succeeded',
-        provider: 'demo',
-        quoteId,
-        amount,
-      };
-    },
+    availability: async () => ({ available: false, reason: 'demo' }),
+    start: unavailable,
+    refresh: unavailable,
   };
 }

@@ -8,6 +8,7 @@ import {
   createHttpCatalogService,
   createHttpLocationService,
   createHttpOrderService,
+  createHttpPaymentService,
   createHttpPromoService,
   createHttpReviewService,
 } from './http/httpServices';
@@ -17,16 +18,16 @@ import { createMockAssistantService } from './mock/mockAssistantService';
 import { createMockOrderService } from './mock/mockOrderService';
 import { createMockPromoService } from './mock/mockPromoService';
 import { createMockReviewService } from './mock/mockReviewService';
-import { notConnectedAssistant, notConnectedPayments } from './notConnected';
+import { notConnectedAssistant } from './notConnected';
 import type { Services } from './services';
 
 /**
  * Composition root — the ONLY production file allowed to import `./mock/*` (enforced by ESLint).
  *
  * - Demo mode (no VITE_API_URL): everything runs locally on mock services.
- * - Backend configured: the real API (`server/`) for menu, locations, orders, promo codes and
- *   reviews. Features the backend does not offer yet stay "not connected" and fail loudly —
- *   there is no silent demo fallback.
+ * - Backend configured: the real API (`server/`) for menu, locations, orders, payments, promo
+ *   codes and reviews. Features the backend does not offer yet stay "not connected" and fail
+ *   loudly — there is no silent demo fallback.
  */
 export function createServices(config: AppConfig = readConfig()): Services {
   const auth = createGuestOnlyAuthService();
@@ -41,7 +42,7 @@ export function createServices(config: AppConfig = readConfig()): Services {
       orders: createHttpOrderService(http),
       promo: createHttpPromoService(http),
       reviews: createHttpReviewService(http),
-      payments: notConnectedPayments,
+      payments: createHttpPaymentService(http),
       assistant: notConnectedAssistant,
     };
   }

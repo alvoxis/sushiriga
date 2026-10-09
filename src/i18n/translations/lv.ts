@@ -172,6 +172,9 @@ export const lv: Messages = {
     confirmLive: 'Apstiprināt pasūtījumu',
     confirmNoteLive:
       'Tiešsaistes apmaksa vēl nav pieejama: pasūtījums tiek saglabāts ar statusu “Gaida apmaksu”. Nauda netiek iekasēta, un restorāns gatavo tikai apmaksātus pasūtījumus.',
+    confirmAndPay: 'Apstiprināt un turpināt uz apmaksu',
+    confirmNotePay:
+      'Nākamais solis — droša tiešsaistes apmaksa ar Stripe. Restorāns sāks gatavot pasūtījumu pēc apmaksas.',
     timePreliminary: 'Provizoriski',
     timeNote:
       'Virtuves pašreizējā noslodze vēl nav zināma. Precīzu laiku restorāns apstiprinās pēc pasūtījuma saņemšanas.',
@@ -238,8 +241,7 @@ export const lv: Messages = {
       CANCELLED: 'Atcelts',
     },
     statusHint: {
-      PENDING_PAYMENT:
-        'Maksājumi vēl nav pieslēgti, tāpēc pasūtījums nav apmaksāts un nav nosūtīts restorānam.',
+      PENDING_PAYMENT: 'Pasūtījums vēl nav apmaksāts. Restorāns sāks to gatavot pēc apmaksas.',
       PAID: 'Gaidām, kad restorāns pieņems pasūtījumu.',
       ACCEPTED: 'Restorāns ir pieņēmis tavu pasūtījumu.',
       PREPARING: 'Tavi suši tiek gatavoti.',
@@ -287,6 +289,28 @@ export const lv: Messages = {
       promocodes: 'Personīgie promokodi no restorāna.',
       tips: 'Dzeramnauda, ko esi atstājis komandai.',
       settings: 'Valoda un paziņojumi.',
+    },
+  },
+  payment: {
+    title: 'Apmaksa',
+    amount: 'Apmaksai: {amount}',
+    start: 'Apmaksāt tiešsaistē',
+    loading: 'Ielādē drošo maksājuma formu…',
+    pay: 'Apmaksāt {amount}',
+    processing: 'Apstrādā maksājumu…',
+    confirming: 'Maksājums saņemts — apstiprinām to bankā…',
+    pendingLong: 'Banka vēl nav apstiprinājusi maksājumu. Lapa atjaunosies automātiski.',
+    secure: 'Kartes dati nonāk tieši Stripe un nekad nenonāk pie SUSHIRIGA.',
+    unavailable:
+      'Tiešsaistes apmaksa vēl nav pieejama. Restorāns gatavo tikai apmaksātus pasūtījumus.',
+    newOrder: 'Veikt jaunu pasūtījumu',
+    errors: {
+      failed: 'Maksājums neizdevās. Mēģini vēlreiz vai izvēlies citu maksājuma veidu.',
+      pickup:
+        'Šo saņemšanas laiku vairs nevar nodrošināt, tāpēc pasūtījumu nevar apmaksāt. Lūdzu, veic jaunu pasūtījumu.',
+      closed: 'Šis pasūtījums ir atcelts, to nevar apmaksāt.',
+      unavailable: 'Tiešsaistes apmaksa īslaicīgi nav pieejama. Lūdzu, mēģini vēlāk.',
+      network: 'Nav savienojuma. Pārbaudi interneta savienojumu un mēģini vēlreiz.',
     },
   },
   reviews: {

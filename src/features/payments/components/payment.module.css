@@ -1,0 +1,29 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.title {
+  font-size: var(--text-lg);
+}
+
+.amount {
+  font-size: var(--text-xl);
+  font-family: var(--font-display);
+}
+
+/* Stripe renders its own iframe here. */
+.element {
+  min-height: 3rem;
+}
+
+.note {
+  font-size: var(--text-sm);
+  color: var(--color-ink-muted);
+}
+
+.error {
+  color: var(--color-danger);
+  font-weight: 600;
+}

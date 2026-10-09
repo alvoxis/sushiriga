@@ -175,6 +175,9 @@ export const en = {
     confirmLive: 'Confirm order',
     confirmNoteLive:
       'Online payment is not available yet: the order is saved with the status “Awaiting payment”. Nothing is charged, and the restaurant prepares only paid orders.',
+    confirmAndPay: 'Confirm and continue to payment',
+    confirmNotePay:
+      'Next step: secure online payment via Stripe. The restaurant starts preparing the order once it is paid.',
     timePreliminary: 'Preliminary',
     timeNote:
       'The kitchen’s current load is not known yet. The restaurant confirms the exact time after it receives the order.',
@@ -242,7 +245,7 @@ export const en = {
     },
     statusHint: {
       PENDING_PAYMENT:
-        'Payment is not connected yet, so this order is not paid and has not been sent to the restaurant.',
+        'The order is not paid yet. The restaurant starts preparing it after payment.',
       PAID: 'Waiting for the restaurant to accept your order.',
       ACCEPTED: 'The restaurant has accepted your order.',
       PREPARING: 'Your sushi is being made.',
@@ -291,6 +294,27 @@ export const en = {
       promocodes: 'Personal promo codes from the restaurant.',
       tips: 'Tips you have given to the team.',
       settings: 'Language and notification preferences.',
+    },
+  },
+  payment: {
+    title: 'Payment',
+    amount: 'To pay: {amount}',
+    start: 'Pay online',
+    loading: 'Loading the secure payment form…',
+    pay: 'Pay {amount}',
+    processing: 'Processing the payment…',
+    confirming: 'Payment received — confirming it with the bank…',
+    pendingLong: 'The bank has not confirmed the payment yet. This page updates automatically.',
+    secure: 'Card details go directly to Stripe and never reach SUSHIRIGA.',
+    unavailable: 'Online payment is not available yet. The restaurant prepares paid orders only.',
+    newOrder: 'Place a new order',
+    errors: {
+      failed: 'The payment did not go through. Please try again or choose another payment method.',
+      pickup:
+        'This pickup time can no longer be met, so the order cannot be paid. Please place a new order.',
+      closed: 'This order was cancelled and cannot be paid.',
+      unavailable: 'Online payment is temporarily unavailable. Please try again later.',
+      network: 'No connection. Check your internet connection and try again.',
     },
   },
   reviews: {

@@ -5,7 +5,6 @@ import type {
   OrderStatus,
   PreparationTimeOption,
 } from '@/types';
-import type { PaymentResult } from '../payments/paymentService';
 
 export type OrderErrorCode =
   | 'invalid-request'
@@ -32,22 +31,19 @@ export class OrderError extends Error {
 /**
  * Customer-facing order API.
  *
- * Trust model (mirrors the future backend):
+ * Trust model (implemented by the backend in server/):
  * 1. `quote()` — the browser sends ids/quantities/promo/tip only; the SERVER prices everything.
- * 2. The payment is created for the quote (server-side amount), never for a browser amount.
- * 3. `placeOrder()` creates the order as PENDING_PAYMENT (what checkout does today, as payments
- *    are not connected). Only a confirmed payment moves it to PAID — in production the payment
- *    webhook does that; `awaitPaidOrder()` then just fetches it (the `payment` argument is a hint
- *    and is never trusted by a real backend).
+ * 2. `placeOrder()` creates the order as PENDING_PAYMENT.
+ * 3. The payment is created by the server for the stored order total (PaymentService), and only
+ *    the provider's confirmation, checked by the server, moves the order to PAID.
  */
 export interface OrderService {
   quote(request: CheckoutRequest): Promise<CheckoutQuote>;
   /**
    * Creates the order for a quote with status PENDING_PAYMENT — no payment is taken or implied.
-   * Payment later moves it to PAID (webhook), see `awaitPaidOrder`.
+   * A confirmed payment later moves it to PAID on the server (see PaymentService).
    */
   placeOrder(quoteId: string): Promise<Order>;
-  awaitPaidOrder(quoteId: string, payment: PaymentResult): Promise<Order>;
   getOrder(id: string): Promise<Order | undefined>;
   listCustomerOrders(customerId: string): Promise<Order[]>;
 }

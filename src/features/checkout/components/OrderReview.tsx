@@ -1,4 +1,4 @@
-import type { RefObject } from 'react';
+import { useEffect, useState, type RefObject } from 'react';
 import { Badge, Button, Card } from '@/components/ui';
 import { findProduct, productName } from '@/features/menu/catalog';
 import { useCatalog } from '@/features/menu/CatalogContext';
@@ -34,7 +34,15 @@ export function OrderReview({
 }: OrderReviewProps) {
   const { t, locale, formatPrice } = useTranslation();
   const catalog = useCatalog();
-  const { promo, config } = useServices();
+  const { promo, config, payments } = useServices();
+  const [canPay, setCanPay] = useState(false);
+  useEffect(() => {
+    let active = true;
+    payments.availability().then((result) => active && setCanPay(result.available));
+    return () => {
+      active = false;
+    };
+  }, [payments]);
   const { street, city, postalCode } = location.address;
 
   return (
@@ -123,7 +131,7 @@ export function OrderReview({
             <strong>{t('common.demoMode')}.</strong> {t('checkout.confirmNote')}
           </p>
         ) : (
-          <p>{t('checkout.confirmNoteLive')}</p>
+          <p>{canPay ? t('checkout.confirmNotePay') : t('checkout.confirmNoteLive')}</p>
         )}
       </div>
       {failure && (
@@ -140,7 +148,9 @@ export function OrderReview({
             ? t('checkout.confirming')
             : config.demoMode
               ? t('checkout.confirm')
-              : t('checkout.confirmLive')}
+              : canPay
+                ? t('checkout.confirmAndPay')
+                : t('checkout.confirmLive')}
         </Button>
       </div>
     </section>

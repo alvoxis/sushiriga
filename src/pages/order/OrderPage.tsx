@@ -4,6 +4,7 @@ import { ROUTES } from '@/app/routes';
 import { Button, ButtonLink, Card, PageHeader, PlaceholderPanel } from '@/components/ui';
 import { OrderStatusTimeline } from '@/features/orders/components/OrderStatusTimeline';
 import { canReview, isFinalStatus, ORDER_PROGRESS } from '@/features/orders/orderStatus';
+import { OrderPayment } from '@/features/payments/components/OrderPayment';
 import { STANDARD_PREPARATION_MINUTES } from '@/features/pickup/preparationTime';
 import { useLocation } from '@/features/pickup/useLocations';
 import { ReviewForm } from '@/features/reviews/components/ReviewForm';
@@ -113,6 +114,7 @@ export default function OrderPage() {
           <Card>
             <OrderStatusTimeline status={order.status} />
           </Card>
+          {unpaid && !config.demoMode && <OrderPayment order={order} onPaid={setOrder} />}
           {config.demoMode && ordersAdmin && nextDemoStatus && (
             <div>
               <Button

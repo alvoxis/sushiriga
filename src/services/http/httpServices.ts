@@ -10,6 +10,13 @@ import type {
 import type { CatalogService } from '../catalog/catalogService';
 import type { LocationService } from '../locations/locationService';
 import { OrderError, type OrderErrorCode, type OrderService } from '../orders/orderService';
+import {
+  PaymentError,
+  type PaymentAvailability,
+  type PaymentErrorCode,
+  type PaymentService,
+  type PaymentSession,
+} from '../payments/paymentService';
 import type { PromoService } from '../promo/promoService';
 import type { ReviewService } from '../reviews/reviewService';
 import { ApiError, NetworkError, type HttpClient } from './httpClient';
@@ -75,12 +82,6 @@ export function createHttpOrderService(http: HttpClient): OrderService {
         orderTokens.set(order.id, accessToken);
         return order;
       }),
-
-    async awaitPaidOrder(quoteId) {
-      // Payments are confirmed by the server (provider webhook); the browser only reads the
-      // result. Until the payment integration exists, there is never a paid order to find.
-      throw new OrderError('payment-not-confirmed', `No confirmed payment for ${quoteId}`);
-    },
 
     getOrder,
 
@@ -151,5 +152,65 @@ export function createHttpLocationService(http: HttpClient, bundled: Location[])
   return {
     listActive: load,
     get: async (id) => (await load()).find((l) => l.id === id),
+  };
+}
+
+const PAYMENT_ERROR_CODES: readonly PaymentErrorCode[] = [
+  'payments-unavailable',
+  'payment-not-needed',
+  'order-closed',
+  'pickup-unavailable',
+];
+
+function toPaymentError(error: unknown): PaymentError {
+  if (error instanceof NetworkError) return new PaymentError('network', error.message);
+  if (error instanceof ApiError) {
+    const code = PAYMENT_ERROR_CODES.find((c) => c === error.code);
+    return new PaymentError(code ?? 'failed', error.message);
+  }
+  return new PaymentError('failed', error instanceof Error ? error.message : 'Payment failed');
+}
+
+/** Stripe payments through the backend: it holds the secret key and decides what is paid. */
+export function createHttpPaymentService(http: HttpClient): PaymentService {
+  let config: Promise<PaymentAvailability> | null = null;
+  const call = async <T>(work: () => Promise<T>): Promise<T> => {
+    try {
+      return await work();
+    } catch (error) {
+      throw toPaymentError(error);
+    }
+  };
+  return {
+    provider: 'stripe',
+    availability: () =>
+      (config ??= http
+        .get<{ payments: { provider: 'stripe'; publishableKey: string } | null }>('api/config')
+        .then(
+          ({ payments }): PaymentAvailability =>
+            payments
+              ? { available: true, provider: 'stripe', publishableKey: payments.publishableKey }
+              : { available: false, reason: 'not-configured' },
+          (): PaymentAvailability => {
+            config = null; // try again next time
+            return { available: false, reason: 'unreachable' };
+          },
+        )),
+    start: (orderId) =>
+      call(() =>
+        http.post<PaymentSession>(
+          `api/orders/${encodeURIComponent(orderId)}/payment`,
+          undefined,
+          withToken(orderId),
+        ),
+      ),
+    refresh: (orderId) =>
+      call(() =>
+        http.post<Order>(
+          `api/orders/${encodeURIComponent(orderId)}/payment/refresh`,
+          undefined,
+          withToken(orderId),
+        ),
+      ),
   };
 }

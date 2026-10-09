@@ -13,6 +13,7 @@ import type {
 import { createId } from '@/utils/id';
 import { readStorage, writeStorage } from '@/utils/storage';
 import { OrderError, type OrderAdminService, type OrderService } from '../orders/orderService';
+import type { PaymentResult } from '../payments/paymentService';
 import { mockDelay } from './delay';
 import { MOCK_PROMO_CODES } from './fixtures';
 
@@ -50,7 +51,15 @@ function update(id: string, change: (order: Order) => Order): Order {
  * (PENDING_PAYMENT) and only a confirmed payment of exactly the quoted amount marks it PAID.
  * Orders live in this browser only and NEVER reach the restaurant.
  */
-export function createMockOrderService(deps: MockOrderDeps): OrderService & OrderAdminService {
+export interface MockOrderBackend extends OrderService, OrderAdminService {
+  /**
+   * What a payment webhook does on the real server. NOT reachable from the demo UI (demo orders
+   * are never paid) — it exists so the tests can cover the PAID rules and staff actions.
+   */
+  awaitPaidOrder(quoteId: string, payment: PaymentResult): Promise<Order>;
+}
+
+export function createMockOrderService(deps: MockOrderDeps): MockOrderBackend {
   const promoCodes = deps.promoCodes ?? MOCK_PROMO_CODES;
   const now = deps.now ?? (() => new Date());
   const quotes = new Map<string, { quote: CheckoutQuote; request: CheckoutRequest }>();

@@ -4,7 +4,6 @@
  */
 export interface AppConfig {
   apiUrl: string | null;
-  stripePublicKey: string | null;
   authProvider: string | null;
   aiProvider: string;
   /** No backend configured → all services run as local mocks. */
@@ -20,7 +19,6 @@ export function readConfig(env: Record<string, string | undefined> = import.meta
   const apiUrl = value(env.VITE_API_URL);
   return {
     apiUrl,
-    stripePublicKey: value(env.VITE_STRIPE_PUBLIC_KEY),
     authProvider: value(env.VITE_AUTH_PROVIDER),
     aiProvider: value(env.VITE_AI_PROVIDER) ?? 'mock',
     demoMode: apiUrl === null,

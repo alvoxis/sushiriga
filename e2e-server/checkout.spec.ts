@@ -48,12 +48,23 @@ test('guest order through the real backend: stored, priced by the server, readab
 
   const review = page.getByTestId('order-review');
   await expect(review.getByTestId('review-total')).toHaveText(/35,00/);
-  await expect(review.getByText(/Tiešsaistes apmaksa vēl nav pieejama/)).toBeVisible();
-  await review.getByRole('button', { name: 'Apstiprināt pasūtījumu' }).click();
+  if (process.env.STRIPE_SECRET_KEY) {
+    await expect(review.getByText(/droša tiešsaistes apmaksa ar Stripe/)).toBeVisible();
+  } else {
+    await expect(review.getByText(/Tiešsaistes apmaksa vēl nav pieejama/)).toBeVisible();
+  }
+  await review
+    .getByRole('button', { name: /^Apstiprināt (pasūtījumu|un turpināt uz apmaksu)$/ })
+    .click();
 
   await expect(page).toHaveURL(/\/order\/SR-[0-9A-Z]{4}-[0-9A-Z]{4}$/);
   await expect(page.getByText('Pasūtījums izveidots — gaida apmaksu')).toBeVisible();
   await expect(page.getByTestId('order-status')).toContainText('Gaida apmaksu');
+  // This server has no Stripe keys: no payment form, an honest note instead.
+  if (!process.env.STRIPE_SECRET_KEY) {
+    await expect(page.getByText(/Tiešsaistes apmaksa vēl nav pieejama/)).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Apmaksāt tiešsaistē' })).toHaveCount(0);
+  }
   const orderId = page.url().split('/').pop()!;
 
   // It lives on the server: a reload reads it back.

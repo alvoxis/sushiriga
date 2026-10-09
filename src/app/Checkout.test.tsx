@@ -173,7 +173,10 @@ describe('guest checkout → review → confirm (no payment)', () => {
     expect(await screen.findByTestId('order-status')).toHaveTextContent('Awaiting payment');
     expect(screen.getByText('Demo order created — not paid')).toBeInTheDocument();
     expect(
-      screen.getByText(/not paid and has not been sent to the restaurant/),
+      screen.getByText(/not paid yet\. The restaurant starts preparing it after payment/),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/no money was charged and the restaurant did not receive this order/),
     ).toBeInTheDocument();
     // "Paid" only appears as a FUTURE step of the progress line — never as done or current.
     const progress = screen.getByRole('list', { name: 'Order progress' });
