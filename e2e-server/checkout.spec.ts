@@ -95,7 +95,9 @@ test.describe('live checkout on a narrow phone', () => {
     await page.getByRole('button', { name: 'Pārbaudīt pasūtījumu' }).click();
     await expect(page.getByTestId('order-review')).toBeVisible();
     await expectNoHorizontalOverflow(page, 'live review 360');
-    await page.getByRole('button', { name: 'Apstiprināt pasūtījumu' }).click();
+    await page
+      .getByRole('button', { name: /^Apstiprināt (pasūtījumu|un turpināt uz apmaksu)$/ })
+      .click();
     await expect(page.getByTestId('order-status')).toBeVisible();
     await expectNoHorizontalOverflow(page, 'live order 360');
   });

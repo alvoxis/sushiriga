@@ -1,9 +1,9 @@
 /* eslint-disable react-refresh/only-export-components -- route table, not a component module */
-import { lazy } from 'react';
+import { lazy, Suspense } from 'react';
 import type { RouteObject } from 'react-router';
 import { RootLayout } from './layouts/RootLayout';
 import { RouteError } from './layouts/RouteError';
-import { ROUTES } from './routes';
+import { ADMIN_ROUTES, ROUTES } from './routes';
 
 // Every page is its own chunk (code splitting); the home page is part of the main bundle path.
 const HomePage = lazy(() => import('@/pages/home/HomePage'));
@@ -22,6 +22,12 @@ const ReviewsPage = lazy(() => import('@/pages/reviews/ReviewsPage'));
 const PickupPage = lazy(() => import('@/pages/pickup/PickupPage'));
 const AssistantPage = lazy(() => import('@/pages/assistant/AssistantPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
+// Admin panel: separate chunks, never loaded by customers.
+const AdminLayout = lazy(() => import('@/pages/admin/AdminLayout'));
+const AdminOrdersPage = lazy(() => import('@/pages/admin/AdminOrdersPage'));
+const AdminMenuPage = lazy(() => import('@/pages/admin/AdminMenuPage'));
+const AdminPromoPage = lazy(() => import('@/pages/admin/AdminPromoPage'));
+const AdminReviewsPage = lazy(() => import('@/pages/admin/AdminReviewsPage'));
 
 export const routeObjects: RouteObject[] = [
   {
@@ -44,8 +50,22 @@ export const routeObjects: RouteObject[] = [
       { path: ROUTES.reviews, element: <ReviewsPage /> },
       { path: ROUTES.pickup, element: <PickupPage /> },
       { path: ROUTES.assistant, element: <AssistantPage /> },
-      // TODO(admin): register ADMIN_ROUTES here behind a staff-only guard.
       { path: '*', element: <NotFoundPage /> },
+    ],
+  },
+  {
+    path: ADMIN_ROUTES.root,
+    element: (
+      <Suspense fallback={null}>
+        <AdminLayout />
+      </Suspense>
+    ),
+    errorElement: <RouteError />,
+    children: [
+      { index: true, element: <AdminOrdersPage /> },
+      { path: ADMIN_ROUTES.menu, element: <AdminMenuPage /> },
+      { path: ADMIN_ROUTES.promocodes, element: <AdminPromoPage /> },
+      { path: ADMIN_ROUTES.reviews, element: <AdminReviewsPage /> },
     ],
   },
 ];

@@ -1,3 +1,4 @@
+import type { AdminService } from './admin/adminService';
 import type { AssistantService } from './assistant/assistantService';
 import type { AuthService } from './auth/authService';
 import type { CatalogService } from './catalog/catalogService';
@@ -20,4 +21,6 @@ export interface Services {
   auth: AuthService;
   assistant: AssistantService;
   reviews: ReviewService;
+  /** Restaurant admin panel. Only with a backend — demo mode has no staff accounts. */
+  admin?: AdminService;
 }

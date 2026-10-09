@@ -3,6 +3,7 @@ import { locations } from '@/data/locations';
 import { createGuestOnlyAuthService } from './auth/authService';
 import { createStaticCatalogService } from './catalog/catalogService';
 import { readConfig, type AppConfig } from './config';
+import { createHttpAdminService } from './http/httpAdminService';
 import { createHttpClient } from './http/httpClient';
 import {
   createHttpCatalogService,
@@ -44,6 +45,7 @@ export function createServices(config: AppConfig = readConfig()): Services {
       reviews: createHttpReviewService(http),
       payments: createHttpPaymentService(http),
       assistant: notConnectedAssistant,
+      admin: createHttpAdminService(http),
     };
   }
 

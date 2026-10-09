@@ -18,17 +18,14 @@ export const ROUTES = {
 } as const;
 
 /**
- * Reserved for the restaurant admin panel (not registered yet). It will live in its own
- * lazily-loaded bundle behind staff authentication.
+ * Restaurant admin panel: its own layout and lazily-loaded chunks, behind staff sign-in
+ * (the server enforces roles; the UI only hides what a role cannot use).
  */
 export const ADMIN_ROUTES = {
   root: '/admin',
-  orders: '/admin/orders',
   menu: '/admin/menu',
   promocodes: '/admin/promocodes',
   reviews: '/admin/reviews',
-  tips: '/admin/tips',
-  settings: '/admin/settings',
 } as const;
 
 export const paths = {

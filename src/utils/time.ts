@@ -30,3 +30,33 @@ export function zonedParts(date: Date, timeZone: string): { weekday: number; min
   const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(get('weekday'));
   return { weekday, minutes: Number(get('hour')) * 60 + Number(get('minute')) };
 }
+
+/** The instant a wall-clock time ("YYYY-MM-DD", "HH:mm:ss") happens in an IANA time zone. */
+export function zonedTime(date: string, clock: string, timeZone: string): Date {
+  const guess = new Date(`${date}T${clock}Z`);
+  // How far the zone's wall clock is from UTC at that moment (handles summer/winter time).
+  const offsetAt = (instant: Date) => {
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hourCycle: 'h23',
+    }).formatToParts(instant);
+    const get = (type: string) => parts.find((p) => p.type === type)?.value ?? '00';
+    const wall = Date.UTC(
+      Number(get('year')),
+      Number(get('month')) - 1,
+      Number(get('day')),
+      Number(get('hour')),
+      Number(get('minute')),
+      Number(get('second')),
+    );
+    return wall - instant.getTime();
+  };
+  const first = new Date(guess.getTime() - offsetAt(guess));
+  return new Date(guess.getTime() - offsetAt(first));
+}

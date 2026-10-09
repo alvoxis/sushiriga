@@ -10,6 +10,7 @@ import { expect, test } from '@playwright/test';
  * Without them it is reported as skipped — it is never "passed" without talking to Stripe.
  */
 const testKeys =
+  !process.env.STRIPE_API_BASE && // not the local stand-in
   process.env.STRIPE_SECRET_KEY?.startsWith('sk_test_') &&
   process.env.STRIPE_PUBLISHABLE_KEY?.startsWith('pk_test_') &&
   process.env.STRIPE_WEBHOOK_SECRET?.startsWith('whsec_');
