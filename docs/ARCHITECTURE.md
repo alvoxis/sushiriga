@@ -29,7 +29,7 @@ hooks/ utils/ styles/
 | PromoService      | тестовые коды `DEMO*`, `mode: 'mock'`        | `POST /api/promo/validate`, `mode: 'server'`         |
 | PaymentService    | демо, в checkout не используется             | не подключено (этап 2: Stripe)                       |
 | AuthService       | только гость                                 | только гость                                         |
-| AssistantService  | rule-based по каталогу                       | не подключено                                        |
+| AssistantService  | поиск по правилам в меню (не AI)             | тот же (`assistant/catalogAssistantService.ts`)      |
 | ReviewService     | localStorage, не публикуется                 | `/api/orders/:id/review`, `/api/reviews` (модерация) |
 
 Расчёт заказа — общий модуль `features/checkout/priceCheckout.ts`: им пользуются и сервер, и
@@ -46,7 +46,7 @@ hooks/ utils/ styles/
 - ESLint (`no-restricted-imports`) запрещает импортировать `services/mock` откуда-либо, кроме
   `createServices.ts` и тестов.
 - Если задан `VITE_API_URL`, mock-сервисы **не подключаются**: заказы, оплата, промокоды и отзывы
-  идут в backend, а то, чего backend пока не умеет (ассистент), получает `notConnected*` и явно падает.
+  идут в backend; демо-реализации в этом режиме не используются вообще.
 - Фронтенд не может импортировать `server/` (ESLint), сервер — mock-сервисы и конфиг фронтенда.
 - `createDemoPaymentService` отказывается создаваться вне демо-режима.
 - `PromoService.mode` (`server` | `mock` | `unavailable`) решает, как UI подаёт промокод: в режиме

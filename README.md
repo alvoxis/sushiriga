@@ -93,6 +93,10 @@ iPhone/WebKit-проект включается `PW_WEBKIT=1` (после `npx p
 (обязателен в production), `DATABASE_PATH`, `PORT`, `PUBLIC_DIR`, `CORS_ORIGINS`, `TRUST_PROXY`,
 `STRIPE_SECRET_KEY` / `STRIPE_PUBLISHABLE_KEY` / `STRIPE_WEBHOOK_SECRET` (оплата).
 
+SEO при сборке: `SITE_URL=https://<домен> npm run build` добавляет `sitemap.xml` (главная, меню,
+13 глав, 99 блюд) и ссылку на него в `robots.txt`; `robots.txt` всегда закрывает `/admin`, `/api/`,
+корзину, оформление и заказы.
+
 ## Структура
 
 ```
@@ -114,8 +118,8 @@ src/
     book/         Book, BookCover, BookSpine, BookPages, BookPage, BookNavigation
     ui/           Button, Card, Badge, Modal, Toast, TextField, ChoiceGroup, ImagePlaceholder…
     layout/       Header, BottomNav, Footer, LanguageSwitcher, Logo, SkipLink, DemoBanner
-  services/       интерфейсы сервисов + createServices.ts (точка сборки) + notConnected.ts
-    mock/         ТОЛЬКО демо: заказы, демо-оплата, промокоды DEMO*, отзывы, ассистент (изолировано ESLint)
+  services/       интерфейсы сервисов + createServices.ts (точка сборки); http/ — клиент backend
+    mock/         ТОЛЬКО демо: заказы, промокоды DEMO*, отзывы (изолировано ESLint)
   data/           меню (13 файлов категорий), аллергены, точки
   i18n/           translations/{lv,ru,en}.ts, провайдер, типизированные ключи
   types/ hooks/ utils/ styles/ test/
@@ -172,7 +176,8 @@ scripts/menu-import/  импорт меню с sushiriga.lv + source-snapshot.js
   сотрудник при принятии заказа (10–80 мин); до этого клиент видит стандарт 30 мин. Демо-кнопка
   «следующий статус» (роль сотрудника) для неоплаченного заказа не показывается.
 - Предзаказ на следующие дни есть в архитектуре (`pickupDays`, `PREORDER_DAYS_AHEAD = 0`), в UI выключен.
-- Кот-помощник: отвечает только реальными товарами каталога (lv/ru/en запросы).
+- Кот-помощник: поиск по правилам в реальном меню (не AI), отвечает только товарами каталога;
+  одинаково работает в демо-режиме и с backend.
 - LV / RU / EN, выбор сохраняется; `<html lang>` обновляется.
 - Mobile first: нижняя навигация, safe areas, bottom-sheet модалки, 16px-инпуты (без зума на iOS).
 - Доступность: skip-link, focus-visible, aria-live, `inert`, reduced motion, семантика.
@@ -180,7 +185,7 @@ scripts/menu-import/  импорт меню с sushiriga.lv + source-snapshot.js
 ## Что является заглушкой
 
 Оплата — подключается ключами Stripe на сервере (без них заказы остаются `PENDING_PAYMENT`;
-в демо-режиме оплаты нет вовсе), аккаунт клиента и вход, AI (rule-based mock), фото товаров (плейсхолдеры), популярность категорий
+в демо-режиме оплаты нет вовсе), аккаунт клиента и вход, AI (кот пока ищет по правилам, без LLM), фото товаров (плейсхолдеры), популярность категорий
 (нет статистики), логотип (временный wordmark). В демо-режиме заказы и отзывы живут в localStorage.
 
 ## Roadmap
