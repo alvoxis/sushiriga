@@ -15,10 +15,22 @@ export default defineConfig({
   },
   test: {
     globals: true,
-    environment: 'jsdom',
-    setupFiles: ['./src/test/setup.ts'],
-    include: ['src/**/*.test.{ts,tsx}'],
-    css: { modules: { classNameStrategy: 'non-scoped' } },
     restoreMocks: true,
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: 'web',
+          environment: 'jsdom',
+          setupFiles: ['./src/test/setup.ts'],
+          include: ['src/**/*.test.{ts,tsx}'],
+          css: { modules: { classNameStrategy: 'non-scoped' } },
+        },
+      },
+      {
+        extends: true,
+        test: { name: 'server', environment: 'node', include: ['server/**/*.test.ts'] },
+      },
+    ],
   },
 });

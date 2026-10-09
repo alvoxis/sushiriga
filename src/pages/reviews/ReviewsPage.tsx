@@ -3,13 +3,13 @@ import { Card, PageHeader, PlaceholderPanel } from '@/components/ui';
 import { useDocumentTitle } from '@/hooks';
 import { useTranslation } from '@/i18n';
 import { useServices } from '@/services';
-import type { Review } from '@/types';
+import type { PublishedReview } from '@/types';
 import styles from '../page.module.css';
 
 export default function ReviewsPage() {
   const { t, locale } = useTranslation();
   const { reviews } = useServices();
-  const [list, setList] = useState<Review[] | null>(null);
+  const [list, setList] = useState<PublishedReview[] | null>(null);
   useDocumentTitle(t('reviews.title'));
 
   useEffect(() => {

@@ -6,7 +6,17 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['dist', 'coverage', 'playwright-report', 'test-results'] },
+  {
+    ignores: [
+      'dist',
+      'dist-server',
+      'dist-live',
+      'coverage',
+      'playwright-report',
+      'test-results',
+      'data',
+    ],
+  },
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -33,14 +43,32 @@ export default tseslint.config(
     },
   },
   {
-    // Demo/mock services must stay isolated from production code paths.
+    files: ['*.config.ts', 'e2e/**/*.ts', 'e2e-server/**/*.ts'],
+    languageOptions: { globals: { ...globals.node } },
+  },
+  {
+    // Backend: Node globals; it logs to stdout. It must never depend on browser-only services.
+    files: ['server/**/*.ts'],
+    languageOptions: { globals: { ...globals.node } },
+    rules: {
+      'no-console': 'off',
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/services/mock/*', '@/services/createServices', '@/services/config'],
+              message: 'The backend must not use frontend mock services or frontend config.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // Demo/mock services stay isolated from production code paths, and the frontend never
+    // bundles backend code (secrets, database).
     files: ['src/**/*.{ts,tsx}'],
-    ignores: [
-      'src/services/createServices.ts',
-      'src/services/mock/**',
-      'src/**/*.test.{ts,tsx}',
-      'src/test/**',
-    ],
     rules: {
       'no-restricted-imports': [
         'error',
@@ -50,13 +78,16 @@ export default tseslint.config(
               group: ['@/services/mock/*', '**/services/mock/*', './mock/*', '../mock/*'],
               message: 'Mock/demo services may only be wired in src/services/createServices.ts.',
             },
+            { group: ['**/server/**'], message: 'Frontend code must not import the backend.' },
           ],
         },
       ],
     },
-  },
-  {
-    files: ['*.config.ts', 'e2e/**/*.ts'],
-    languageOptions: { globals: { ...globals.node } },
+    ignores: [
+      'src/services/createServices.ts',
+      'src/services/mock/**',
+      'src/**/*.test.{ts,tsx}',
+      'src/test/**',
+    ],
   },
 );

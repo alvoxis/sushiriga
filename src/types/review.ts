@@ -15,3 +15,6 @@ export interface Review {
 }
 
 export type ReviewDraft = Omit<Review, 'id' | 'createdAt'>;
+
+/** What the public reviews page shows: no order or customer references. */
+export type PublishedReview = Omit<Review, 'orderId' | 'customerId'>;

@@ -6,12 +6,15 @@
   "type": "module",
   "license": "UNLICENSED",
   "engines": {
-    "node": ">=20.19"
+    "node": ">=22.13"
   },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
+    "server:dev": "tsx watch --tsconfig tsconfig.server.json server/main.ts",
+    "server:build": "vite build --config vite.server.config.ts",
+    "server:start": "node --disable-warning=ExperimentalWarning dist-server/main.js",
     "typecheck": "tsc -b",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -19,12 +22,16 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "check": "npm run lint && npm run format:check && npm run typecheck && npm test && vite build"
+    "test:e2e:server": "playwright test --config playwright.server.config.ts",
+    "check": "npm run lint && npm run format:check && npm run typecheck && npm test && vite build && npm run server:build"
   },
   "dependencies": {
+    "@hono/node-server": "^2.1.4",
+    "hono": "^4.13.13",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "react-router": "^7.18.4"
+    "react-router": "^7.18.4",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
@@ -44,6 +51,7 @@
     "globals": "^17.13.0",
     "jsdom": "^30.1.2",
     "prettier": "^3.9.9",
+    "tsx": "^4.23.15",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.71.1",
     "vite": "^8.3.4",

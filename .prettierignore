@@ -3,3 +3,6 @@ coverage
 playwright-report
 test-results
 package-lock.json
+dist-server
+data
+dist-live
