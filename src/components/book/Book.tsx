@@ -35,6 +35,16 @@ export interface BookProps {
   layout?: BookLayout | 'auto';
   initialFace?: number;
   onFaceChange?: (face: number) => void;
+  /**
+   * Jump to this face whenever it changes (no page-turn animation). Used to keep a requested dish
+   * in view while pages are re-laid out (e.g. after measuring or resizing).
+   */
+  openFace?: number;
+  /**
+   * Hidden "ruler" rendered in a box of exactly one page's size (same typography), so callers
+   * can measure their content and paginate it to fit. Never visible or reachable.
+   */
+  measure?: ReactNode;
   /** Cover cloth colour etc. as CSS custom properties (e.g. from a category theme). */
   style?: CSSProperties;
   className?: string;
@@ -56,6 +66,8 @@ export function Book({
   layout = 'auto',
   initialFace = 0,
   onFaceChange,
+  openFace,
+  measure,
   style,
   className,
 }: BookProps) {
@@ -74,6 +86,13 @@ export function Book({
   const max = maxPosition(faceCount, resolved);
 
   useEffect(() => () => clearTimeout(timer.current), []);
+
+  // Follow `openFace` changes (React's "adjust state when a prop changes" pattern, no effect).
+  const [followedFace, setFollowedFace] = useState(openFace);
+  if (openFace !== followedFace) {
+    setFollowedFace(openFace);
+    if (openFace !== undefined) setAnchor(clamp(openFace, 0, faceCount - 1));
+  }
 
   const goToPosition = useCallback(
     (target: number) => {
@@ -155,6 +174,11 @@ export function Book({
               visibleFaces={visible}
               activeLeaf={activeLeaf}
             />
+            {measure && (
+              <div className={styles.measure} aria-hidden="true" inert>
+                {measure}
+              </div>
+            )}
             {/* Mouse-only page corners; keyboard and screen-reader users have BookNavigation. */}
             <button
               type="button"

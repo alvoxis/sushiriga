@@ -298,6 +298,24 @@
     var(--cover-deep);
 }
 
+/* Hidden ruler: exactly one page, same container typography, never visible or interactive. */
+.measure {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+  container-type: inline-size;
+}
+
+.spread .measure {
+  left: 50%;
+  width: 50%;
+}
+
 /* ---------- Mouse page corners ---------- */
 /* Only for precise pointers (mouse). They live inside the page's side margin, so they never
    cover buttons or text. Touch users swipe; everyone has BookNavigation. */
