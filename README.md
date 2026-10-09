@@ -56,6 +56,21 @@ NODE_ENV=production ORDER_TOKEN_SECRET="$(openssl rand -base64 48)" npm run serv
 или `docker build -t sushiriga .` (см. `Dockerfile`, `docs/BACKEND.md`). Демо-версию без backend
 можно выложить как статику: `npm run build` → `dist/` (все пути — через `index.html`).
 
+## Публикация на GitHub Pages (демо)
+
+Статическая демо-версия: **https://alvoxis.github.io/sushiriga/** — обновляется сама после каждого
+push в `main` (`.github/workflows/pages.yml`: lint → unit-тесты → e2e сборки Pages → публикация).
+
+- Сборка: `npm run build:pages` (`vite build --mode pages`): базовый путь `/sushiriga/`,
+  `404.html` = копия `index.html` (глубокие ссылки вроде `/sushiriga/menu/rolli` открываются),
+  `robots.txt` и `sitemap.xml` с адресом Pages.
+- Проверка: `npm run test:e2e:pages` — сборка Pages на локальном сервере, который отвечает как
+  GitHub Pages (только статика, `404.html` для неизвестных путей). Опубликованный сайт:
+  `PAGES_TEST_URL=https://alvoxis.github.io/sushiriga/ npm run test:e2e:pages`.
+- GitHub Pages — только статика, backend там не работает: это **демо-режим** (баннер «Demo»,
+  заказы остаются в браузере посетителя, оплаты нет, админ-панель объясняет, что нужен сервер).
+- В настройках репозитория: Settings → Pages → Build and deployment → Source: **GitHub Actions**.
+
 ## Команды
 
 | Команда                   | Что делает                                                               |
