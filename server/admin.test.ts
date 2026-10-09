@@ -129,7 +129,7 @@ describe('staff sign-in', () => {
       cookie,
       headers: { 'X-SushiRiga-Admin': '1' },
     });
-    expect((await app.call('/api/admin/me', { cookie })).status).toBe(401);
+    expect(await (await app.call('/api/admin/me', { cookie })).json()).toBeNull();
   });
 
   it('state changes need the admin header (CSRF), sessions expire, disabled staff are out', async () => {
@@ -144,14 +144,17 @@ describe('staff sign-in', () => {
     expect(noHeader.status).toBe(403);
 
     app.setNow(riga('23:59'));
-    expect((await app.call('/api/admin/me', { cookie })).status).toBe(200);
+    expect(await (await app.call('/api/admin/me', { cookie })).json()).toMatchObject({
+      role: 'staff',
+    });
     app.setNow(new Date(riga('12:00').getTime() + 12 * 3600_000 + 1));
-    expect((await app.call('/api/admin/me', { cookie })).status).toBe(401);
+    expect(await (await app.call('/api/admin/me', { cookie })).json()).toBeNull();
 
     app.setNow(riga('12:00'));
     const again = await app.login('cook@sushiriga.lv');
     app.staff.setDisabled('cook@sushiriga.lv', true);
-    expect((await app.call('/api/admin/me', { cookie: again.cookie })).status).toBe(401);
+    expect(await (await app.call('/api/admin/me', { cookie: again.cookie })).json()).toBeNull();
+    expect((await app.call('/api/admin/orders', { cookie: again.cookie })).status).toBe(401);
     expect((await app.login('cook@sushiriga.lv')).res.status).toBe(401);
   });
 
@@ -240,6 +243,9 @@ describe('orders board', () => {
     const cancelled = (await res.json()) as AdminOrder;
     expect(cancelled).toMatchObject({ status: 'CANCELLED', paymentStatus: 'refunded' });
     expect(cancelled.statusHistory.at(-1)?.note).toBe('Nav produktu · refund re_1 (succeeded)');
+    // A late (retried) success event does not hide the refund from staff.
+    app.store.payments.setStatus('pi_1', 'succeeded', new Date());
+    expect(app.store.payments.find(order.id)?.status).toBe('refunded');
     expect(app.fake.refunds).toEqual([
       { paymentIntent: 'pi_1', idempotencyKey: `sushiriga:refund:${order.id}` },
     ]);

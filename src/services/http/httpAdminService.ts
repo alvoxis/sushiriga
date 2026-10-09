@@ -47,14 +47,7 @@ export function createHttpAdminService(http: HttpClient): AdminService {
   const order = (id: string) => `orders/${encodeURIComponent(id)}`;
 
   return {
-    async me() {
-      try {
-        return await get<StaffUser>('me');
-      } catch (error) {
-        if (error instanceof AdminError && error.code === 'unauthorized') return null;
-        throw error;
-      }
-    },
+    me: () => get<StaffUser | null>('me'),
     login: (email, password) => post<StaffUser>('login', { email, password }),
     logout: async () => {
       await post<void>('logout');

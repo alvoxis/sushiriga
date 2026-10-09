@@ -364,6 +364,11 @@ export const lv: Messages = {
       customer: 'Klients',
       payment: 'Apmaksa',
       paymentNone: 'nav sākta',
+      paymentPaid: 'apmaksāts tiešsaistē (Stripe)',
+      paymentRefunded: 'atmaksāts',
+      paymentProcessing: 'banka apstrādā',
+      paymentWaiting: 'gaida klientu',
+      paymentCanceled: 'maksājums atcelts',
       promo: 'Promokods {code}',
       tip: 'Dzeramnauda',
       total: 'Kopā',
@@ -470,7 +475,7 @@ export const lv: Messages = {
   assistant: {
     title: 'Ēdienkartes kaķis',
     characterLabel: 'Kaķis palīgs',
-    lead: 'Demo palīgs. Atbild tikai ar ēdieniem, cenām un sastāvu no mūsu ēdienkartes.',
+    lead: 'Vēl ne mākslīgais intelekts: kaķis meklē mūsu ēdienkartē un atbild tikai ar ēdieniem, cenām un sastāvu, kas tajā ir.',
     greeting:
       'Ņau! Pastāsti, kas tev garšo — lasis, zutis, vista, kaut kas silts —, un es to atradīšu ēdienkartē.',
     placeholder: 'Piemēram: kaut ko ar lasi',

@@ -1,6 +1,7 @@
 import { categories, products } from '@/data/menu';
 import { locations } from '@/data/locations';
 import { createGuestOnlyAuthService } from './auth/authService';
+import { createCatalogAssistantService } from './assistant/catalogAssistantService';
 import { createStaticCatalogService } from './catalog/catalogService';
 import { readConfig, type AppConfig } from './config';
 import { createHttpAdminService } from './http/httpAdminService';
@@ -15,11 +16,9 @@ import {
 } from './http/httpServices';
 import { createStaticLocationService } from './locations/locationService';
 import { createDemoPaymentService } from './mock/demoPaymentService';
-import { createMockAssistantService } from './mock/mockAssistantService';
 import { createMockOrderService } from './mock/mockOrderService';
 import { createMockPromoService } from './mock/mockPromoService';
 import { createMockReviewService } from './mock/mockReviewService';
-import { notConnectedAssistant } from './notConnected';
 import type { Services } from './services';
 
 /**
@@ -27,8 +26,8 @@ import type { Services } from './services';
  *
  * - Demo mode (no VITE_API_URL): everything runs locally on mock services.
  * - Backend configured: the real API (`server/`) for menu, locations, orders, payments, promo
- *   codes and reviews. Features the backend does not offer yet stay "not connected" and fail
- *   loudly — there is no silent demo fallback.
+ *   codes, reviews and the admin panel — no demo service is ever used.
+ * The cat assistant is the same rule-based menu search in both modes (no AI yet).
  */
 export function createServices(config: AppConfig = readConfig()): Services {
   const auth = createGuestOnlyAuthService();
@@ -44,7 +43,7 @@ export function createServices(config: AppConfig = readConfig()): Services {
       promo: createHttpPromoService(http),
       reviews: createHttpReviewService(http),
       payments: createHttpPaymentService(http),
-      assistant: notConnectedAssistant,
+      assistant: createCatalogAssistantService(),
       admin: createHttpAdminService(http),
     };
   }
@@ -60,7 +59,7 @@ export function createServices(config: AppConfig = readConfig()): Services {
     // Test codes only, clearly labelled as such in the UI — never presented as a server check.
     promo: createMockPromoService(),
     payments: createDemoPaymentService(config),
-    assistant: createMockAssistantService(),
+    assistant: createCatalogAssistantService(),
     reviews: createMockReviewService(),
   };
 }

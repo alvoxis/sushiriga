@@ -368,6 +368,11 @@ export const en = {
       customer: 'Customer',
       payment: 'Payment',
       paymentNone: 'not started',
+      paymentPaid: 'paid online (Stripe)',
+      paymentRefunded: 'refunded',
+      paymentProcessing: 'bank is processing',
+      paymentWaiting: 'waiting for the customer',
+      paymentCanceled: 'payment cancelled',
       promo: 'Promo code {code}',
       tip: 'Tip',
       total: 'Total',
@@ -474,7 +479,7 @@ export const en = {
   assistant: {
     title: 'The menu cat',
     characterLabel: 'Cat assistant',
-    lead: 'A demo assistant. It answers only with dishes, prices and ingredients from our menu.',
+    lead: 'Not an AI yet: the cat searches our menu and answers only with dishes, prices and ingredients that are on it.',
     greeting:
       'Meow! Tell me what you like — salmon, eel, chicken, something warm — and I will find it on the menu.',
     placeholder: 'For example: something with salmon',

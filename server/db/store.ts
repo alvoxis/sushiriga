@@ -203,7 +203,8 @@ export function createStore(db: Database) {
          status = excluded.status, updated_at = excluded.updated_at`,
     ),
     setPaymentStatus: db.prepare(
-      'UPDATE payments SET status = ?, updated_at = ? WHERE intent_id = ?',
+      // A refund is final: late provider events never turn it back into "succeeded".
+      "UPDATE payments SET status = ?, updated_at = ? WHERE intent_id = ? AND status != 'refunded'",
     ),
     findWebhookEvent: db.prepare('SELECT 1 FROM webhook_events WHERE id = ?'),
     insertStaff: db.prepare(

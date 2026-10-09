@@ -75,7 +75,8 @@ export function createAdminRoutes({ staff, admin, production, loginLimit }: Admi
       await next();
     };
 
-  routes.get('/me', requireStaff(), (c) => c.json(c.get('staff')));
+  // "Am I signed in?" — answered with null instead of 401, so opening /admin logs no error.
+  routes.get('/me', (c) => c.json(staff.authenticate(getCookie(c, SESSION_COOKIE))));
 
   // ---------- Orders (all staff) ----------
   routes.get('/orders', requireStaff(), (c) => {

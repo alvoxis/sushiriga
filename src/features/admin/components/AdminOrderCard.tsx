@@ -102,6 +102,19 @@ export function AdminOrderCard({
   );
   const canCancel = ORDER_TRANSITIONS[order.status].includes('CANCELLED');
   const paid = PAID_STATES.includes(order.status) && order.payment !== null;
+  // Stripe's technical status, in the staff's language.
+  const paymentLabel =
+    {
+      succeeded: t('admin.orders.paymentPaid'),
+      refunded: t('admin.orders.paymentRefunded'),
+      processing: t('admin.orders.paymentProcessing'),
+      requires_payment_method: t('admin.orders.paymentWaiting'),
+      requires_confirmation: t('admin.orders.paymentWaiting'),
+      requires_action: t('admin.orders.paymentWaiting'),
+      canceled: t('admin.orders.paymentCanceled'),
+    }[order.paymentStatus ?? ''] ??
+    order.paymentStatus ??
+    t('admin.orders.paymentNone');
   const tone =
     order.status === 'PAID' ? 'accent' : order.status === 'PENDING_PAYMENT' ? 'outline' : 'indigo';
 
@@ -131,7 +144,7 @@ export function AdminOrderCard({
           {order.customer.email && ` · ${order.customer.email}`}
         </dd>
         <dt>{t('admin.orders.payment')}</dt>
-        <dd>{order.paymentStatus ?? t('admin.orders.paymentNone')}</dd>
+        <dd>{paymentLabel}</dd>
       </dl>
 
       <ul className={styles.lines} role="list">
