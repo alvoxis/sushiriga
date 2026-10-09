@@ -15,6 +15,7 @@ export default defineConfig({
   reporter: process.env.CI ? 'github' : 'list',
   use: {
     baseURL,
+    locale: 'lv-LV',
     trace: 'on-first-retry',
   },
   projects: [

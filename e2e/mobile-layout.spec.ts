@@ -1,57 +1,12 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { categories, products } from '../src/data/menu';
+import { expectNoHorizontalOverflow, forceWideFonts } from './helpers';
 
 /** No horizontal overflow on the narrowest supported phones (320px), for every dish and chapter. */
 test.describe('narrow phones (320px)', () => {
   test.use({ viewport: { width: 320, height: 568 }, locale: 'lv-LV' });
 
-  // System fonts differ between machines (CI runners often have wide DejaVu fonts). Force wide
-  // fallback fonts so layouts that only fit thanks to a narrow local font fail here too.
-  test.beforeEach(async ({ context }) => {
-    await context.addInitScript(() => {
-      document.addEventListener('DOMContentLoaded', () => {
-        const style = document.createElement('style');
-        style.textContent =
-          ':root{--font-body:"DejaVu Sans",Verdana,sans-serif!important;' +
-          '--font-display:"DejaVu Serif",Georgia,serif!important}';
-        document.head.appendChild(style);
-      });
-    });
-  });
-
-  async function expectNoHorizontalOverflow(page: Page, path: string) {
-    const result = await page.evaluate(() => {
-      const width = document.documentElement.clientWidth;
-      const overflow = document.documentElement.scrollWidth - width;
-      const culprits: string[] = [];
-      if (overflow > 0) {
-        for (const el of document.querySelectorAll('body *')) {
-          if (el.getBoundingClientRect().right <= width + 0.5) continue;
-          let parent = el.parentElement;
-          let clipped = false;
-          while (parent) {
-            if (
-              getComputedStyle(parent).overflowX !== 'visible' &&
-              parent.getBoundingClientRect().right <= width + 0.5
-            ) {
-              clipped = true;
-              break;
-            }
-            parent = parent.parentElement;
-          }
-          if (!clipped)
-            culprits.push(
-              `${el.closest('[class]')?.className ?? el.tagName} "${(el.textContent ?? '').trim().slice(0, 30)}"`,
-            );
-        }
-      }
-      return { overflow, culprits: [...new Set(culprits)].slice(0, 5) };
-    });
-    expect(
-      result.overflow,
-      `horizontal overflow on ${path}: ${result.culprits.join(' | ')}`,
-    ).toBeLessThanOrEqual(0);
-  }
+  test.beforeEach(async ({ context }) => forceWideFonts(context));
 
   test('main routes', async ({ page }) => {
     for (const path of [
