@@ -17,7 +17,10 @@
   font-weight: 600;
   letter-spacing: 0.02em;
   text-decoration: none;
-  white-space: nowrap;
+  /* Long labels (Latvian, Russian) wrap instead of pushing the layout wider. */
+  text-align: center;
+  text-wrap: balance;
+  line-height: 1.25;
   transition:
     background-color var(--duration-fast) var(--ease-out),
     color var(--duration-fast) var(--ease-out),

@@ -1,4 +1,5 @@
 .logo {
+  min-width: 0; /* may shrink on very narrow phones instead of pushing the header wider */
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -20,9 +21,17 @@
 }
 
 .word {
+  /* Narrow phones get tighter tracking so the wordmark never depends on a narrow system font. */
+  --word-tracking: clamp(0.12em, 2.6vw - 0.4em, var(--tracking-logo));
+
   font-family: var(--font-display);
-  font-size: 1.05rem;
-  letter-spacing: var(--tracking-logo);
+  font-size: clamp(0.92rem, 0.75rem + 0.9vw, 1.05rem);
+  letter-spacing: var(--word-tracking);
+  white-space: nowrap;
   /* letter-spacing adds trailing space; compensate so the word stays optically centred */
-  margin-right: calc(-1 * var(--tracking-logo));
+  margin-right: calc(-1 * var(--word-tracking));
+}
+
+.seal {
+  flex: none;
 }

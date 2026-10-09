@@ -28,11 +28,14 @@ test('keyboard: arrows, Home and End', async ({ page }) => {
 
 test('desktop: clicking the page corner turns the page', async ({ page, isMobile }) => {
   test.skip(isMobile, 'mouse corners exist only for precise pointers');
+  // No smooth scrolling / transitions, so the corner is measured where it really is.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/menu/rolli');
   const book = page.getByRole('region', { name: 'Rolls — menu book' });
   await book.getByRole('button', { name: 'Open the book' }).click();
   await expect(book.getByText(/^Page 2 of/)).toBeVisible();
   const scene = book.locator('div[class*="scene"]');
+  await scene.scrollIntoViewIfNeeded();
   const box = (await scene.boundingBox())!;
   await page.mouse.click(box.x + box.width - 8, box.y + box.height - 20);
   await expect(book.getByText(/^Page 3 of/)).toBeVisible();

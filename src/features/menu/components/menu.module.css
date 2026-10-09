@@ -55,6 +55,7 @@
 
 .cardFooter {
   display: flex;
+  flex-wrap: wrap; /* price and button stack when a wide system font does not fit one line */
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
