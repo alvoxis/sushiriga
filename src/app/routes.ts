@@ -33,6 +33,10 @@ export const ADMIN_ROUTES = {
 
 export const paths = {
   category: (slug: string) => `/menu/${encodeURIComponent(slug)}`,
+  /** Opens the chapter's book on the page that contains the dish. */
+  dishInBook: (slug: string, productId: string) =>
+    `/menu/${encodeURIComponent(slug)}?dish=${encodeURIComponent(productId)}`,
+  search: (query: string) => `/menu?q=${encodeURIComponent(query)}`,
   product: (id: string) => `/product/${encodeURIComponent(id)}`,
   order: (id: string) => `/order/${encodeURIComponent(id)}`,
 };

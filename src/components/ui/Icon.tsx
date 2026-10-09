@@ -11,6 +11,7 @@ const PATHS = {
   plus: 'M12 5v14M5 12h14',
   minus: 'M5 12h14',
   trash: 'M5 7h14M10 7V5h4v2M7 7l1 13h8l1-13',
+  search: 'M10.5 17a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13zM15.5 15.5 20 20',
 } as const;
 
 export type IconName = keyof typeof PATHS;

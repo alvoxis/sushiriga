@@ -1,4 +1,6 @@
 import { screen, within } from '@testing-library/react';
+import { createServices, readConfig } from '@/services';
+import { createMockPromoService } from '@/services/mock/mockPromoService';
 import { renderApp } from '@/test/renderApp';
 
 describe('SUSHIRIGA app', () => {
@@ -85,12 +87,24 @@ describe('SUSHIRIGA app', () => {
     vi.useRealTimers();
   });
 
-  it('applies a (mock) promo code to the total', async () => {
+  it('promo codes are not simulated: without a server check the field is disabled', async () => {
     localStorage.setItem(
       'sushiriga.cart.v1',
       JSON.stringify([{ productId: 'maestro', quantity: 2 }]),
     );
-    const { user } = renderApp('/cart');
+    renderApp('/cart');
+    expect(await screen.findByLabelText('Promo code')).toBeDisabled();
+    expect(screen.getByText(/No discount is applied for now/)).toBeInTheDocument();
+    expect(screen.getByTestId('cart-total')).toHaveTextContent('€21.00');
+  });
+
+  it('with a server that checks codes, an accepted code updates the total', async () => {
+    localStorage.setItem(
+      'sushiriga.cart.v1',
+      JSON.stringify([{ productId: 'maestro', quantity: 2 }]),
+    );
+    const services = { ...createServices(readConfig({})), promo: createMockPromoService() };
+    const { user } = renderApp('/cart', 'en', services);
     await user.type(await screen.findByLabelText('Promo code'), 'demo10');
     await user.click(screen.getByRole('button', { name: 'Apply' }));
     expect(await screen.findByText('Promo code DEMO10 applied')).toBeInTheDocument();

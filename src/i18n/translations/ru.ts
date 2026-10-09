@@ -28,6 +28,7 @@ export const ru: Messages = {
     bottomNavigation: 'Быстрая навигация',
     language: 'Язык',
     cartWithCount: 'Корзина, товаров: {count}',
+    search: 'Поиск по меню',
   },
   home: {
     eyebrow: 'Суши · Рига · Самовывоз',
@@ -60,6 +61,8 @@ export const ru: Messages = {
     nextSuffix: ' (следующая страница)',
     nextChapter: 'Следующая глава: {name}',
     previousChapter: 'Предыдущая глава: {name}',
+    allChapters: 'Все главы',
+    foundHere: 'Найдено',
     contents: 'Содержание',
     navigation: 'Перелистывание',
     label: '{title} — книга меню',
@@ -129,6 +132,8 @@ export const ru: Messages = {
       remove: 'Убрать промокод',
       applied: 'Промокод {code} применён',
       checking: 'Проверяем…',
+      unavailableHint:
+        'Промокоды заработают, когда ресторан сможет проверять их на своём сервере. Пока скидка не применяется.',
       errors: {
         'not-found': 'Такого промокода не существует.',
         inactive: 'Промокод не активен.',
@@ -136,6 +141,7 @@ export const ru: Messages = {
         'usage-limit-reached': 'Промокод уже использован максимальное число раз.',
         'min-order-not-met': 'Промокод действует от {amount}.',
         'not-eligible': 'Этот промокод вам недоступен.',
+        unavailable: 'Промокоды пока нельзя проверить.',
         empty: 'Введите промокод.',
       },
     },
@@ -310,6 +316,17 @@ export const ru: Messages = {
       cheapest: 'Подешевле',
     },
     teaser: 'Помочь с выбором?',
+  },
+  search: {
+    label: 'Поиск по меню',
+    placeholder: 'Блюдо, номер или глава — например, Philadelphia',
+    results: 'Найдено: {count}',
+    none: 'Ничего не найдено. Попробуйте другое название или выберите главу ниже.',
+    chapters: 'Главы',
+    dishes: 'Блюда',
+    openInBook: 'В книге',
+    openInBookLabel: 'Открыть {name} в книге «{chapter}»',
+    clear: 'Очистить поиск',
   },
   footer: {
     contact: 'Контакты',

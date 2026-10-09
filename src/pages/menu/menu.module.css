@@ -17,6 +17,19 @@
   scroll-snap-align: start;
 }
 
+.backLink {
+  padding-top: var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.backLink + header {
+  padding-top: var(--space-3);
+}
+
+.bookAnchor {
+  scroll-margin-top: calc(var(--header-height) + var(--space-3));
+}
+
 .categoryNav {
   display: flex;
   gap: var(--space-2);

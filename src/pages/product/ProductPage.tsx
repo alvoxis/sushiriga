@@ -96,6 +96,14 @@ export default function ProductPage() {
             />
             <AddToCartButton product={product} quantity={quantity} size="lg" />
           </div>
+          <p>
+            <Link
+              to={paths.dishInBook(category.slug, product.id)}
+              aria-label={t('search.openInBookLabel', { name, chapter: catName })}
+            >
+              {t('search.openInBook')} →
+            </Link>
+          </p>
           <AllergenNotice category={category} />
         </div>
       </article>

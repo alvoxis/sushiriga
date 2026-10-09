@@ -5,6 +5,7 @@ import { categoryName, productsInCategory, visibleCategories } from '@/features/
 import { bookTheme } from '@/features/menu/bookThemes';
 import { useCatalog } from '@/features/menu/CatalogContext';
 import { AllergenNotice } from '@/features/menu/components/AllergenNotice';
+import { MenuSearch } from '@/features/menu/components/MenuSearch';
 import { useDocumentTitle } from '@/hooks';
 import { useTranslation } from '@/i18n';
 import styles from './menu.module.css';
@@ -18,6 +19,7 @@ export default function MenuPage() {
   return (
     <div className="container">
       <PageHeader title={t('menu.title')} lead={t('menu.lead')} />
+      <MenuSearch />
       <nav aria-label={t('menu.shelfLabel')}>
         <ul className={styles.shelf} role="list">
           {chapters.map((category, index) => {

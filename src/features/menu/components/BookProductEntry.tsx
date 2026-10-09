@@ -3,6 +3,7 @@ import { paths } from '@/app/routes';
 import { Price } from '@/components/ui';
 import { useTranslation } from '@/i18n';
 import type { Product } from '@/types';
+import { cn } from '@/utils/cn';
 import { productName } from '../catalog';
 import { AddToCartButton } from './AddToCartButton';
 import { LocalizedBlock } from './LocalizedBlock';
@@ -10,10 +11,20 @@ import { ProductMeta } from './ProductMeta';
 import styles from './menu.module.css';
 
 /** A dish as it is "printed" on a page of the menu book. */
-export function BookProductEntry({ product }: { product: Product }) {
-  const { locale } = useTranslation();
+export function BookProductEntry({
+  product,
+  highlighted,
+}: {
+  product: Product;
+  highlighted?: boolean;
+}) {
+  const { t, locale } = useTranslation();
   return (
-    <li className={styles.entry}>
+    <li
+      className={cn(styles.entry, highlighted && styles.entryHighlighted)}
+      data-highlighted={highlighted || undefined}
+    >
+      {highlighted && <span className="visually-hidden">{t('book.foundHere')}: </span>}
       <h3 className={styles.entryName}>
         {product.number && <span className={styles.number}>{product.number} </span>}
         <Link to={paths.product(product.id)}>{productName(product, locale)}</Link>

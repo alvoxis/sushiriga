@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { NavLink, useParams } from 'react-router';
+import { Link, NavLink, useParams, useSearchParams } from 'react-router';
 import { paths, ROUTES } from '@/app/routes';
 import { ButtonLink, ChoiceGroup, PageHeader } from '@/components/ui';
 import {
@@ -38,6 +38,20 @@ export default function CategoryPage() {
   );
   useDocumentTitle(category ? categoryName(category, locale) : t('menu.categoryNotFound'));
 
+  // ?dish=<id> (from search or a product page) opens the book on the page with that dish.
+  const [params, setParams] = useSearchParams();
+  const dishParam = params.get('dish');
+  const dish =
+    category && dishParam
+      ? catalog.products.find((p) => p.id === dishParam && p.category === category.id)
+      : undefined;
+  // A requested dish is always shown in its book page, whatever view was chosen before.
+  const shownView: View = dish ? 'book' : view;
+  const bookRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (dish) bookRef.current?.scrollIntoView?.({ block: 'start' });
+  }, [dish]);
+
   if (!category) {
     return (
       <div className="container">
@@ -55,6 +69,9 @@ export default function CategoryPage() {
 
   return (
     <div className="container">
+      <p className={styles.backLink}>
+        <Link to={ROUTES.menu}>← {t('book.allChapters')}</Link>
+      </p>
       <PageHeader title={name} lead={t('book.itemsCount', { count: products.length })} />
       <nav className={styles.categoryNav} aria-label={t('menu.shelfLabel')}>
         {chapters.map((c) => (
@@ -73,10 +90,11 @@ export default function CategoryPage() {
         <ChoiceGroup<View>
           legend={t('book.viewMode')}
           legendHidden
-          value={view}
+          value={shownView}
           onChange={(next) => {
             setView(next);
             writeStorage(VIEW_KEY, next);
+            if (dish) setParams({}, { replace: true }); // the user picked a view explicitly
           }}
           choices={[
             { value: 'book', label: t('book.viewAsBook') },
@@ -84,15 +102,18 @@ export default function CategoryPage() {
           ]}
         />
       </div>
-      {view === 'book' ? (
-        // key: a fresh book (closed, on the cover) for every category
-        <CategoryBook
-          key={category.id}
-          category={category}
-          products={products}
-          {...(previous ? { previous } : {})}
-          {...(next ? { next } : {})}
-        />
+      {shownView === 'book' ? (
+        <div ref={bookRef} className={styles.bookAnchor}>
+          {/* key: a fresh book (closed on the cover, or open at the requested dish) */}
+          <CategoryBook
+            key={`${category.id}:${dish?.id ?? ''}`}
+            category={category}
+            products={products}
+            {...(dish ? { highlightId: dish.id } : {})}
+            {...(previous ? { previous } : {})}
+            {...(next ? { next } : {})}
+          />
+        </div>
       ) : (
         <ul className={cardStyles.list} role="list" aria-label={name}>
           {products.map((product) => (

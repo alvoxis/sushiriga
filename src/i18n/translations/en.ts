@@ -31,6 +31,7 @@ export const en = {
     bottomNavigation: 'Quick navigation',
     language: 'Language',
     cartWithCount: 'Cart, items: {count}',
+    search: 'Search the menu',
   },
   home: {
     eyebrow: 'Sushi · Riga · Pickup',
@@ -63,6 +64,8 @@ export const en = {
     nextSuffix: ' page',
     nextChapter: 'Next chapter: {name}',
     previousChapter: 'Previous chapter: {name}',
+    allChapters: 'All chapters',
+    foundHere: 'Found',
     contents: 'Contents',
     navigation: 'Page turning',
     label: '{title} — menu book',
@@ -132,6 +135,8 @@ export const en = {
       remove: 'Remove promo code',
       applied: 'Promo code {code} applied',
       checking: 'Checking…',
+      unavailableHint:
+        'Promo codes will work once the restaurant can check them on its server. No discount is applied for now.',
       errors: {
         'not-found': 'This promo code does not exist.',
         inactive: 'This promo code is not active.',
@@ -139,6 +144,7 @@ export const en = {
         'usage-limit-reached': 'This promo code has already been used up.',
         'min-order-not-met': 'This promo code works from {amount}.',
         'not-eligible': 'This promo code is not available for you.',
+        unavailable: 'Promo codes cannot be checked yet.',
         empty: 'Enter a promo code.',
       },
     },
@@ -315,6 +321,17 @@ export const en = {
       cheapest: 'Most affordable',
     },
     teaser: 'Need help choosing?',
+  },
+  search: {
+    label: 'Search the menu',
+    placeholder: 'Dish, number or chapter — e.g. Philadelphia',
+    results: 'Found: {count}',
+    none: 'Nothing found. Try another name or browse the chapters below.',
+    chapters: 'Chapters',
+    dishes: 'Dishes',
+    openInBook: 'In the book',
+    openInBookLabel: 'Open {name} in the {chapter} book',
+    clear: 'Clear search',
   },
   footer: {
     contact: 'Contact',

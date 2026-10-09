@@ -56,6 +56,10 @@
   gap: var(--space-2);
 }
 
+.searchLink {
+  display: none;
+}
+
 .cart {
   position: relative;
   display: none;
@@ -79,7 +83,8 @@
 
 @media (min-width: 60rem) {
   .nav,
-  .cart {
+  .cart,
+  .searchLink {
     display: flex;
   }
 }

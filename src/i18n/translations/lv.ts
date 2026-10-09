@@ -28,6 +28,7 @@ export const lv: Messages = {
     bottomNavigation: 'Ātrā navigācija',
     language: 'Valoda',
     cartWithCount: 'Grozs, preces: {count}',
+    search: 'Meklēt ēdienkartē',
   },
   home: {
     eyebrow: 'Suši · Rīga · Saņemšana uz vietas',
@@ -60,6 +61,8 @@ export const lv: Messages = {
     nextSuffix: ' (nākamā lapa)',
     nextChapter: 'Nākamā nodaļa: {name}',
     previousChapter: 'Iepriekšējā nodaļa: {name}',
+    allChapters: 'Visas nodaļas',
+    foundHere: 'Atrasts',
     contents: 'Saturs',
     navigation: 'Lapu šķiršana',
     label: '{title} — ēdienkartes grāmata',
@@ -129,6 +132,8 @@ export const lv: Messages = {
       remove: 'Noņemt promokodu',
       applied: 'Promokods {code} pielietots',
       checking: 'Pārbauda…',
+      unavailableHint:
+        'Promokodi darbosies, kad restorāns varēs tos pārbaudīt savā serverī. Pagaidām atlaide netiek piemērota.',
       errors: {
         'not-found': 'Šāds promokods neeksistē.',
         inactive: 'Promokods nav aktīvs.',
@@ -136,6 +141,7 @@ export const lv: Messages = {
         'usage-limit-reached': 'Promokods jau ir izlietots.',
         'min-order-not-met': 'Promokods derīgs no {amount}.',
         'not-eligible': 'Šis promokods tev nav pieejams.',
+        unavailable: 'Promokodus vēl nevar pārbaudīt.',
         empty: 'Ievadi promokodu.',
       },
     },
@@ -311,6 +317,17 @@ export const lv: Messages = {
       cheapest: 'Pieejamākie',
     },
     teaser: 'Palīdzēt izvēlēties?',
+  },
+  search: {
+    label: 'Meklēt ēdienkartē',
+    placeholder: 'Ēdiens, numurs vai nodaļa — piem., Philadelphia',
+    results: 'Atrasts: {count}',
+    none: 'Nekas netika atrasts. Pamēģini citu nosaukumu vai izvēlies nodaļu zemāk.',
+    chapters: 'Nodaļas',
+    dishes: 'Ēdieni',
+    openInBook: 'Grāmatā',
+    openInBookLabel: 'Atvērt {name} grāmatā “{chapter}”',
+    clear: 'Notīrīt meklēšanu',
   },
   footer: {
     contact: 'Kontakti',

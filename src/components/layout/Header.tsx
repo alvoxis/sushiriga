@@ -36,6 +36,15 @@ export function Header() {
         <div className={styles.actions}>
           <LanguageSwitcher />
           <ButtonLink
+            to={`${ROUTES.menu}#menu-search`}
+            variant="ghost"
+            iconOnly
+            className={styles.searchLink}
+            aria-label={t('nav.search')}
+          >
+            <Icon name="search" />
+          </ButtonLink>
+          <ButtonLink
             to={ROUTES.cart}
             variant="ghost"
             iconOnly
